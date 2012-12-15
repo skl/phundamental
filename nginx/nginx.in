@@ -1,0 +1,97 @@
+#! /bin/sh
+
+DAEMON=/usr/local/nginx/sbin/nginx
+NAME=nginx
+DESC=nginx
+PIDFILE=/usr/local/nginx/logs/$NAME.pid
+DAEMON_CONFIG=/usr/local/nginx/conf/nginx.conf
+
+test -x $DAEMON || exit 0
+
+set -e
+
+wait_for_pid () {
+        try=0
+
+        while test $try -lt 35 ; do
+
+                case "$1" in
+                        'created')
+                        if [ -f "$2" ] ; then
+                                try=''
+                                break
+                        fi
+                        ;;
+
+                        'removed')
+                        if [ ! -f "$2" ] ; then
+                                try=''
+                                break
+                        fi
+                        ;;
+                esac
+
+                echo -n .
+                try=`expr $try + 1`
+                sleep 1
+
+        done
+
+}
+
+case "$1" in
+	start)
+		echo -n "Starting $DESC: "
+
+		${DAEMON}
+
+		if [ "$?" != 0 ] ; then
+			echo " failed"
+			exit 1
+		fi
+
+		wait_for_pid created ${PIDFILE}
+
+		if [ -n "$try" ] ; then
+			echo " failed"
+			exit 1
+		else
+			echo " done"
+		fi
+	;;
+	stop)
+		if [ ! -r ${PIDFILE} ] ; then
+			echo "warning, no pid file found - nginx is not running ?"
+			exit 1
+		fi
+
+		${DAEMON} -s stop
+
+		wait_for_pid removed ${PIDFILE}
+
+		if [ -n "$try" ] ; then
+			echo " failed. Use force-quit"
+			exit 1
+		else
+			echo " done"
+		fi
+	;;
+	reload)
+		$DAEMON -s reload
+	;;
+	restart)
+		$0 stop
+		$0 start
+	;;
+	status)
+		echo "Status $DESC: "
+		ps aux | grep -v grep | grep -v /bin/sh | grep $NAME
+	;;
+	*)
+		N=/etc/init.d/$NAME
+		echo "Usage: $N {start|stop|status|restart}" >&2
+		exit 1
+	;;
+esac
+
+exit 0
