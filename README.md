@@ -4,7 +4,9 @@ Arch Linux
 Raspberry Pi Model B
 --------------------
 
-Expanding the root partition whilst booted into Arch on the pi:
+### Expanding the root parition of the SD card
+
+Whilst booted into Arch on the pi:
 
     fdisk /dev/mmcblk0
 
@@ -31,3 +33,8 @@ Now reboot. Once rebooted:
 
 Source:
 http://archlinuxarm.org/forum/viewtopic.php?p=18160&sid=7daca906d1d8b7d3728c1a748ae7f6a3#p18160
+
+### Prerequisites
+
+    pacman -S git
+    git clone git://github.com/skl/featherweight-pi.git /usr/local/src/featherweight-pi
