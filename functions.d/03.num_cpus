@@ -1,0 +1,23 @@
+#!/bin/bash
+
+##
+# @depends ${PH_OS}
+# @sets    ${PH_NUM_CPUS}
+#
+function ph_num_cpus {
+    case ${PH_OS} in \
+    'linux')
+        PH_NUM_CPUS=`cat /proc/cpuinfo | grep processor | wc -l`
+    ;;
+
+    'osx')
+        PH_NUM_CPUS=`system_profiler | grep "Total Number of Cores" | awk '{print $5}'`
+    ;;
+
+    *)
+        echo "ph_num_cpus(): OS not recognised"
+        exit
+    esac
+}
+
+ph_num_cpus

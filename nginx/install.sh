@@ -30,7 +30,7 @@ cd nginx-${NGINX_VERSION_STRING}
     --with-http_ssl_module \
     --with-http_realip_module
 
-make -j ${FW_NUM_CPUS} && make install
+make -j ${PH_NUM_CPUS} && make install
 
 ln -s /usr/local/nginx/logs /var/log/nginx
 
