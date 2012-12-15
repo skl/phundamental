@@ -13,9 +13,6 @@ fi
 # e.g. 1.2.3
 NGINX_VERSION_STRING=$1
 
-# Used to set number of threads during compilation
-NUM_CPUS=`cat /proc/cpuinfo | grep processor | wc -l`
-
 
 mkdir /etc/nginx
 mkdir -p /var/log/nginx
@@ -33,7 +30,7 @@ cd nginx-${NGINX_VERSION_STRING}
     --with-http_ssl_module \
     --with-http_realip_module
 
-make -j ${NUM_CPUS} && make install
+make -j ${FW_NUM_CPUS} && make install
 
 ln -s /usr/local/nginx/logs /var/log/nginx
 
@@ -43,10 +40,9 @@ mkdir /etc/nginx/sites-enabled
 
 cp /usr/local/src/build/nginx/nginx.conf /etc/nginx/nginx.conf
 cp /usr/local/src/build/nginx/restrictions.conf /etc/nginx/global/restrictions.conf
-cp /usr/local/src/build/nginx/nginx.in /etc/init.d/nginx
+cp /usr/local/src/build/nginx/nginx.in /etc/rc.d/nginx
 
-/etc/init.d/nginx start
-chkconfig --set nginx on
+/etc/rc.d/nginx start
 
 echo ""
 echo "nginx ${NGINX_VERSION_STRING} has been installed."

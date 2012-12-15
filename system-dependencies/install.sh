@@ -3,21 +3,20 @@
 # Upgrade all packages
 pacman -Syu
 
-# Install dependencies
-pacman -S \
-    gcc \
-    gcc-c++ \
-    cmake \
-    libtool \
-    libxml2-devel \
-    openssl-devel \
-    mcrypt \
-    libmcrypt-devel \
-    mhash-devel \
-    pcre-devel \
-    zlib-devel \
-    libbz2-devel \
-    libcurl-devel \
-    libjpeg-devel \
-    libpng-devel \
-    libtiff-devel \
+# Install build tools
+pacman -Sy base-devel
+
+# Install other dependencies
+#pacman -S \
+#    libbz2-devel \
+#    libcurl-devel \
+#    libjpeg-devel \
+#    libmcrypt-devel \
+#    libpng-devel \
+#    libtiff-devel \
+#    libxml2-devel \
+#    mcrypt \
+#    mhash-devel \
+#    openssl-devel \
+#    pcre-devel \
+#    zlib-devel
