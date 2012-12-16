@@ -1,29 +1,46 @@
 #!/bin/bash
 
-# Select package manager and install build tools
-if isInstalled apt-cyg ; then
+if ph_is_installed apt-cyg ; then
     PH_PACKAGE_MANAGER='apt-cyg'
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_BUILDTOOLS='apt-cyg install g++ make autoconf automake libtool'
 
-elif isInstalled apt-get ; then
+elif ph_is_installed apt-get ; then
     PH_PACKAGE_MANAGER='apt-get'
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_BUILDTOOLS='apt-get install build-essential'
 
-elif isInstalled brew ; then
+elif ph_is_installed brew ; then
     PH_PACKAGE_MANAGER='brew'
     PH_PACKAGE_MANAGER_ARG='install'
 
-elif isInstalled pacman ; then
+elif ph_is_installed pacman ; then
     PH_PACKAGE_MANAGER='pacman'
     PH_PACKAGE_MANAGER_ARG='-Sy'
     PH_PACKAGE_MANAGER_BUILDTOOLS='pacman -Sy base-devel'
 
-elif isInstalled yum ; then
+elif ph_is_installed yum ; then
     PH_PACKAGE_MANAGER='yum'
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_BUILDTOOLS='yum groupinstall "Development Tools" "Legacy Software Development"'
 else
     echo 'Package manager not found!'
 fi
+
+
+##
+# Installs make, libtool, autoconf etc.
+#
+function ph_install_buildtools {
+    $PH_PACKAGE_MANAGER_BUILDTOOLS
+}
+
+
+##
+# Installs all packages (passed as arguments)
+#
+# e.g. ph_install_packages mcrypt openssl-devel pcre-devel
+#
+function ph_install_packages {
+    $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG $@
+}

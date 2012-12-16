@@ -4,6 +4,7 @@
 # Checks to see if a command is available
 #
 # @return boolean True if the command exists
-function isInstalled() {
+#
+function ph_is_installed() {
     command -v $1 > /dev/null 2>&1 && return 0 || return 1
 }

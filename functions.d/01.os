@@ -4,9 +4,7 @@
 # @sets ${PH_OS}
 #
 function ph_os {
-    local UNAME=`uname`
-
-    case $UNAME in \
+    case `uname` in \
     'Darwin')
         PH_OS='mac'
         PH_OS_FLAVOUR=`uname -r`

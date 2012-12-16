@@ -11,6 +11,7 @@ WHEREAMI=`dirname $0`
 echo "Operating System: ${PH_OS} (${PH_OS_FLAVOUR})"
 echo "    Architecture: ${PH_ARCH}"
 echo "  Number of CPUs: ${PH_NUM_CPUS}"
+echo " Package Manager: ${PH_PACKAGE_MANAGER}"
 
 #read -p "Specify nginx version (e.g. 1.2.3): " NGINX_VERSION_STRING
 
