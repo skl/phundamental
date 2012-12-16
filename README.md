@@ -19,8 +19,7 @@ command for your operating system and environment:
 
 Clone the repo to a directory on your server and execute `install.sh` as root:
 
-    git clone git://github.com/skl/phundamental.git
-    sudo phundamental/install.sh
+    git clone git://github.com/skl/phundamental.git && sudo phundamental/install.sh
 
 ### Other resources
 
