@@ -8,7 +8,7 @@ function ph_os {
 
     case $UNAME in \
     'Darwin')
-        PH_OS='osx'
+        PH_OS='mac'
         PH_OS_FLAVOUR=`uname -r`
     ;;
 

@@ -14,5 +14,5 @@ echo "  Number of CPUs: ${PH_NUM_CPUS}"
 
 #read -p "Specify nginx version (e.g. 1.2.3): " NGINX_VERSION_STRING
 
-#${PH_INSTALL_DIR}/system-dependencies/install.sh
-#${PH_INSTALL_DIR}/nginx/install.sh ${NGINX_VERSION_STRING}
+#${WHEREAMI}/system-dependencies/install.sh
+#${WHEREAMI}/nginx/install.sh ${NGINX_VERSION_STRING}

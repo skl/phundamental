@@ -1,7 +1,5 @@
 #!/bin/bash
 
-PH_INSTALL_DIR="/usr/local/src/phundamental"
-
 cat <<EOA
      _             _                   _       _
  ___| |_ _ _ ___ _| |___ _____ ___ ___| |_ ___| |
@@ -10,9 +8,9 @@ cat <<EOA
 EOA
 echo -n '|_|'
 
-for i in `ls -1 ${PH_INSTALL_DIR}/functions.d`; do
+for i in `ls -1 ${WHEREAMI}/functions.d`; do
     echo -n '.'
-    . ${PH_INSTALL_DIR}/functions.d/$i
+    . ${WHEREAMI}/functions.d/$i
 done
 
 echo -e "Bootstrap complete \n"

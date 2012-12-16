@@ -19,8 +19,6 @@ Clone the repo to a directory on your server:
 
     git clone git://github.com/skl/phundamental.git
 
-Make sure to set the `PH_INSTALL_DIR` path in `phundamental/bootstrap.sh`.
-
 ### Other resources
 
 Expanding your Arch Linux Raspberry Pi root partition to fill the SD card: https://gist.github.com/4301393

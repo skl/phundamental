@@ -10,7 +10,7 @@ function ph_num_cpus {
         PH_NUM_CPUS=`cat /proc/cpuinfo | grep processor | wc -l`
     ;;
 
-    'osx')
+    'mac')
         PH_NUM_CPUS=`system_profiler | grep "Total Number of Cores" | awk '{print $5}'`
     ;;
 
