@@ -1,40 +1,24 @@
-Arch Linux
-==========
+# phundamental
 
-Raspberry Pi Model B
---------------------
+phundamental is a collection of bash scripts designed to help ease the creation of lightweight
+web servers. You're encouraged to delve into the various `install.sh` files and customise them
+to suit your particular server(s) and personal preferences.
 
-### Expanding the root parition of the SD card
+## Prerequisites
 
-Whilst booted into Arch on the pi:
+You'll need git installed before you can clone this repo on your server, pick the appropriate
+command for your operating system and environment:
 
-    fdisk /dev/mmcblk0
-
-Delete the second partition /dev/mmcblk0p2:
-
-    d
-    2
-
-Create a new primary partition and use default sizes prompted. This will then create a partiton that fills the disk:
-
-    n
-    p
-    2
-    enter
-    enter
-
-Save and exit fdisk:
-
-    w
-
-Now reboot. Once rebooted:
-
-    resize2fs /dev/mmcblk0p2
-
-Source:
-http://archlinuxarm.org/forum/viewtopic.php?p=18160&sid=7daca906d1d8b7d3728c1a748ae7f6a3#p18160
-
-### Prerequisites
-
+    apt-get install git
+    brew install git
     pacman -S git
+    yum install git
+    zypper install git
+    
+Clone to a directory on your server, e.g.:
+
     git clone git://github.com/skl/featherweight-pi.git /usr/local/src/featherweight-pi
+
+### Other resources
+
+Expanding your Arch Linux Raspberry Pi root partition to fill the SD card: https://gist.github.com/4301393
