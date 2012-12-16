@@ -1,6 +1,8 @@
 #!/bin/bash
 
 ##
+# Detects the operating system
+#
 # @sets ${PH_OS}
 #
 function ph_os {

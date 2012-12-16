@@ -38,8 +38,9 @@ function ph_install_buildtools {
 
 ##
 # Installs all packages (passed as arguments)
-#
 # e.g. ph_install_packages mcrypt openssl-devel pcre-devel
+#
+# @arguments Space separated list of packages to install
 #
 function ph_install_packages {
     $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG $@

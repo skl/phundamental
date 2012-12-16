@@ -1,6 +1,8 @@
 #!/bin/bash
 
 ##
+# Detects the number of CPUs
+#
 # @depends ${PH_OS}
 # @sets    ${PH_NUM_CPUS}
 #

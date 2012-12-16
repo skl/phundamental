@@ -13,7 +13,9 @@ echo "    Architecture: ${PH_ARCH}"
 echo "  Number of CPUs: ${PH_NUM_CPUS}"
 echo " Package Manager: ${PH_PACKAGE_MANAGER}"
 
-#read -p "Specify nginx version (e.g. 1.2.3): " NGINX_VERSION_STRING
-
-. ${WHEREAMI}/system-dependencies/install.sh
-#${WHEREAMI}/nginx/install.sh ${NGINX_VERSION_STRING}
+for i in \
+    'system-dependencies' \
+    'nginx'
+    do
+        . ${WHEREAMI}/$i/install.sh
+done

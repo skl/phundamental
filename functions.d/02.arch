@@ -1,6 +1,8 @@
 #!/bin/bash
 
 ##
+# Detects the CPU architecture
+#
 # @sets ${PH_ARCH}
 #
 function ph_arch {

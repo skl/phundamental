@@ -1,10 +1,21 @@
 #!/bin/bash
 
 ##
-# Checks to see if a command is available
+# Checks to see if a command ($1) is available
 #
+# @param  string  Command to check
 # @return boolean True if the command exists
 #
 function ph_is_installed() {
     command -v $1 > /dev/null 2>&1 && return 0 || return 1
+}
+
+
+##
+# Creates the directory ($1) if it doesn't already exist
+#
+# @param string Directory to create
+#
+function ph_mkdir() {
+    [ -d $1 ] || mkdir -p $1
 }

@@ -6,8 +6,6 @@ if [ "${PH_OS}" != "mac" ] ; then
     [ "$REPLY" == "y" ] && ph_install_buildtools
 fi
 
-exit
-
 # Install other dependencies
 # @todo move dependencies to relevant components
 #ph_install_packages pcre-devel\
