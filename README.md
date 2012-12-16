@@ -14,10 +14,12 @@ command for your operating system and environment:
     pacman -S git
     yum install git
     zypper install git
-    
-Clone to a directory on your server, e.g.:
 
-    git clone git://github.com/skl/featherweight-pi.git /usr/local/src/featherweight-pi
+Clone the repo to a directory on your server:
+
+    git clone git://github.com/skl/phundamental.git
+
+Make sure to set the `PH_INSTALL_DIR` path in `phundamental/bootstrap.sh`.
 
 ### Other resources
 

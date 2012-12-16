@@ -17,7 +17,7 @@ function ph_os {
 
         if [ -f /etc/lsb-release ]; then
             . /etc/lsb-release
-            $PH_OS_FLAVOUR=`echo ${DISTRIB_ID} | awk '{print tolower($0)}'`
+            PH_OS_FLAVOUR=`echo ${DISTRIB_ID} | awk '{print tolower($0)}'`
         elif [ -f /etc/arch-release ]; then
             PH_OS_FLAVOUR='arch'
         else
