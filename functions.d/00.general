@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Checks to see if a program is available in the $PATH
+function isInstalled() {
+    [ -x "$(which $1)" ]
+}

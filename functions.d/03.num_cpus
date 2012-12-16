@@ -15,8 +15,8 @@ function ph_num_cpus {
     ;;
 
     *)
-        echo "ph_num_cpus(): OS not recognised"
-        exit
+        echo "ph_num_cpus(): OS not recognised, assuming 1 CPU"
+        PH_NUM_CPUS='1'
     esac
 }
 
