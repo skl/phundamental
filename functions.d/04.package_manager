@@ -23,6 +23,12 @@ elif ph_is_installed yum ; then
     PH_PACKAGE_MANAGER='yum'
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_BUILDTOOLS='yum groupinstall "Development Tools" "Legacy Software Development"'
+
+elif ph_is_installed zypper ; then
+    PH_PACKAGE_MANAGER='zypper'
+    PH_PACKAGE_MANAGER_ARG='install'
+    PH_PACKAGE_MANAGER_BUILDTOOLS='zypper install rpmdevtools gcc gcc-c++ make'
+
 else
     echo 'Package manager not found!'
 fi
@@ -43,5 +49,20 @@ function ph_install_buildtools {
 # @arguments Space separated list of packages to install
 #
 function ph_install_packages {
+    local i=0
+    declare -a PH_PACKAGES
+
+    for PACKAGE in "$@"; do
+        PACKAGE_MAP_PACKAGE_NAME=`grep "^${PACKAGE}:${PH_PACKAGE_MANAGER}" ${WHEREAMI}/conf.d/package_map.conf | cut -d: -f3`
+
+        if [ -z "${PACKAGE_MAP_PACKAGE_NAME}" ]; then
+            echo "ph_install_packages() - Package '${PACKAGE}' map not found for ${PH_PACKAGE_MANAGER} in conf.d/package_map.conf!"
+            exit
+        fi
+
+        PH_PACKAGES[$i]="${PACKAGE_MAP_PACKAGE_NAME}"
+        ((i++))
+    done
+
     $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG $@
 }

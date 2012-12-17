@@ -6,13 +6,14 @@
 
 [ -z "$1" ] && read -p "Specify nginx version (e.g. 1.2.6): " NGINX_VERSION_STRING
 
-exit
-
 # e.g. 1.2.3
 NGINX_VERSION_STRING=$1
 
 read -p "Install nginx dependencies? [y/n]: " REPLY
-[ "$REPLY" == "y" ] && ph_install_packages pcre-devel openssl-devel
+[ "$REPLY" == "y" ] && ph_install_packages pcre openssl
+
+echo "Installation aborted: Not implemented"
+exit
 
 ph_mkdir /etc/nginx
 ph_mkdir /var/log/nginx
