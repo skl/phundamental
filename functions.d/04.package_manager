@@ -44,19 +44,27 @@ function ph_install_buildtools {
 
 ##
 # Installs all packages (passed as arguments)
-# e.g. ph_install_packages mcrypt openssl-devel pcre-devel
+# e.g. ph_install_packages mcrypt openssl pcre
 #
 # @arguments Space separated list of packages to install
 #
 function ph_install_packages {
     local i=0
+    local CONF_PATH="${WHEREAMI}/conf.d/package_map.conf"
     declare -a PH_PACKAGES
 
     for PACKAGE in "$@"; do
-        PACKAGE_MAP_PACKAGE_NAME=`grep "^${PACKAGE}:${PH_PACKAGE_MANAGER}" ${WHEREAMI}/conf.d/package_map.conf | cut -d: -f3`
+        # Search conf file for entry, take 3rd value on line as package name
+        PACKAGE_MAP_PACKAGE_NAME=`grep "^${PACKAGE}:${PH_PACKAGE_MANAGER}" ${CONF_PATH} | cut -d: -f3`
 
+        # Catch empty result of above search
         if [ -z "${PACKAGE_MAP_PACKAGE_NAME}" ]; then
-            echo "ph_install_packages() - Package '${PACKAGE}' map not found for ${PH_PACKAGE_MANAGER} in conf.d/package_map.conf!"
+            echo "ph_install_packages() - Package map not found for '${PACKAGE}:${PH_PACKAGE_MANAGER}' in ${CONF_PATH}!"
+            exit
+
+        # Count number of lines returned from above search, error if more than one
+        elif [ `echo "${PACKAGE_MAP_PACKAGE_NAME}" | wc -l` -gt 1 ]; then
+            echo "ph_install_packages() - Duplicate entry found for '${PACKAGE}:${PH_PACKAGE_MANAGER}' in ${CONF_PATH}!"
             exit
         fi
 
