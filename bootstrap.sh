@@ -8,9 +8,9 @@ cat <<EOA
 EOA
 echo -n '|_|'
 
-for i in `ls -1 ${WHEREAMI}/functions.d`; do
+for i in `ls -1 ${PH_INSTALL_DIR}/functions.d`; do
     echo -n '.'
-    . ${WHEREAMI}/functions.d/$i
+    . ${PH_INSTALL_DIR}/functions.d/$i
 done
 
 echo -e "Bootstrap complete \n"
