@@ -14,3 +14,8 @@ for i in `ls -1 ${PH_INSTALL_DIR}/functions.d`; do
 done
 
 echo -e "Bootstrap complete \n"
+
+echo "Operating System: ${PH_OS} (${PH_OS_FLAVOUR})"
+echo "    Architecture: ${PH_ARCH}"
+echo "  Number of CPUs: ${PH_NUM_CPUS}"
+echo " Package Manager: ${PH_PACKAGE_MANAGER}"

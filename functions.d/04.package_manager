@@ -72,5 +72,14 @@ function ph_install_packages {
         ((i++))
     done
 
-    $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]}
+    # Homebrew doesn't like root
+    if [ 'brew' == ${PH_PACKAGE_MANAGER} ]; then
+        if [ -z ${PH_ORIGINAL_USER} ]; then
+            read -p 'Homebrew requires your username please (not root): ' PH_ORIGINAL_USER
+        fi
+        sudo -u ${PH_ORIGINAL_USER} $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]}
+
+    else
+        $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]}
+    fi
 }
