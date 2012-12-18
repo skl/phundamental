@@ -83,7 +83,7 @@ case "${PH_OS}" in \
 
     *)
         echo "nginx startup script not implemented for this OS... starting manually"
-        nginx
+        /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
 esac
 
 echo ""
