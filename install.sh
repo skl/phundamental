@@ -25,9 +25,9 @@ echo "    Architecture: ${PH_ARCH}"
 echo "  Number of CPUs: ${PH_NUM_CPUS}"
 echo " Package Manager: ${PH_PACKAGE_MANAGER}"
 
-for i in \
-    'system-dependencies' \
-    'nginx'
-    do
-        . ${PH_INSTALL_DIR}/$i/install.sh
+for i in `ls -1 ${PH_INSTALL_DIR}/modules`; do
+    INSTALLER=${PH_INSTALL_DIR}/modules/$i/install.sh
+
+    # Install module if there is an executable install.sh
+    [ -x $INSTALLER ] && . ${INSTALLER}
 done

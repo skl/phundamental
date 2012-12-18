@@ -54,10 +54,10 @@ fi
 
 ./configure ${CONFIGURE_ARGS[@]} && make -j ${PH_NUM_CPUS} && make install
 
-cp ${PH_INSTALL_DIR}/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
-cp ${PH_INSTALL_DIR}/nginx/restrictions.conf /etc/nginx-${NGINX_VERSION_STRING}/global/restrictions.conf
-cp ${PH_INSTALL_DIR}/nginx/localhost.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost
-cp ${PH_INSTALL_DIR}/nginx/index.html /var/www/localhost/public/index.html
+cp ${PH_INSTALL_DIR}/modules/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
+cp ${PH_INSTALL_DIR}/modules/nginx/restrictions.conf /etc/nginx-${NGINX_VERSION_STRING}/global/restrictions.conf
+cp ${PH_INSTALL_DIR}/modules/nginx/localhost.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost
+cp ${PH_INSTALL_DIR}/modules/nginx/index.html /var/www/localhost/public/index.html
 
 if $NGINX_OVERWRITE_SYMLINKS ; then
     ph_symlink /etc/nginx-${NGINX_VERSION_STRING} /etc/nginx
@@ -71,12 +71,12 @@ case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
             "arch")
-            cp ${PH_INSTALL_DIR}/nginx/nginx.in /etc/rc.d/nginx-${NGINX_VERSION_STRING}
+            cp ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/rc.d/nginx-${NGINX_VERSION_STRING}
             /etc/rc.d/nginx-${NGINX_VERSION_STRING} start
             ;;
 
             *)
-            cp ${PH_INSTALL_DIR}/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING}
+            cp ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING}
             /etc/init.d/nginx-${NGINX_VERSION_STRING} start
         esac
     ;;
