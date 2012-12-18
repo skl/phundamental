@@ -72,5 +72,5 @@ function ph_install_packages {
         ((i++))
     done
 
-    $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG $@
+    $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]}
 }
