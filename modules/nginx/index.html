@@ -1,10 +1,64 @@
 <!doctype html>
-<html lang="en">
-    <head>
-        <title>Welcome to phundamental nginx!</title>
-    </head>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Phundamental by skl</title>
+    <link rel="stylesheet" href="http://skl.github.com/phundamental/stylesheets/styles.css">
+    <link rel="stylesheet" href="http://skl.github.com/phundamental/stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="http://skl.github.com/phundamental/javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="http://skl.github.com/phundamental/stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <body>
-        <h1>Welcome to phundamental nginx!</h1>
-    </body>
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/skl/phundamental">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/skl/phundamental/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/skl/phundamental/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Phundamental</h1>
+          <p>Lightweight Nginx, MariaDB and PHP-FPM Stack</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/skl">skl</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h2>Congratulations!</h2>
+
+        <p>Your phundamental nginx ##NGINX_VERSION_STRING## installation is complete. Here are the directories that were created:</p>
+
+        <dl>
+            <dt>Source code</dt>
+            <dd>/usr/local/src/nginx-##NGINX_VERSION_STRING##</dd>
+
+            <dt>Configuration files</dt>
+            <dd>/etc/nginx-##NGINX_VERSION_STRING##</dd>
+
+            <dt>Log files</dt>
+            <dd>/var/log/nginx-##NGINX_VERSION_STRING##</dd>
+
+            <dt>Localhost document root example (this page)</dt>
+            <dd>/var/www/localhost/public</dd>
+        </dl>
+
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+  </body>
 </html>

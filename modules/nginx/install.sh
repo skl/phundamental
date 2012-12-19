@@ -57,7 +57,9 @@ fi
 cp ${PH_INSTALL_DIR}/modules/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
 cp ${PH_INSTALL_DIR}/modules/nginx/restrictions.conf /etc/nginx-${NGINX_VERSION_STRING}/global/restrictions.conf
 cp ${PH_INSTALL_DIR}/modules/nginx/localhost.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost
-cp ${PH_INSTALL_DIR}/modules/nginx/index.html /var/www/localhost/public/index.html
+
+ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/index.html /var/www/localhost/public/index.html\
+    "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
 
 if $NGINX_OVERWRITE_SYMLINKS ; then
     ph_symlink /etc/nginx-${NGINX_VERSION_STRING} /etc/nginx
@@ -87,4 +89,7 @@ case "${PH_OS}" in \
 esac
 
 echo ""
-echo "nginx ${NGINX_VERSION_STRING} has been installed."
+echo "nginx ${NGINX_VERSION_STRING} has been installed!"
+echo "Check out http://localhost/"
+
+ph_is_installed open && open "http://localhost/"
