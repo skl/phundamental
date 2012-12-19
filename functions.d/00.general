@@ -27,20 +27,20 @@ function ph_mkdirs() {
 # Force ovewrite symlink on filesystem
 #
 function ph_symlink() {
-    local REAL="$1"
-    local VIRTUAL="$2"
+    local SOURCE="$1"
+    local TARGET="$2"
 
-    if [ -f ${VIRTUAL} ] && [ ! -L ${VIRTUAL} ]; then
-        echo "ph_symlink() - Aborting! - Real file already exists where you're trying to create a symlink: ${VIRTUAL}"
+    if [ -f ${TARGET} ] || [ -d ${TARGET} ] && [ ! -L ${TARGET} ]; then
+        echo "ph_symlink() - Aborting! - Real file already exists where you're trying to create a symlink: ${TARGET}"
         return 1
     else
-        rm -f ${VIRTUAL}
+        rm -f ${TARGET}
     fi
 
-    echo -n "Creating symlink ${VIRTUAL} -> ${REAL} ... "
-    ln -s ${REAL} ${VIRTUAL}
+    echo -n "Creating symlink ${TARGET} -> ${SOURCE} ... "
+    ln -s ${SOURCE} ${TARGET}
 
-    if [ -L ${VIRTUAL} ]; then
+    if [ -L ${TARGET} ]; then
         echo "success!";
         return 0
     else

@@ -45,7 +45,7 @@ CONFIGURE_ARGS=("--prefix=/usr/local/nginx-${NGINX_VERSION_STRING}" \
     "--with-http_ssl_module" \
     "--with-http_realip_module");
 
-if [[ "${PH_OS}" == "mac" ]]; then
+if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
     # Add homebrew include directories
     CONFIGURE_ARGS=("${CONFIGURE_ARGS[@]}" \
         "--with-cc-opt=-I/usr/local/include" \

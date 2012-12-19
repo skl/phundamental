@@ -31,6 +31,7 @@ elif ph_is_installed zypper ; then
 
 else
     echo 'Package manager not found!'
+    exit 1
 fi
 
 
