@@ -21,6 +21,13 @@ Clone the repo to a directory on your server and execute `install.sh` as root:
 
     git clone https://github.com/skl/phundamental.git && sudo phundamental/install.sh
 
+## Upcoming modules
+
+* PHP-FPM
+* MariaDB
+* node + npm
+* postfix (MariaDB backend) + roundcube client
+
 ### Other resources
 
 Expanding your Arch Linux Raspberry Pi root partition to fill the SD card: https://gist.github.com/4301393
