@@ -47,6 +47,9 @@ if $NODEJS_OVERWRITE_SYMLINKS ; then
     ph_symlink /etc/nodejs-${NODEJS_VERSION_STRING} /etc/nodejs
     ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING} /usr/local/nodejs
     ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING}/logs /var/log/nodejs
+    ph_symlink /usr/local/nodejs/bin/node /usr/local/bin/node
+    ph_symlink /usr/local/nodejs/bin/node-waf /usr/local/bin/node-waf
+    ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm
 fi
 
 
