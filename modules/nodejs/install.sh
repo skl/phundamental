@@ -30,7 +30,7 @@ if [ ! -f node-v${NODEJS_VERSION_STRING}.tar.gz ]; then
 fi
 
 tar xzf node-v${NODEJS_VERSION_STRING}.tar.gz
-cd node-v-${NODEJS_VERSION_STRING}
+cd node-v${NODEJS_VERSION_STRING}
 
 CONFIGURE_ARGS=("--prefix=/usr/local/nodejs-${NODEJS_VERSION_STRING}");
 
