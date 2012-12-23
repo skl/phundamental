@@ -31,19 +31,17 @@ function ph_assigngroup_mac() {
     local USERNAME=$2
 
     # Return early if membership already exists
-    id -Gn ${USERNAME} | grep "${GROUPNAME}" >/dev/null && return 0
+    dscl . -read /Groups/${GROUPNAME} | grep ${USERNAME} >/dev/null && return 0
 
     dscl . -append /Groups/${GROUPNAME} GroupMembership ${USERNAME}
 }
 
-function ph_createuser_linux() {
-}
-
-function ph_creategroup_linux() {
-}
+#function ph_createuser_linux() {}
+#function ph_creategroup_linux() {}
 
 function ph_assigngroup_linux() {
     # Return early if membership already exists
+    # This might not work for mysql:mysql ??
     id -Gn ${USERNAME} | grep "${GROUPNAME}" >/dev/null && return 0
 }
 

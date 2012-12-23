@@ -20,9 +20,9 @@ ph_mkdirs \
     /var/run/mysqld \
     /var/log/mysql-${MARIADB_VERSION_STRING}
 
-# TODO make portable
-#groupadd mysql
-#useradd -d /usr/local/mysql -s /bin/false -g mysql
+ph_creategroup mysql
+ph_createuser mysql
+ph_assigngroup mysql mysql
 
 cd /usr/local/src
 
@@ -40,6 +40,11 @@ cd mariadb-${MARIADB_VERSION_STRING}
 
 # Compile with recommended settings
 [ "${PH_ARCH}" == "64bit" ] && BUILD/compile-pentium64-max || BUILD/compile-pentium-max
+
+chown -R mysql /usr/local/mysql
+
+cd /usr/local/mysql
+scripts/mysql_install_db --user=mysql
 
 if $MARIADB_OVERWRITE_SYMLINKS ; then
     for i in `ls -1 /usr/local/mysql/bin`; do
@@ -62,7 +67,8 @@ case "${PH_OS}" in \
     ;;
 
     *)
-        echo "mariadb startup script not implemented for this OS..."
+        echo "mariadb startup script not implemented for this OS... starting manually"
+        bin/mysqld_safe --user=mysql >/dev/null &
 esac
 
 echo ""
