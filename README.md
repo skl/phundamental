@@ -24,8 +24,8 @@ Clone the repo to a directory on your server and execute `install.sh` as root:
 ## Upcoming modules
 
 * PHP-FPM
-* MariaDB
-* node + npm
+* ~~MariaDB~~
+* ~~node + npm~~
 * postfix (MariaDB backend) + roundcube client
 
 ### Other resources
