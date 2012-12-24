@@ -51,11 +51,11 @@ if $MARIADB_OVERWRITE_SYMLINKS ; then
     ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING} /usr/local/mysql
 
     for i in `ls -1 /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin`; do
-        ph_symlink /usr/local/mariadb-${MARIADB_VESION_STRING}/bin/$i /usr/local/bin/$i
+        ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/$i /usr/local/bin/$i
     done
 fi
 
-cp my-medium.cnf /etc/my.cnf
+cp support-files/my-medium.cnf /etc/my.cnf
 
 ph_search_and_replace "#skip-networking" "skip-networking" /etc/my.cnf
 ph_search_and_replace "^socket" "#socket" /etc/my.cnf
