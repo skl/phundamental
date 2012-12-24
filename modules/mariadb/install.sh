@@ -8,7 +8,7 @@ MARIADB_VERSION_STRING=$1
 [ -z "$1" ] && read -p "Specify mariadb version (e.g. 5.5.28): " MARIADB_VERSION_STRING
 
 read -p "Install mariadb dependencies? [y/n]: " REPLY
-[ "$REPLY" == "y" ] && ph_install_packages openssl cmake bison
+[ "$REPLY" == "y" ] && ph_install_packages openssl cmake bison m4
 
 read -p "Overwrite existing symlinks? [y/n]: " REPLY
 [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
