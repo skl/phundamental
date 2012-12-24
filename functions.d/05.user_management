@@ -51,6 +51,8 @@ function ph_creategroup_linux() {
 
     # Return early if group already exists
     cat /etc/group | grep "^${GROUPNAME}" >/dev/null && return 0
+
+    groupadd -r mysql
 }
 
 function ph_assigngroup_linux() {

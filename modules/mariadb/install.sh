@@ -15,10 +15,7 @@ read -p "Overwrite existing symlinks? [y/n]: " REPLY
 
 ph_mkdirs \
     /usr/local/src \
-    /etc/mysql-${MARIADB_VERSION_STRING} \
-    /usr/local/mysql \
-    /var/run/mysqld \
-    /var/log/mysql-${MARIADB_VERSION_STRING}
+    /usr/local/mysql/data
 
 ph_creategroup mysql
 ph_createuser mysql
