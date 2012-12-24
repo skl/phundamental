@@ -14,8 +14,7 @@ read -p "Overwrite existing symlinks? [y/n]: " REPLY
 [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
 
 ph_mkdirs \
-    /usr/local/src \
-    /usr/local/mysql/data
+    /usr/local/src
 
 ph_creategroup mysql
 ph_createuser mysql
@@ -37,22 +36,30 @@ cd mariadb-${MARIADB_VERSION_STRING}
 
 make clean
 cmake . \
-    -DCMAKE_INSTALL_PREFIX=/usr/local/mysql \
-    -DMYSQL_DATADIR=/usr/local/mysql/data
+    -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb-${MARIADB_VERSION_STRING} \
+    -DMYSQL_DATADIR=/usr/local/mariadb-${MARIADB_VERSION_STRING}/data
 
 make -j ${PH_NUM_CPUS} && make install
 
-chown -R mysql:mysql /usr/local/mysql
-chmod -R 0755 /usr/local/mysql/data
+chown -R mysql:mysql /usr/local/mariadb-${MARIADB_VERSION_STRING}
+chmod -R 0755 /usr/local/mariadb-${MARIADB_VERSION_STRING}/data
 
-cd /usr/local/mysql
+cd /usr/local/mariadb-${MARIADB_VERSION_STRING}
 scripts/mysql_install_db --user=mysql
 
 if $MARIADB_OVERWRITE_SYMLINKS ; then
-    for i in `ls -1 /usr/local/mysql/bin`; do
-        ph_symlink /usr/local/mysql/bin/$i /usr/local/bin/$i
+    ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING} /usr/local/mysql
+
+    for i in `ls -1 /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin`; do
+        ph_symlink /usr/local/mariadb-${MARIADB_VESION_STRING}/bin/$i /usr/local/bin/$i
     done
 fi
+
+cp my-medium.cnf /etc/my.cnf
+
+ph_search_and_replace "#skip-networking" "skip-networking" /etc/my.cnf
+ph_search_and_replace "^socket" "#socket" /etc/my.cnf
+ph_search_and_replace "^#innodb" "innodb" /etc/my.cnf
 
 cd /usr/local/mysql/lib/plugin/
 for file in ha_*.so
@@ -80,7 +87,7 @@ case "${PH_OS}" in \
 
             "suse")
             ph_symlink /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
-            i/etc/init.d/mysql start
+            /etc/init.d/mysql start
 
             chkconfig --level 3 mysql on
             ;;
@@ -93,7 +100,7 @@ case "${PH_OS}" in \
 
     *)
         echo "mariadb startup script not implemented for this OS... starting manually"
-        bin/mysqld_safe --user=mysql >/dev/null &
+        /usr/local/mysql/bin/mysqld_safe --user=mysql >/dev/null &
 esac
 
 echo ""
