@@ -41,7 +41,8 @@ cd mariadb-${MARIADB_VERSION_STRING}
 # Compile with recommended settings
 [ "${PH_ARCH}" == "64bit" ] && BUILD/compile-pentium64-max || BUILD/compile-pentium-max
 
-chown -R mysql /usr/local/mysql
+chown -R mysql:mysql /usr/local/mysql
+chmod -R 0755 /usr/local/mysql/data
 
 cd /usr/local/mysql
 scripts/mysql_install_db --user=mysql
@@ -52,17 +53,40 @@ if $MARIADB_OVERWRITE_SYMLINKS ; then
     done
 fi
 
+cd /usr/local/mysql/lib/plugin/
+for file in ha_*.so
+do
+    plugin_name=`echo $file | sed 's/ha_//g' | sed 's/\.so//g' | sed 's/_plugin//g'`
+    case $plugin_name in
+        "example"|"federatedx"|"xtradb")
+            echo "Skipping install of MariaDB plugin $plugin_name"
+            ;;
+
+        *)
+            echo "Installing MariaDB plugin $plugin_name"
+            mysql -u root -e "install plugin $plugin_name soname '$file';"
+            ;;
+    esac
+done
+
 case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
             "arch")
-            #cp ${PH_INSTALL_DIR}/modules/mariadb/mariadb.in /etc/rc.d/mariadb-${MARIADB_VERSION_STRING}
-            #/etc/rc.d/mariadb-${MARIADB_VERSION_STRING} start
+            ph_symlink /usr/local/mysql/support-files/mysql.server /etc/rc.d/mysql
+            /etc/rc.d/mysql start
+            ;;
+
+            "suse")
+                ph_symlink /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
+                i/etc/init.d/mysql start
+
+                chkconfig --level 3 mysql on
             ;;
 
             *)
-            #cp ${PH_INSTALL_DIR}/modules/mariadb/mariadb.in /etc/init.d/mariadb-${MARIADB_VERSION_STRING}
-            #/etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
+            ph_symlink /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
+            /etc/init.d/mysql start
         esac
     ;;
 
