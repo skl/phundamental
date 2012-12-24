@@ -8,7 +8,7 @@ MARIADB_VERSION_STRING=$1
 [ -z "$1" ] && read -p "Specify mariadb version (e.g. 5.5.28): " MARIADB_VERSION_STRING
 
 read -p "Install mariadb dependencies? [y/n]: " REPLY
-[ "$REPLY" == "y" ] && ph_install_packages openssl cmake
+[ "$REPLY" == "y" ] && ph_install_packages openssl cmake bison
 
 read -p "Overwrite existing symlinks? [y/n]: " REPLY
 [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
@@ -35,8 +35,12 @@ fi
 tar xzf mariadb-${MARIADB_VERSION_STRING}.tar.gz
 cd mariadb-${MARIADB_VERSION_STRING}
 
-# Compile with recommended settings
-[ "${PH_ARCH}" == "64bit" ] && BUILD/compile-pentium64-max || BUILD/compile-pentium-max
+make clean
+cmake . \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/mysql \
+    -DMYSQL_DATADIR=/usr/local/mysql/data
+
+make -j ${PH_NUM_CPUS} && make install
 
 chown -R mysql:mysql /usr/local/mysql
 chmod -R 0755 /usr/local/mysql/data
