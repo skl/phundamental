@@ -36,13 +36,31 @@ function ph_assigngroup_mac() {
     dscl . -append /Groups/${GROUPNAME} GroupMembership ${USERNAME}
 }
 
-#function ph_createuser_linux() {}
-#function ph_creategroup_linux() {}
+function ph_createuser_linux() {
+    local USERNAME=$1
+
+    # Return early if user already exists
+    id -u ${USERNAME} 2>/dev/null && return 0
+
+    # Create system user
+    useradd -r ${USERNAME}
+}
+
+function ph_creategroup_linux() {
+    local GROUPNAME=$1
+
+    # Return early if group already exists
+    cat /etc/group | grep "^${GROUPNAME}" >/dev/null && return 0
+}
 
 function ph_assigngroup_linux() {
+    local GROUPNAME=$1
+    local USERNAME=$2
+
     # Return early if membership already exists
-    # This might not work for mysql:mysql ??
-    id -Gn ${USERNAME} | grep "${GROUPNAME}" >/dev/null && return 0
+    cat /etc/group | grep "^${GROUPNAME}" | cut -d: -f4 | grep ${USERNAME} >/dev/null && return 0
+
+    usermod -G ${GROUPNAME} ${USERNAME}
 }
 
 function ph_createuser() {
