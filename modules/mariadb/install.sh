@@ -75,10 +75,10 @@ case "${PH_OS}" in \
             ;;
 
             "suse")
-                ph_symlink /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
-                i/etc/init.d/mysql start
+            ph_symlink /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
+            i/etc/init.d/mysql start
 
-                chkconfig --level 3 mysql on
+            chkconfig --level 3 mysql on
             ;;
 
             *)
