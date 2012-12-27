@@ -1,0 +1,3 @@
+[submodule "modules/oic"]
+	path = modules/oic
+	url = git://github.com/skl/phundamental-oic.git
