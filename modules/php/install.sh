@@ -164,13 +164,13 @@ fi
 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/www.example.com /etc/nginx/sites-available/www.example.com\
     "##PHP_VRESION_STRING##" "${PHP_VERSION_STRING}"
 
-ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php.ini /etc/php-${PHP_VERSION_INTEGER}/php.ini\
+ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php.ini /etc/php-${PHP_VERSION_STRING}/php.ini\
     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
-ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf /etc/php-${PHP_VERSION_INTEGER}/php-fpm.conf\
+ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf /etc/php-${PHP_VERSION_STRING}/php-fpm.conf\
     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
-ph_cp_inject ${PH_INSTALL_DIR}/modules/php/nginx.conf /etc/nginx/global/php-${PHP_VERSION_INTEGER}.conf\
+ph_cp_inject ${PH_INSTALL_DIR}/modules/php/nginx.conf /etc/nginx/global/php-${PHP_VERSION_STRING}.conf\
     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php.ini
