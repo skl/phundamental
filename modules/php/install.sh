@@ -177,6 +177,20 @@ ph_search_and_replace "##PHP_EXTENSION_API##" "${PHP_EXTENSION_API}" /etc/php-${
 /usr/local/php-${PHP_VERSION_STRING}/bin/pear config-set php_ini /etc/php-${PHP_VERSION_STRING}/php.ini
 /usr/local/php-${PHP_VERSION_STRING}/bin/pear config-set preferred_state beta
 
+read -p "Install APC and xdebug? [y/n] " REPLY
+if [ "$REPLY" == "y" ]; then
+    # PECL installs need to be done one at a time so that it doesn't mess up php.ini
+    PHP_BIN_DIR=/usr/local/php-${PHP_VERSION_STRING}/bin
+    ${PHP_BIN_DIR}/pecl install --alldeps apc
+    ${PHP_BIN_DIR}/pecl install --alldeps xdebug
+
+    # Fix xdebug.so ini directive
+    ph_search_and_replace\
+        "extension=\"xdebug.so\""\
+        "zend_extension=\/usr\/local\/php-${PHP_VERSION_STRING}\/lib\/php\/extensions\/no-debug-non-zts-${PHP_EXTENSION_API}\/xdebug.so"\
+        /etc/php-${PHP_VERSION_STRING}/php.ini
+fi
+
 case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
