@@ -22,6 +22,10 @@ ph_mkdirs \
     /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled \
     /var/www/localhost/public
 
+ph_creategroup nobody
+ph_createuser nobody
+ph_assigngroup nobody nobody
+
 cd /usr/local/src
 
 if [ ! -f nginx-${NGINX_VERSION_STRING}.tar.gz ]; then
