@@ -40,6 +40,7 @@ read -p "Install PHP dependencies? [y/n]: " REPLY
     openldap\
     openssl\
     pcre\
+    png\
     re2c\
     zlib
 
