@@ -27,7 +27,7 @@ if [ ! -f mariadb-${MARIADB_VERSION_STRING}.tar.gz ]; then
 
     if [ ! -f mariadb-${MARIADB_VERSION_STRING}.tar.gz ]; then
         echo "mariadb source download failed!"
-        return 1
+        exit 1
     fi
 fi
 
@@ -45,6 +45,12 @@ chown -R mysql:mysql /usr/local/mariadb-${MARIADB_VERSION_STRING}
 chmod -R 0755 /usr/local/mariadb-${MARIADB_VERSION_STRING}/data
 
 cd /usr/local/mariadb-${MARIADB_VERSION_STRING}
+cp support-files/my-medium.cnf /etc/my.cnf
+
+ph_search_and_replace "#skip-networking" "skip-networking" /etc/my.cnf
+ph_search_and_replace "^socket" "#socket" /etc/my.cnf
+ph_search_and_replace "^#innodb" "innodb" /etc/my.cnf
+
 scripts/mysql_install_db --user=mysql
 
 if $MARIADB_OVERWRITE_SYMLINKS ; then
@@ -54,12 +60,6 @@ if $MARIADB_OVERWRITE_SYMLINKS ; then
         ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/$i /usr/local/bin/$i
     done
 fi
-
-cp support-files/my-medium.cnf /etc/my.cnf
-
-ph_search_and_replace "#skip-networking" "skip-networking" /etc/my.cnf
-ph_search_and_replace "^socket" "#socket" /etc/my.cnf
-ph_search_and_replace "^#innodb" "innodb" /etc/my.cnf
 
 cd /usr/local/mysql/lib/plugin/
 for file in ha_*.so
