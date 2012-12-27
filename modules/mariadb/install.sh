@@ -87,19 +87,5 @@ case "${PH_OS}" in \
         /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysqld_safe --user=mysql >/dev/null &
 esac
 
-cd /usr/local/mariadb-${MARIADB_VERSION_STRING}/lib/plugin
-for file in ha_*.so
-do
-    plugin_name=`echo $file | sed 's/ha_//g' | sed 's/\.so//g' | sed 's/_plugin//g'`
-    case $plugin_name in
-        "example"|"federatedx"|"xtradb") ;;
-
-        *)
-        echo "Installing MariaDB plugin $plugin_name"
-        /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysql -u root -e "install plugin $plugin_name soname '$file';"
-        ;;
-    esac
-done
-
 echo ""
 echo "mariadb ${MARIADB_VERSION_STRING} has been installed!"
