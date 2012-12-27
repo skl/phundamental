@@ -71,13 +71,13 @@ function ph_install_packages {
 
         # Detect packages that are already installed. This also supports
         # multiple entries such as "openssl-devel openssl"
-        for j in `echo ${PACKAGE_MAP_PACKAGE_NAME} | tr " " "\n"`; do
-            if ph_is_installed ${PACKAGE_MAP_PACKAGE_NAME} ; then
-                echo "${PACKAGE_MAP_PACKAGE_NAME} is already installed at `which ${PACKAGE_MAP_PACKAGE_NAME}`"
-                read -p "Would you still like to tell '${PH_PACKAGE_MANAGER}' to install this package? [y/n] " REPLY
+        for j in `echo "${PACKAGE_MAP_PACKAGE_NAME}" | tr " " "\n"`; do
+            if ph_is_installed $j ; then
+                echo "$j is already installed at `which $j`"
+                read -p "Would you still like to tell ${PH_PACKAGE_MANAGER} to install this package? [y/n] " REPLY
 
                 if [ "$REPLY" == "y" ]; then
-                    PH_PACKAGES[$i]="${PACKAGE_MAP_PACKAGE_NAME}"
+                    PH_PACKAGES[$i]="$j"
                     ((i++))
                 fi
             fi
