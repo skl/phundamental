@@ -13,6 +13,12 @@ function ph_createuser_mac() {
     dscl . -create /Users/${USERNAME} UniqueID "${NEW_USER_ID}"
 }
 
+function ph_deleteuser_mac() {
+    local USERNAME=$1
+
+    dscl . -delete /Users/${USERNAME}
+}
+
 function ph_creategroup_mac() {
     local GROUPNAME=$1
 
@@ -24,6 +30,12 @@ function ph_creategroup_mac() {
 
     dscl . -create /Groups/${GROUPNAME}
     dscl . -create /Groups/${GROUPNAME} PrimaryGroupID ${NEW_GROUP_ID}
+}
+
+function ph_deletegroup_mac() {
+    local GROUPNAME=$1
+
+    dscl . -delete /Groups/${GROUPNAME}
 }
 
 function ph_assigngroup_mac() {
@@ -46,6 +58,12 @@ function ph_createuser_linux() {
     useradd -r ${USERNAME}
 }
 
+function ph_deleteuser_linux() {
+    local USERNAME=$1
+
+    userdel ${USERNAME}
+}
+
 function ph_creategroup_linux() {
     local GROUPNAME=$1
 
@@ -53,6 +71,12 @@ function ph_creategroup_linux() {
     cat /etc/group | grep "^${GROUPNAME}" >/dev/null && return 0
 
     groupadd -r mysql
+}
+
+function ph_deletegroup_linux() {
+    local GROUPNAME=$1
+
+    groupdel ${GROUPNAME}
 }
 
 function ph_assigngroup_linux() {
@@ -76,6 +100,17 @@ function ph_createuser() {
     fi
 }
 
+function ph_deleteuser() {
+    local USERNAME=$1
+
+    if [ ${PH_OS} == "mac" ]; then
+        ph_deleteuser_mac ${USERNAME}
+
+    elif [ ${PH_OS} == "linux" ]; then
+        ph_deleteuser_linux ${USERNAME}
+    fi
+}
+
 function ph_creategroup() {
     local GROUPNAME=$1
 
@@ -84,6 +119,17 @@ function ph_creategroup() {
 
     elif [ ${PH_OS} == "linux" ]; then
         ph_creategroup_linux ${GROUPNAME}
+    fi
+}
+
+function ph_deletegroup() {
+    local GROUPNAME=$1
+
+    if [ ${PH_OS} == "mac" ]; then
+        ph_deletegroup_mac ${GROUPNAME}
+
+    elif [ ${PH_OS} == "linux" ]; then
+        ph_deletegroup_linux ${GROUPNAME}
     fi
 }
 

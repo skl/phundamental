@@ -61,47 +61,45 @@ if $MARIADB_OVERWRITE_SYMLINKS ; then
     done
 fi
 
-cd /usr/local/mysql/lib/plugin/
-for file in ha_*.so
-do
-    plugin_name=`echo $file | sed 's/ha_//g' | sed 's/\.so//g' | sed 's/_plugin//g'`
-    case $plugin_name in
-        "example"|"federatedx"|"xtradb")
-            echo "Skipping install of MariaDB plugin $plugin_name"
-            ;;
-
-        *)
-            echo "Installing MariaDB plugin $plugin_name"
-            mysql -u root -e "install plugin $plugin_name soname '$file';"
-            ;;
-    esac
-done
-
 case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
             "arch")
-            ph_symlink /usr/local/mysql/support-files/mysql.server /etc/rc.d/mysql
+            ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/rc.d/mysql
             /etc/rc.d/mysql start
             ;;
 
             "suse")
-            ph_symlink /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
+            ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/init.d/mysql
             /etc/init.d/mysql start
 
             chkconfig --level 3 mysql on
             ;;
 
             *)
-            ph_symlink /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
+            ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/init.d/mysql
             /etc/init.d/mysql start
         esac
     ;;
 
     *)
         echo "mariadb startup script not implemented for this OS... starting manually"
-        /usr/local/mysql/bin/mysqld_safe --user=mysql >/dev/null &
+        /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysqld_safe --user=mysql >/dev/null &
 esac
+
+cd /usr/local/mariadb-${MARIADB_VERSION_STRING}/lib/plugin
+for file in ha_*.so
+do
+    plugin_name=`echo $file | sed 's/ha_//g' | sed 's/\.so//g' | sed 's/_plugin//g'`
+    case $plugin_name in
+        "example"|"federatedx"|"xtradb") ;;
+
+        *)
+        echo "Installing MariaDB plugin $plugin_name"
+        /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysql -u root -e "install plugin $plugin_name soname '$file';"
+        ;;
+    esac
+done
 
 echo ""
 echo "mariadb ${MARIADB_VERSION_STRING} has been installed!"
