@@ -204,7 +204,7 @@ case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
             "arch")
-                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/rc.d/php-${PHP_VERSION_INTEGER}-fpm\
+                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/rc.d/php-${PHP_VERSION_STRING}-fpm\
                     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
                 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/rc.d/php-${PHP_VERSION_STRING}-fpm
@@ -214,7 +214,7 @@ case "${PH_OS}" in \
             ;;
 
             "suse")
-                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_INTEGER}-fpm\
+                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
                     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
                 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
@@ -226,7 +226,7 @@ case "${PH_OS}" in \
             ;;
 
             *)
-                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_INTEGER}-fpm\
+                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
                     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
                 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
