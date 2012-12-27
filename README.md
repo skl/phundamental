@@ -21,11 +21,18 @@ Clone the repo to a directory on your server and execute `install.sh` as root:
 
     git clone https://github.com/skl/phundamental.git && sudo phundamental/install.sh
 
+If you'd like add the optional modules, execute the following in your
+phundamental installation directory:
+
+    git submodule update --init
+
+You can update all submodules in future by executing:
+
+    git submodule foreach git pull origin master
+
 ## Upcoming modules
 
 * PHP-FPM
-* ~~MariaDB~~
-* ~~node + npm~~
 * postfix (MariaDB backend) + roundcube client
 
 ### Other resources
