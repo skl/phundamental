@@ -32,7 +32,6 @@ You can update all submodules in future by executing:
 
 ## Upcoming modules
 
-* PHP-FPM
 * postfix (MariaDB backend) + roundcube client
 
 ### Other resources
