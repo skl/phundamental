@@ -80,6 +80,9 @@ function ph_install_packages {
                     PH_PACKAGES[$i]="$j"
                     ((i++))
                 fi
+            else
+                PH_PACKAGES[$i]="$j"
+                ((i++))
             fi
         done
     done
