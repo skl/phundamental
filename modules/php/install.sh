@@ -50,6 +50,7 @@ ph_install_packages\
     zlib
 
 if [ "${PH_OS}" == "windows" ]; then
+    # Manually install re2c
     if ! ph_is_installed re2c ; then
         if [ ! -f re2c.zip ]; then
             wget "http://downloads.sourceforge.net/project/gnuwin32/re2c/0.9.4/re2c-0.9.4-bin.zip?r=&ts=1356710822&use_mirror=netcologne" -O re2c.zip
@@ -62,6 +63,15 @@ if [ "${PH_OS}" == "windows" ]; then
 
         unzip re2c.zip -d re2c
         cp re2c/bin/re2c.exe /bin
+    fi
+
+    # Fix ldap library paths for PHP configure script
+    if [ ! -f /usr/lib/libldap.so ]; then
+        cp /usr/lib/libldap.dll.a /usr/lib/libldap.so
+    fi
+
+    if [ ! -f /usr/lib/libldap_r.so ]; then
+        cp /usr/lib/libldap_r.dll.a /usr/lib/libldap.so
     fi
 fi
 
