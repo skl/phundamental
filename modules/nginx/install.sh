@@ -98,10 +98,6 @@ case "${PH_OS}" in \
         /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
 esac
 
-echo ""
-echo "nginx ${NGINX_VERSION_STRING} has been installed!"
-echo "Check out http://localhost/"
-
 if ph_is_installed open ; then
     read -p "Open web browser? [y/n] " REPLY
     [ "$REPLY" == "y" ] && open "http://localhost/"

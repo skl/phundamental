@@ -88,6 +88,3 @@ case "${PH_OS}" in \
 esac
 
 /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysql_secure_installation
-
-echo ""
-echo "mariadb ${MARIADB_VERSION_STRING} has been installed!"

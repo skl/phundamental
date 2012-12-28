@@ -15,7 +15,7 @@ WHEREAMI=`dirname $0`
 
 if [ ${PH_OS} != "windows" ]; then
     if [ 0 -ne `id -u` ]; then
-        echo 'You must be root to run this script!'
+        echo '[phundamental/installer] You must be root to run this script!'
         exit
     fi
 fi
@@ -26,7 +26,10 @@ for i in `ls -1 ${PH_INSTALL_DIR}/modules`; do
     # Install module if there is an executable install.sh
     if [ -x $INSTALLER ]; then
         echo ""
-        read -p "Would you like to install '$i'? [y/n] " REPLY
-        [ "y" == $REPLY ] && . ${INSTALLER}
+        read -p "[phundamental/installer] Would you like to install '$i'? [y/n] " REPLY
+        if [ "y" == $REPLY ]; then
+            . ${INSTALLER}
+            echo "[phundamental/${INSTALLER}] installation script finished."
+        fi
     fi
 done

@@ -241,5 +241,4 @@ case "${PH_OS}" in \
 esac
 
 echo ""
-echo "PHP ${PHP_VERSION_STRING} has been installed."
 echo "Check out the example configuration file: /etc/nginx/sites-available/www.example.com"

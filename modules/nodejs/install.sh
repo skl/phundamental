@@ -8,8 +8,20 @@ NODEJS_VERSION_STRING=$1
 [ -z "$1" ] && read -p "Specify node.js version (e.g. 0.8.16): " NODEJS_VERSION_STRING
 
 if [ "${PH_OS}" == "windows" ]; then
-    echo "You need to download the installer:"
-    echo "http://nodejs.org/dist/v${NODEJS_VERSION_STRING}/node-v${NODEJS_VERSION_STRING}-x86.msi"
+    ph_mkdirs /usr/local/src
+
+    cd /usr/local/src
+
+    if [ ! -f node-v${NODEJS_VERSION_STRING}.-x86.msi ]; then
+        wget http://nodejs.org/dist/v${NODEJS_VERSION_STRING}/node-v${NODEJS_VERSION_STRING}-x86.msi
+
+        if [ ! -f node-v${NODEJS_VERSION_STRING}-x86.msi ]; then
+            echo "node.js MSI installer download failed!"
+            exit 1
+        fi
+    fi
+
+    msiexec /i node-v${NODEJS_VERSION_STRING}-x86.msi
 
 else
     read -p "Install node.js dependencies? [y/n]: " REPLY
@@ -30,7 +42,7 @@ else
 
         if [ ! -f node-v${NODEJS_VERSION_STRING}.tar.gz ]; then
             echo "node.js source download failed!"
-            return 1
+            exit 1
         fi
     fi
 
@@ -56,8 +68,4 @@ else
         ph_symlink /usr/local/nodejs/bin/node-waf /usr/local/bin/node-waf
         ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm
     fi
-
-
-    echo ""
-    echo "node.js ${NODEJS_VERSION_STRING} has been installed!"
 fi
