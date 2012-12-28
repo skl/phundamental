@@ -76,22 +76,26 @@ function ph_install_packages {
             exit
         fi
 
-        # Detect packages that are already installed. This also supports
-        # multiple entries such as "openssl-devel openssl"
-        for j in `echo "${PACKAGE_MAP_PACKAGE_NAME}" | tr " " "\n"`; do
-            if ph_is_installed $j ; then
-                echo "$j is already installed at `which $j`"
-                read -p "Would you still like to tell ${PH_PACKAGE_MANAGER} to install this package? [y/n] " REPLY
+        # Skip package if so marked in conf file
+        if [ "${PACKAGE_MAP_PACKAGE_NAME}" != "##SKIP##" ]; then
 
-                if [ "$REPLY" == "y" ]; then
+            # Detect packages that are already installed. This also supports
+            # multiple entries such as "openssl-devel openssl"
+            for j in `echo "${PACKAGE_MAP_PACKAGE_NAME}" | tr " " "\n"`; do
+                if ph_is_installed $j ; then
+                    echo "$j is already installed at `which $j`"
+                    read -p "Would you still like to tell ${PH_PACKAGE_MANAGER} to install this package? [y/n] " REPLY
+
+                    if [ "$REPLY" == "y" ]; then
+                        PH_PACKAGES[$i]="$j"
+                        ((i++))
+                    fi
+                else
                     PH_PACKAGES[$i]="$j"
                     ((i++))
                 fi
-            else
-                PH_PACKAGES[$i]="$j"
-                ((i++))
-            fi
-        done
+            done
+        fi
     done
 
     # Only run the package manager if more than 1 package made it through
