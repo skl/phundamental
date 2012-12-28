@@ -3,7 +3,7 @@
 if ph_is_installed apt-cyg ; then
     PH_PACKAGE_MANAGER='apt-cyg'
     PH_PACKAGE_MANAGER_ARG='install'
-    PH_PACKAGE_MANAGER_BUILDTOOLS='apt-cyg install g++ make autoconf automake libtool'
+    PH_PACKAGE_MANAGER_BUILDTOOLS='apt-cyg install autoconf automake bison cmake gcc gcc-c++ libtool m4'
 
 elif ph_is_installed apt-get ; then
     PH_PACKAGE_MANAGER='apt-get'
