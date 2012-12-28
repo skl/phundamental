@@ -13,10 +13,10 @@ if [ "${PH_OS}" == "windows" ]; then
     cd /usr/local/src
 
     if [ "${PH_OS_FLAVOUR}" == "7 64bit" ]; then
-        MARIADB_INSTALLER_URI="https://downloads.mariadb.org/interstitial/mariadb-${MARIADB_VERSION_STRING}/winx64-packages/mariadb-${MARIADB_VERSION_STRING}-winx64.msi/from/http://mirror2.hs-esslingen.de/mariadb"
+        MARIADB_INSTALLER_URI="http://ftp.osuosl.org/pub/mariadb/mariadb-${MARIADB_VERSION_STRING}/winx64-packages/mariadb-${MARIADB_VERSION_STRING}-winx64.msi"
         MARIADB_INSTALLER_FILENAME="mariadb-${MARIADB_VERSION_STRING}-winx64.msi"
     else
-        MARIADB_INSTALLER_URI="https://downloads.mariadb.org/interstitial/mariadb-${MARIADB_VERSION_STRING}/win32-packages/mariadb-${MARIADB_VERSION_STRING}-win32.msi/from/http://mirror2.hs-esslingen.de/mariadb"
+        MARIADB_INSTALLER_URI="http://ftp.osuosl.org/pub/mariadb/mariadb-${MARIADB_VERSION_STRING}/win32-packages/mariadb-${MARIADB_VERSION_STRING}-win32.msi"
         MARIADB_INSTALLER_FILENAME="mariadb-${MARIADB_VERSION_STRING}-win32.msi"
     fi
 
