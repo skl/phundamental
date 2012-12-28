@@ -6,7 +6,9 @@
 # @sets ${PH_OS}
 #
 function ph_os {
-    case `uname` in \
+    local UNAME=`uname`
+
+    case "${UNAME}" in \
     'Darwin')
         PH_OS='mac'
         PH_OS_FLAVOUR=`uname -r`
@@ -32,6 +34,16 @@ function ph_os {
 
     CYGWIN*)
         PH_OS='windows'
+
+        if [ "CYGWIN_NT-6.1" == ${UNAME} ]; then
+            PH_OS_FLAVOUR='7 32bit'
+
+        elif [ "CYGWIN_NT-6.1-WOW64" == ${UNAME} ]; then
+            PH_OS_FLAVOUR='7 64bit'
+
+        else
+            echo "ph_os() - Windows distribution not regognised!"
+        fi
     ;;
 
     *)
