@@ -8,7 +8,8 @@
 #
 function ph_num_cpus {
     case ${PH_OS} in \
-    'linux')
+    'linux' |\
+    'windows')
         PH_NUM_CPUS=`cat /proc/cpuinfo | grep processor | wc -l`
     ;;
 
