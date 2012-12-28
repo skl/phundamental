@@ -65,6 +65,12 @@ cp ${PH_INSTALL_DIR}/modules/nginx/localhost.conf /etc/nginx-${NGINX_VERSION_STR
 ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/index.html /var/www/localhost/public/index.html\
     "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
 
+# Patch nginx config files for windows
+if [ "${PH_OS}" == "windows" ]; then
+    ph_search_and_replace "^user" "#user" /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
+    ph_search_and_replace "worker_connections  1024" "worker_connections  64" /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
+fi
+
 if $NGINX_OVERWRITE_SYMLINKS ; then
     ph_symlink /etc/nginx-${NGINX_VERSION_STRING} /etc/nginx
     ph_symlink /usr/local/nginx-${NGINX_VERSION_STRING} /usr/local/nginx
