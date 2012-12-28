@@ -8,15 +8,17 @@
 #                                                   #
 #####################################################
 
-if [ 0 -ne `id -u` ]; then
-    echo 'You must be root to run this script!'
-    exit
-fi
-
 WHEREAMI=`dirname $0`
 . ${WHEREAMI}/conf.d/phundamental.conf
 
 . ${PH_INSTALL_DIR}/bootstrap.sh
+
+if [ ${PH_OS} != "windows" ]; then
+    if [ 0 -ne `id -u` ]; then
+        echo 'You must be root to run this script!'
+        exit
+    fi
+fi
 
 for i in `ls -1 ${PH_INSTALL_DIR}/modules`; do
     INSTALLER=${PH_INSTALL_DIR}/modules/$i/install.sh

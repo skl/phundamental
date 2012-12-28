@@ -30,6 +30,10 @@ function ph_os {
         fi
     ;;
 
+    CYGWIN*)
+        PH_OS='windows'
+    ;;
+
     *)
         echo "ph_os() - OS not recognised: ${UNAME}"
         exit
