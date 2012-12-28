@@ -3,7 +3,10 @@
 if ph_is_installed apt-cyg ; then
     PH_PACKAGE_MANAGER='apt-cyg'
     PH_PACKAGE_MANAGER_ARG='install'
-    PH_PACKAGE_MANAGER_BUILDTOOLS='apt-cyg install autoconf automake bison cmake gcc gcc-c++ libtool m4'
+    PH_PACKAGE_MANAGER_BUILDTOOLS='apt-cyg install autoconf automake bison cmake gcc gcc-g++ libtool m4'
+
+    # Fix required for cygwin when installing gcc
+    PH_PACKAGE_MANAGER_POSTBUILD='for x in /etc/postinstall/{gcc.,gcc-[^tm]}* ; do . $x; done'
 
 elif ph_is_installed apt-get ; then
     PH_PACKAGE_MANAGER='apt-get'
@@ -40,6 +43,10 @@ fi
 #
 function ph_install_buildtools {
     $PH_PACKAGE_MANAGER_BUILDTOOLS
+
+    if [ ! -z "${PH_PACKAGE_MANAGER_POSTBUILD}" ]; then
+        $PH_PACKAGE_MANAGER_POSTBUILD
+    fi
 }
 
 
