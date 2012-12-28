@@ -12,7 +12,7 @@ if [ "${PH_OS}" == "windows" ]; then
 
     cd /usr/local/src
 
-    if [ ! -f node-v${NODEJS_VERSION_STRING}.-x86.msi ]; then
+    if [ ! -f node-v${NODEJS_VERSION_STRING}-x86.msi ]; then
         wget http://nodejs.org/dist/v${NODEJS_VERSION_STRING}/node-v${NODEJS_VERSION_STRING}-x86.msi
 
         if [ ! -f node-v${NODEJS_VERSION_STRING}-x86.msi ]; then
