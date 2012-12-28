@@ -29,7 +29,7 @@ for i in `ls -1 ${PH_INSTALL_DIR}/modules`; do
         read -p "[phundamental/installer] Would you like to install '$i'? [y/n] " REPLY
         if [ "y" == $REPLY ]; then
             . ${INSTALLER}
-            echo "[phundamental/${INSTALLER}] installation script finished."
+            echo "[phundamental/$i] installation script finished."
         fi
     fi
 done
