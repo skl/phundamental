@@ -34,8 +34,11 @@ if [ "${PH_OS}" == "windows" ]; then
 
 else
 
-    read -p "Install mariadb dependencies? [y/n]: " REPLY
-    [ "$REPLY" == "y" ] && ph_install_packages openssl cmake bison m4
+    ph_install_packages\
+        bison\
+        cmake\
+        m4\
+        openssl
 
     read -p "Overwrite existing symlinks? [y/n]: " REPLY
     [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false

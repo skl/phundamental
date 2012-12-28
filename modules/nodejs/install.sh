@@ -24,8 +24,9 @@ if [ "${PH_OS}" == "windows" ]; then
     msiexec /i node-v${NODEJS_VERSION_STRING}-x86.msi
 
 else
-    read -p "Install node.js dependencies? [y/n]: " REPLY
-    [ "$REPLY" == "y" ] && ph_install_packages openssl python
+    ph_install_packages\
+        openssl\
+        python
 
     read -p "Overwrite existing symlinks? [y/n]: " REPLY
     [ "$REPLY" == "y" ] && NODEJS_OVERWRITE_SYMLINKS=true || NODEJS_OVERWRITE_SYMLINKS=false

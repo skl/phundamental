@@ -7,8 +7,10 @@
 NGINX_VERSION_STRING=$1
 [ -z "$1" ] && read -p "Specify nginx version (e.g. 1.2.6): " NGINX_VERSION_STRING
 
-read -p "Install nginx dependencies? [y/n]: " REPLY
-[ "$REPLY" == "y" ] && ph_install_packages pcre openssl zlib
+ph_install_packages\
+    openssl\
+    pcre\
+    zlib
 
 read -p "Overwrite existing symlinks? [y/n]: " REPLY
 [ "$REPLY" == "y" ] && NGINX_OVERWRITE_SYMLINKS=true || NGINX_OVERWRITE_SYMLINKS=false

@@ -30,41 +30,38 @@ ph_mkdirs \
 
 cd /usr/local/src
 
-read -p "Install PHP dependencies? [y/n]: " REPLY
-if [ "$REPLY" == "y" ]; then
-    ph_install_packages\
-        autoconf\
-        automake\
-        bison\
-        curl\
-        flex\
-        gettext\
-        libjpeg\
-        libtool\
-        libxml\
-        mcrypt\
-        mhash\
-        openldap\
-        openssl\
-        pcre\
-        png\
-        re2c\
-        zlib
+ph_install_packages\
+    autoconf\
+    automake\
+    bison\
+    curl\
+    flex\
+    gettext\
+    libjpeg\
+    libtool\
+    libxml\
+    mcrypt\
+    mhash\
+    openldap\
+    openssl\
+    pcre\
+    png\
+    re2c\
+    zlib
 
-    if [ "${PH_OS}" == "windows" ]; then
-        if ! ph_is_installed re2c ; then
+if [ "${PH_OS}" == "windows" ]; then
+    if ! ph_is_installed re2c ; then
+        if [ ! -f re2c.zip ]; then
+            wget "http://downloads.sourceforge.net/project/gnuwin32/re2c/0.9.4/re2c-0.9.4-bin.zip?r=&ts=1356710822&use_mirror=netcologne" -O re2c.zip
+
             if [ ! -f re2c.zip ]; then
-                wget "http://downloads.sourceforge.net/project/gnuwin32/re2c/0.9.4/re2c-0.9.4-bin.zip?r=&ts=1356710822&use_mirror=netcologne" -O re2c.zip
-
-                if [ ! -f re2c.zip ]; then
-                    echo "re2c download failed!"
-                    exit 1
-                fi
+                echo "re2c download failed!"
+                exit 1
             fi
-
-            unzip re2c.zip -d re2c
-            cp re2c/bin/re2c.exe /bin
         fi
+
+        unzip re2c.zip -d re2c
+        cp re2c/bin/re2c.exe /bin
     fi
 fi
 
