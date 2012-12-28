@@ -24,25 +24,49 @@
 PHP_VERSION_STRING=$1
 [ -z "$1" ] && read -p "Specify PHP version (e.g. 5.4.10): " PHP_VERSION_STRING
 
+ph_mkdirs \
+    /usr/local/src \
+    /etc/php-${PHP_VERSION_STRING}
+
+cd /usr/local/src
+
 read -p "Install PHP dependencies? [y/n]: " REPLY
-[ "$REPLY" == "y" ] && ph_install_packages\
-    autoconf\
-    automake\
-    bison\
-    curl\
-    flex\
-    gettext\
-    libjpeg\
-    libtool\
-    libxml\
-    mcrypt\
-    mhash\
-    openldap\
-    openssl\
-    pcre\
-    png\
-    re2c\
-    zlib
+if [ "$REPLY" == "y" ]; then
+    ph_install_packages\
+        autoconf\
+        automake\
+        bison\
+        curl\
+        flex\
+        gettext\
+        libjpeg\
+        libtool\
+        libxml\
+        mcrypt\
+        mhash\
+        openldap\
+        openssl\
+        pcre\
+        png\
+        re2c\
+        zlib
+
+    if [ "${PH_OS}" == "windows" ]; then
+        if ! ph_is_installed re2c ; then
+            if [ ! -f re2c.zip ]; then
+                wget "http://downloads.sourceforge.net/project/gnuwin32/re2c/0.9.4/re2c-0.9.4-bin.zip?r=&ts=1356710822&use_mirror=netcologne" -O re2c.zip
+
+                if [ ! -f re2c.zip ]; then
+                    echo "re2c download failed!"
+                    exit 1
+                fi
+            fi
+
+            unzip re2c.zip -d re2c
+            cp re2c/bin/re2c.exe /bin
+        fi
+    fi
+fi
 
 read -p "Overwrite existing symlinks? [y/n]: " REPLY
 [ "$REPLY" == "y" ] && PHP_OVERWRITE_SYMLINKS=true || PHP_OVERWRITE_SYMLINKS=false
@@ -56,19 +80,13 @@ PHP_VERSION_MAJOR=`echo ${PHP_VERSION_STRING} | cut -d. -f1`
 PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
 PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
 
-ph_mkdirs \
-    /usr/local/src \
-    /etc/php-${PHP_VERSION_STRING}
-
-cd /usr/local/src
-
 # Retrieve source code from php.net
 if [ ! -f php-${PHP_VERSION_STRING}.tar.gz ]; then
     wget http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
 
     if [ ! -f php-${PHP_VERSION_STRING}.tar.gz ]; then
         echo "PHP source download failed!"
-        return 1
+        exit 1
     fi
 fi
 

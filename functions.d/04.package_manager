@@ -45,7 +45,7 @@ function ph_install_buildtools {
     $PH_PACKAGE_MANAGER_BUILDTOOLS
 
     if [ ! -z "${PH_PACKAGE_MANAGER_POSTBUILD}" ]; then
-        $PH_PACKAGE_MANAGER_POSTBUILD
+        echo ${PH_PACKAGE_MANAGER_POSTBUILD} | /bin/bash
     fi
 }
 
