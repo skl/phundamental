@@ -61,6 +61,8 @@ if [ "${PH_OS}" == "windows" ]; then
             fi
         fi
 
+        ph_install_packages unzip
+
         unzip re2c.zip -d re2c
         cp re2c/bin/re2c.exe /bin
     fi
