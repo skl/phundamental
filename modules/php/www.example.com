@@ -8,11 +8,11 @@ server {
     include      /etc/nginx/global/restrictions.conf;
 
     location / {
-        index  index.php index.html index.htm;
+        try_files $uri $uri/ /index.php?$query_string;
     }
 
     # Directives to send expires headers and turn off 404 error logging
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+    location ~* \.(css|js|swf|xml|pdf|bmp|gif|jpg|jpeg|jpe|png|tif|eot|svg|ttf|woff)$ {
         expires        24h;
         log_not_found  off;
     }
