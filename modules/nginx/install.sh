@@ -63,6 +63,7 @@ fi
 cp ${PH_INSTALL_DIR}/modules/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
 cp ${PH_INSTALL_DIR}/modules/nginx/restrictions.conf /etc/nginx-${NGINX_VERSION_STRING}/global/restrictions.conf
 cp ${PH_INSTALL_DIR}/modules/nginx/localhost.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost
+cp ${PH_INSTALL_DIR}/modules/nginx/000-catchall.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/000-catchall
 
 ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/index.html /var/www/localhost/public/index.html\
     "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
@@ -79,6 +80,7 @@ if $NGINX_OVERWRITE_SYMLINKS ; then
     ph_symlink /usr/local/nginx-${NGINX_VERSION_STRING}/logs /var/log/nginx
     ph_symlink /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx /usr/local/bin/nginx
     ph_symlink /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled/localhost
+    ph_symlink /etc/nginx-${NGINX_VERSION_STRING}/sites-available/000-catchall /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled/000-catchall
 fi
 
 case "${PH_OS}" in \
@@ -99,8 +101,3 @@ case "${PH_OS}" in \
         echo "nginx startup script not implemented for this OS... starting manually"
         /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
 esac
-
-if ph_is_installed open ; then
-    read -p "Open web browser? [y/n] " REPLY
-    [ "$REPLY" == "y" ] && open "http://localhost/"
-fi
