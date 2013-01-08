@@ -112,6 +112,13 @@ else
             esac
         ;;
 
+        "mac")
+            ph_cp_inject ${PH_INSTALL_DIR}/modules/mariadb/org.mysql.mysql.plist /Library/LaunchAgents \
+                "##MARIADB_VERSION_STRING##" "${MARIADB_VERSION_STRING}"
+
+            launchctl load -w /Library/LaunchAgents/org.mysql.mysql.plist
+        ;;
+
         *)
             echo "mariadb startup script not implemented for this OS... starting manually"
             /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysqld_safe --user=mysql >/dev/null &

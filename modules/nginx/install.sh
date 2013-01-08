@@ -97,6 +97,13 @@ case "${PH_OS}" in \
         esac
     ;;
 
+    "mac")
+        ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/org.nginx.nginx.plist /Library/LaunchAgents/org.nginx.nginx.plist \
+            "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
+
+        launchctl load -w /Library/LaunchAgents/org.nginx.nginx.plist
+    ;;
+
     *)
         echo "nginx startup script not implemented for this OS... starting manually"
         /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx

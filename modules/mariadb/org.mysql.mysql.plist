@@ -4,7 +4,12 @@
 <plist version="1.0">
     <dict>
         <key>Label</key><string>mysql</string>
-        <key>Program</key><string>/usr/local/mysql/bin/mysqld_safe</string>
+        <key>Program</key><string>/usr/local/mariadb-##MARIADB_VERSION_STRING##/bin/mysqld_safe</string>
         <key>KeepAlive</key><true/>
+        <key>ProgramArguments</key>
+            <array>
+                <string>/usr/local/mariadb-##MARIADB_VERSION_STRING##/bin/mysqld_safe</string>
+                <string>--user=mysql</string>
+            </array>
     </dict>
 </plist>

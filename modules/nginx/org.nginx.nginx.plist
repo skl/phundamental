@@ -4,7 +4,7 @@
 <plist version="1.0">
     <dict>
         <key>Label</key><string>nginx</string>
-        <key>Program</key><string>/usr/local/nginx/sbin/nginx</string>
+        <key>Program</key><string>/usr/local/nginx-##NGINX_VERSION_STRING##/sbin/nginx</string>
         <key>KeepAlive</key><true/>
     </dict>
 </plist>
