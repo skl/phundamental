@@ -63,14 +63,12 @@ else
 
     ./configure ${CONFIGURE_ARGS[@]} && make -j ${PH_NUM_CPUS} && make install
 
-    if $NODEJS_OVERWRITE_SYMLINKS ; then
-        ph_symlink /etc/nodejs-${NODEJS_VERSION_STRING} /etc/nodejs
-        ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING} /usr/local/nodejs
-        ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING}/logs /var/log/nodejs
-        ph_symlink /usr/local/nodejs/bin/node /usr/local/bin/node
-        ph_symlink /usr/local/nodejs/bin/node-waf /usr/local/bin/node-waf
-        ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm
-    fi
+    ph_symlink /etc/nodejs-${NODEJS_VERSION_STRING} /etc/nodejs $NODEJS_OVERWRITE_SYMLINKS
+    ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING} /usr/local/nodejs $NODEJS_OVERWRITE_SYMLINKS
+    ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING}/logs /var/log/nodejs $NODEJS_OVERWRITE_SYMLINKS
+    ph_symlink /usr/local/nodejs/bin/node /usr/local/bin/node $NODEJS_OVERWRITE_SYMLINKS
+    ph_symlink /usr/local/nodejs/bin/node-waf /usr/local/bin/node-waf $NODEJS_OVERWRITE_SYMLINKS
+    ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm $NODEJS_OVERWRITE_SYMLINKS
 fi
 
 return 0

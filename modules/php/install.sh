@@ -188,13 +188,11 @@ fi
 # Build!
 CFLAGS='-O2 -DEAPI' ./configure ${CONFIGURE_ARGS[@]} && make -j ${PH_NUM_CPUS} && make install
 
-if $PHP_OVERWRITE_SYMLINKS ; then
-    ph_symlink /usr/local/php-${PHP_VERSION_STRING} /usr/local/php
+ph_symlink /usr/local/php-${PHP_VERSION_STRING} /usr/local/php $PHP_OVERWRITE_SYMLINKS
 
-    for i in `ls -1 /usr/local/php-${PHP_VERSION_STRING}/bin`; do
-        ph_symlink /usr/local/php-${PHP_VERSION_STRING}/bin/$i /usr/local/bin/$i
-    done
-fi
+for i in `ls -1 /usr/local/php-${PHP_VERSION_STRING}/bin`; do
+    ph_symlink /usr/local/php-${PHP_VERSION_STRING}/bin/$i /usr/local/bin/$i $PHP_OVERWRITE_SYMLINKS
+done
 
 # Install default config files
 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/www.example.com /etc/nginx/sites-available/www.example.com\

@@ -92,31 +92,29 @@ else
 
     scripts/mysql_install_db --user=mysql
 
-    if $MARIADB_OVERWRITE_SYMLINKS ; then
-        ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING} /usr/local/mysql
+    ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING} /usr/local/mysql ${MARIADB_OVERWRITE_SYMLINKS}
 
-        for i in `ls -1 /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin`; do
-            ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/$i /usr/local/bin/$i
-        done
-    fi
+    for i in `ls -1 /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin`; do
+        ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/$i /usr/local/bin/$i ${MARIADB_OVERWRITE_SYMLINKS}
+    done
 
     case "${PH_OS}" in \
         "linux")
             case "${PH_OS_FLAVOUR}" in \
                 "arch")
-                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/rc.d/mysql
+                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/rc.d/mysql ${MARIADB_OVERWRITE_SYMLINKS}
                 /etc/rc.d/mysql start
                 ;;
 
                 "suse")
-                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/init.d/mysql
+                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/init.d/mysql ${MARIADB_OVERWRITE_SYMLINKS}
                 /etc/init.d/mysql start
 
                 chkconfig --level 3 mysql on
                 ;;
 
                 *)
-                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/init.d/mysql
+                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/init.d/mysql ${MARIADB_OVERWRITE_SYMLINKS}
                 /etc/init.d/mysql start
             esac
         ;;
