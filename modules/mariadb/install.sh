@@ -6,7 +6,7 @@
 
 if ph_is_installed mysql ; then
     echo "MySQL is already installed!"
-    which mysql
+    ls -lh `which mysql` | awk '{print $9 $10 $11}'
     mysql --version
 
     read -p "Do you wish to continue with the MariaDB installation? [y/n] " REPLY

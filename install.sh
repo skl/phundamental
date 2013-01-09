@@ -25,6 +25,7 @@ for i in `ls -1 ${PH_INSTALL_DIR}/modules`; do
 
     # Install module if there is an executable install.sh
     if [ -x $INSTALLER ]; then
+        echo ''
         read -p "[phundamental/installer] Would you like to install '$i'? [y/n] " REPLY
         if [ "y" == $REPLY ]; then
             RESULT='with an unknown status'

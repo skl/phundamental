@@ -6,8 +6,8 @@
 
 if ph_is_installed node ; then
     echo "node is already installed!"
-    which node
-    node --version
+    ls -lh `which node` | awk '{print $9 $10 $11}'
+    node -v
 
     read -p "Do you wish to continue with the node installation? [y/n] " REPLY
     [ $REPLY == "n" ] && return 1
@@ -60,13 +60,6 @@ else
     cd node-v${NODEJS_VERSION_STRING}
 
     CONFIGURE_ARGS=("--prefix=/usr/local/nodejs-${NODEJS_VERSION_STRING}");
-
-    if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
-        # Add homebrew include directories
-        CONFIGURE_ARGS=("${CONFIGURE_ARGS[@]}" \
-            "--with-cc-opt=-I/usr/local/include" \
-            "--with-ld-opt=-L/usr/local/lib")
-    fi
 
     ./configure ${CONFIGURE_ARGS[@]} && make -j ${PH_NUM_CPUS} && make install
 

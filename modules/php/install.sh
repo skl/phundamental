@@ -23,7 +23,7 @@
 
 if ph_is_installed php ; then
     echo "PHP is already installed!"
-    which php
+    ls -lh `which php` | awk '{print $9 $10 $11}'
     php -v
 
     read -p "Do you wish to continue with the PHP installation? [y/n] " REPLY

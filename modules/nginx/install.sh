@@ -6,7 +6,7 @@
 
 if ph_is_installed nginx ; then
     echo "nginx is already installed!"
-    which nginx
+    ls -lh `which nginx` | awk '{print $9 $10 $11}'
     nginx -v
 
     read -p "Do you wish to continue with the nginx installation? [y/n] " REPLY
