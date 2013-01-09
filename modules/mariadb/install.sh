@@ -47,7 +47,8 @@ else
         bison\
         cmake\
         m4\
-        openssl
+        openssl\
+        wget
 
     read -p "Overwrite existing symlinks? [y/n]: " REPLY
     [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false

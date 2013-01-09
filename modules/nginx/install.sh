@@ -20,6 +20,7 @@ NGINX_VERSION_STRING=$1
 ph_install_packages\
     openssl\
     pcre\
+    wget\
     zlib
 
 read -p "Overwrite existing symlinks? [y/n]: " REPLY

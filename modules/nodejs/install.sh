@@ -35,7 +35,8 @@ if [ "${PH_OS}" == "windows" ]; then
 else
     ph_install_packages\
         openssl\
-        python
+        python\
+        wget
 
     read -p "Overwrite existing symlinks? [y/n]: " REPLY
     [ "$REPLY" == "y" ] && NODEJS_OVERWRITE_SYMLINKS=true || NODEJS_OVERWRITE_SYMLINKS=false
