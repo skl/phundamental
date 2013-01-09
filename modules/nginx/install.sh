@@ -4,8 +4,18 @@
 #                                                                             #
 ###############################################################################
 
+if ph_is_installed nginx ; then
+    echo "nginx is already installed!"
+    which nginx
+    nginx -v
+
+    read -p "Do you wish to continue with the nginx installation? [y/n] " REPLY
+    [ $REPLY == "n" ] && return 1
+fi
+
 NGINX_VERSION_STRING=$1
 [ -z "$1" ] && read -p "Specify nginx version (e.g. 1.2.6): " NGINX_VERSION_STRING
+
 
 ph_install_packages\
     openssl\
@@ -108,3 +118,5 @@ case "${PH_OS}" in \
         echo "nginx startup script not implemented for this OS... starting manually"
         /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
 esac
+
+return 0

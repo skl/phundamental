@@ -21,6 +21,15 @@
 #                                                                             #
 ###############################################################################
 
+if ph_is_installed php ; then
+    echo "PHP is already installed!"
+    which php
+    php -v
+
+    read -p "Do you wish to continue with the PHP installation? [y/n] " REPLY
+    [ $REPLY == "n" ] && return 1
+fi
+
 PHP_VERSION_STRING=$1
 [ -z "$1" ] && read -p "Specify PHP version (e.g. 5.4.10): " PHP_VERSION_STRING
 
@@ -57,7 +66,7 @@ if [ "${PH_OS}" == "windows" ]; then
 
             if [ ! -f re2c.zip ]; then
                 echo "re2c download failed!"
-                exit 1
+                return 1
             fi
         fi
 
@@ -95,7 +104,7 @@ if [ ! -f php-${PHP_VERSION_STRING}.tar.gz ]; then
 
     if [ ! -f php-${PHP_VERSION_STRING}.tar.gz ]; then
         echo "PHP source download failed!"
-        exit 1
+        return 1
     fi
 fi
 
@@ -269,3 +278,5 @@ esac
 
 echo ""
 echo "Check out the example configuration file: /etc/nginx/sites-available/www.example.com"
+
+return 0

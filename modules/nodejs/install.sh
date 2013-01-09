@@ -4,6 +4,15 @@
 #                                                                             #
 ###############################################################################
 
+if ph_is_installed node ; then
+    echo "node is already installed!"
+    which node
+    node --version
+
+    read -p "Do you wish to continue with the node installation? [y/n] " REPLY
+    [ $REPLY == "n" ] && return 1
+fi
+
 NODEJS_VERSION_STRING=$1
 [ -z "$1" ] && read -p "Specify node.js version (e.g. 0.8.16): " NODEJS_VERSION_STRING
 
@@ -17,7 +26,7 @@ if [ "${PH_OS}" == "windows" ]; then
 
         if [ ! -f node-v${NODEJS_VERSION_STRING}-x86.msi ]; then
             echo "node.js MSI installer download failed!"
-            exit 1
+            return 1
         fi
     fi
 
@@ -43,7 +52,7 @@ else
 
         if [ ! -f node-v${NODEJS_VERSION_STRING}.tar.gz ]; then
             echo "node.js source download failed!"
-            exit 1
+            return 1
         fi
     fi
 
@@ -70,3 +79,5 @@ else
         ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm
     fi
 fi
+
+return 0
