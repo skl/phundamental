@@ -1,10 +1,8 @@
-# phundamental
+# phundamental [![Build Status](https://travis-ci.org/skl/phundamental.png?branch=master)](https://travis-ci.org/skl/phundamental)
 
 phundamental is a collection of bash scripts designed to help ease the creation of lightweight
 web servers. You're encouraged to delve into the various `install.sh` files and customise them
 to suit your particular server(s) and personal preferences.
-
-[![Build Status](https://travis-ci.org/skl/phundamental.png?branch=master)](https://travis-ci.org/skl/phundamental)
 
 ## Prerequisites
 
