@@ -1,2 +1,4 @@
 language: bash
+git:
+  submodules: false
 script: ./test.sh
