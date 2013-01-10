@@ -33,17 +33,12 @@ It is recommended that you add `/usr/local/bin` to your path. Add the following 
 
 ## Instructions
 
-Clone the repo to a directory on your server:
+Clone the repo to a directory on your server and execute the top-level installer:
 
-    git clone https://github.com/skl/phundamental.git /usr/local/src/phundamental
+    git clone https://github.com/skl/phundamental.git && sudo phundamental/install.sh
 
-Edit `phundamental/etc/phundamental.conf.sh` and update `PH_INSTALL_DIR` to point to your cloned
-repository path if you changed the path above. Then execute the installer as root (unless you're
-running cygwin, which doesn't have sudo):
-
-    sudo /path/to/your/phundamental/install.sh
-
-**N.B.** The top-level ``phundamental/install.sh`` file will ask you which modules to install. The
+**N.B.** If you're running cygwin or you don't have sudo installed, remove `sudo` from the above command. The
+top-level ``phundamental/install.sh`` file will ask you which modules to install. The
 ``modules/.../install.sh`` per-module install files will only install the one module if executed directly.
 
 ## Modules
