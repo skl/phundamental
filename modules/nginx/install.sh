@@ -109,8 +109,10 @@ case "${PH_OS}" in \
     "mac")
         ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/org.nginx.nginx.plist /Library/LaunchAgents/org.nginx.nginx.plist \
             "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
-
+        
+        chown root:wheel /Library/LaunchAgents/org.nginx.nginx.plist
         launchctl load -w /Library/LaunchAgents/org.nginx.nginx.plist
+        launchctl start org.nginx.nginx
     ;;
 
     *)
