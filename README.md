@@ -43,7 +43,7 @@ running cygwin, which doesn't have sudo):
 
     sudo /path/to/your/phundamental/install.sh
 
-**N.B.** You must execute the top-level ``phundament/install.sh`` and not the ``module/.../install.sh`` files. The
+**N.B.** You must execute the top-level ``phundamental/install.sh`` and not the ``modules/.../install.sh`` files. The
 top-level installer will ask you which modules to install.
 
 ## Modules
