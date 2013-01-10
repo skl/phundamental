@@ -4,13 +4,17 @@
 #                                                                             #
 ###############################################################################
 
+PH_NGINX_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PH_INSTALL_DIR="$( cd "${PH_NGINX_INSTALL_DIR}" && cd ../../ && pwd )"
+. ${PH_INSTALL_DIR}/bootstrap.sh
+
 if ph_is_installed nginx ; then
     echo "nginx is already installed!"
     ls -lh `which nginx` | awk '{print $9 $10 $11}'
     nginx -v
 
     read -p "Do you wish to continue with the nginx installation? [y/n] " REPLY
-    [ $REPLY == "n" ] && return 1
+    [ $REPLY == "n" ] && return 1 2>/dev/null || exit 1
 fi
 
 NGINX_VERSION_STRING=$1
@@ -46,7 +50,7 @@ if [ ! -f nginx-${NGINX_VERSION_STRING}.tar.gz ]; then
 
     if [ ! -f nginx-${NGINX_VERSION_STRING}.tar.gz ]; then
         echo "nginx source download failed!"
-        return 1
+        return 1 2>/dev/null || exit 1
     fi
 fi
 
@@ -120,4 +124,4 @@ case "${PH_OS}" in \
         /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
 esac
 
-return 0
+return 0 2>/dev/null || exit 0

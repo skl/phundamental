@@ -43,8 +43,8 @@ running cygwin, which doesn't have sudo):
 
     sudo /path/to/your/phundamental/install.sh
 
-**N.B.** You must execute the top-level ``phundamental/install.sh`` and not the ``modules/.../install.sh`` files. The
-top-level installer will ask you which modules to install.
+**N.B.** The top-level ``phundamental/install.sh`` file will ask you which modules to install. The
+``modules/.../install.sh`` per-module install files will only install the one module if executed directly.
 
 ## Modules
 

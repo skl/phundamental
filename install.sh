@@ -8,8 +8,8 @@
 #                                                   #
 #####################################################
 
-WHEREAMI=`dirname $0`
-. ${WHEREAMI}/etc/phundamental.conf.sh
+# Absolute path to current script http://stackoverflow.com/a/246128
+PH_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 . ${PH_INSTALL_DIR}/bootstrap.sh
 

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Include lib, return early if not required
+command -v ph_is_installed > /dev/null 2>&1 && return 0
+
 cat <<EOA
      _             _                   _       _
  ___| |_ _ _ ___ _| |___ _____ ___ ___| |_ ___| |
