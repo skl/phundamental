@@ -16,7 +16,7 @@ Install [homebrew](http://mxcl.github.com/homebrew/).
 
 ### Windows
 
-1. Windows users require [cygwin](http://www.cygwin.com/) to use phundamental
+1. Install [cygwin](http://www.cygwin.com/)
 1. Install the `subversion` and `ca-certificates` packages using cygwin's `setup.exe`
 1. Install `apt-cyg` as below:
 
@@ -27,7 +27,8 @@ chmod +x /bin/apt-cyg
 
 #### General
 
-It is recommended that you add `/usr/local/bin` to your path. Add the following to your `.profile` or `.bashrc`:
+It is recommended that you add `/usr/local/bin` to the beginning of your path. Add the following
+to your `.profile` or `.bashrc`:
 
     export PATH=/usr/local/bin:$PATH
 
