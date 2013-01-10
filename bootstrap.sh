@@ -8,9 +8,11 @@ cat <<EOA
 EOA
 echo -n '|_|'
 
-for i in `ls -1 ${PH_INSTALL_DIR}/functions.d`; do
-    echo -n '.'
-    . ${PH_INSTALL_DIR}/functions.d/$i
+for i in `ls -1 ${PH_INSTALL_DIR}/lib`; do
+    for j in `ls -1 ${PH_INSTALL_DIR}/lib/$i`; do
+        echo -n '.'
+        . ${PH_INSTALL_DIR}/lib/$i/$j
+    done
 done
 
 echo -e "Bootstrap complete \n"

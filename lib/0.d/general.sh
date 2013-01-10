@@ -90,8 +90,8 @@ function ph_symlink() {
     echo -n "Creating symlink ${TARGET} -> ${SOURCE} ... "
 
     if ${FORCE} ; then
-        ln -sf ${SOURCE} ${TARGET} && { echo "success!"; return 0 } || { echo "failed!"; return 1 }
+        ln -sf ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     else
-        ln -s ${SOURCE} ${TARGET} && { echo "success!"; return 0 } || { echo "failed!"; return 1 }
+        ln -s ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     fi
 }
