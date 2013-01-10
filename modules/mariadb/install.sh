@@ -123,8 +123,10 @@ else
         "mac")
             ph_cp_inject ${PH_INSTALL_DIR}/modules/mariadb/org.mysql.mysql.plist /Library/LaunchAgents \
                 "##MARIADB_VERSION_STRING##" "${MARIADB_VERSION_STRING}"
-
-            launchctl load -w /Library/LaunchAgents/org.mysql.mysql.plist
+            
+            sudo chown root:wheel /Library/LaunchAgents/org.mysql.mysql.plist
+            sudo launchctl load -w /Library/LaunchAgents/org.mysql.mysql.plist
+            sudo launchctl start org.mysql.mysql
         ;;
 
         *)
