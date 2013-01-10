@@ -25,3 +25,10 @@ echo "    Architecture: ${PH_ARCH}"
 echo "  Number of CPUs: ${PH_NUM_CPUS}"
 echo " Package Manager: ${PH_PACKAGE_MANAGER}"
 echo ""
+
+if [ ${PH_OS} != "windows" ]; then
+    if [ 0 -ne `id -u` ]; then
+        echo '[phundamental/installer] You must be root to install phundamental modules!'
+        exit 1
+    fi
+fi

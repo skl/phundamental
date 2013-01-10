@@ -10,15 +10,7 @@
 
 # Absolute path to current script http://stackoverflow.com/a/246128
 PH_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
 . ${PH_INSTALL_DIR}/bootstrap.sh
-
-if [ ${PH_OS} != "windows" ]; then
-    if [ 0 -ne `id -u` ]; then
-        echo '[phundamental/installer] You must be root to run this script!'
-        exit 1
-    fi
-fi
 
 for i in `ls -1 ${PH_INSTALL_DIR}/modules`; do
     INSTALLER=${PH_INSTALL_DIR}/modules/$i/install.sh
