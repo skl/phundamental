@@ -14,7 +14,7 @@ if [ 0 -ne `id -u` ]; then
 fi
 
 WHEREAMI=`dirname $0`
-. ${WHEREAMI}/etc/phundamental.conf.sh
+. ${WHEREAMI}/etc/phundamental.conf
 
 . ${PH_INSTALL_DIR}/bootstrap.sh
 

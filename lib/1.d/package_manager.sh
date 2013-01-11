@@ -58,7 +58,7 @@ function ph_install_buildtools {
 #
 function ph_install_packages {
     local i=0
-    local CONF_PATH="${PH_INSTALL_DIR}/etc/package_map.conf.sh"
+    local CONF_PATH="${PH_INSTALL_DIR}/etc/package_map.conf"
     declare -a PH_PACKAGES
 
     for PACKAGE in "$@"; do
