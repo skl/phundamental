@@ -14,7 +14,7 @@ if ph_is_installed nginx ; then
     nginx -v
 
     read -p "Do you wish to continue with the nginx installation? [y/n] " REPLY
-    [ $REPLY == "n" ] && return 1 2>/dev/null || exit 1
+    [ $REPLY == "n" ] && return 1 || exit 1
 fi
 
 NGINX_VERSION_STRING=$1
@@ -50,7 +50,7 @@ if [ ! -f nginx-${NGINX_VERSION_STRING}.tar.gz ]; then
 
     if [ ! -f nginx-${NGINX_VERSION_STRING}.tar.gz ]; then
         echo "nginx source download failed!"
-        return 1 2>/dev/null || exit 1
+        return 1 || exit 1
     fi
 fi
 
@@ -124,4 +124,4 @@ case "${PH_OS}" in \
         /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
 esac
 
-return 0 2>/dev/null || exit 0
+return 0 || exit 0

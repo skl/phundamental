@@ -14,7 +14,7 @@ if ph_is_installed mysql ; then
     mysql --version
 
     read -p "Do you wish to continue with the MariaDB installation? [y/n] " REPLY
-    [ $REPLY == "n" ] && return 1 2>/dev/null || exit 1
+    [ $REPLY == "n" ] && return 1 || exit 1
 fi
 
 MARIADB_VERSION_STRING=$1
@@ -38,7 +38,7 @@ if [ "${PH_OS}" == "windows" ]; then
 
         if [ ! -f ${MARIADB_INSTALLER_FILENAME} ]; then
             echo "MariaDB MSI installer download failed!"
-            return 1 2>/dev/null || exit 1
+            return 1 || exit 1
         fi
     fi
 
@@ -71,7 +71,7 @@ else
 
         if [ ! -f mariadb-${MARIADB_VERSION_STRING}.tar.gz ]; then
             echo "mariadb source download failed!"
-            return 1 2>/dev/null || exit 1
+            return 1 || exit 1
         fi
     fi
 
@@ -141,4 +141,4 @@ else
     /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysql_secure_installation
 fi
 
-return 0 2>/dev/null || exit 0
+return 0 || exit 0

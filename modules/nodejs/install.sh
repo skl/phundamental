@@ -14,7 +14,7 @@ if ph_is_installed node ; then
     node -v
 
     read -p "Do you wish to continue with the node installation? [y/n] " REPLY
-    [ $REPLY == "n" ] && return 1 2>/dev/null || exit 1
+    [ $REPLY == "n" ] && return 1 || exit 1
 fi
 
 NODEJS_VERSION_STRING=$1
@@ -30,7 +30,7 @@ if [ "${PH_OS}" == "windows" ]; then
 
         if [ ! -f node-v${NODEJS_VERSION_STRING}-x86.msi ]; then
             echo "node.js MSI installer download failed!"
-            return 1 2>/dev/null || exit 1
+            return 1 || exit 1
         fi
     fi
 
@@ -57,7 +57,7 @@ else
 
         if [ ! -f node-v${NODEJS_VERSION_STRING}.tar.gz ]; then
             echo "node.js source download failed!"
-            return 1 2>/dev/null || exit 1
+            return 1 || exit 1
         fi
     fi
 
@@ -76,4 +76,4 @@ else
     ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm $NODEJS_OVERWRITE_SYMLINKS
 fi
 
-return 0 2>/dev/null || exit 0
+return 0 || exit 0
