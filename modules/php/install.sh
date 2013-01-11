@@ -122,7 +122,6 @@ test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib64'
 
 CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
     "--with-config-file-path=/etc/php-${PHP_VERSION_STRING}" \
-    "--with-libdir=${LIBDIR}" \
     "--with-jpeg-dir" \
     "--with-gd" \
     "--with-zlib" \
@@ -134,12 +133,20 @@ CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
     "--with-openssl" \
     "--with-mhash" \
     "--with-mcrypt" \
-    "--with-gettext" \
     "--with-curl" \
     "--enable-mbstring" \
     "--with-ldap=/usr" \
     "--enable-bcmath" \
     "--enable-ftp");
+
+if [[ "${PH_OS}" == "mac" ]]; then
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+        "--with-gettext=`find /usr/local/Cellar/gettext -depth 1 | sort | tail -1`")
+else
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+        "--with-gettext" \
+        "--with-libdir=${LIBDIR}")
+fi
 
 # Enable FPM for 5.3.3+
 if [ ${PHP_VERSION_MAJOR} -eq 5 ] && \
@@ -186,6 +193,7 @@ fi
 if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
     # Add homebrew include directories
     CONFIGURE_ARGS=("${CONFIGURE_ARGS[@]}" \
+        "--with-png-dir=/usr/X11" \
         "--with-cc-opt=-I/usr/local/include" \
         "--with-ld-opt=-L/usr/local/lib")
 fi
@@ -276,7 +284,8 @@ case "${PH_OS}" in \
     ;;
 
     *)
-        echo "PHP-FPM startup script not implemented for this OS!"
+        echo "PHP-FPM startup script not implemented for this OS! Starting manually..."
+        /usr/local/php-${PHP_VERSION_STRING}/sbin/php-fpm --fpm-config /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
 esac
 
 echo ""

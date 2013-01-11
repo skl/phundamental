@@ -116,7 +116,6 @@ case "${PH_OS}" in \
 
         chown root:wheel /Library/LaunchAgents/org.nginx.nginx.plist
         launchctl load -w /Library/LaunchAgents/org.nginx.nginx.plist
-        launchctl start org.nginx.nginx
     ;;
 
     *)

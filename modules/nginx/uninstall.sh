@@ -23,5 +23,10 @@ rm -rf /usr/local/nginx
 chkconfig --set nginx off
 rm /etc/init.d/nginx
 
+# @TODO
+# launchctl quit nginx
+# launchctl unload /Library/LaunchAgents/org.nginx.nginx.plist
+# rm /Library/LaunchAgents/org.nginx.nginx.plist
+
 echo ""
 echo "nginx ${NGINX_VERSION_STRING} has been uninstalled."
