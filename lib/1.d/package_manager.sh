@@ -11,11 +11,13 @@ if ph_is_installed apt-cyg ; then
 elif ph_is_installed apt-get ; then
     PH_PACKAGE_MANAGER='apt-get'
     PH_PACKAGE_MANAGER_ARG='install'
+    PH_PACKAGE_MANAGER_UPDATE='update'
     PH_PACKAGE_MANAGER_BUILDTOOLS='apt-get install build-essential'
 
 elif ph_is_installed brew ; then
     PH_PACKAGE_MANAGER='brew'
     PH_PACKAGE_MANAGER_ARG='install'
+    PH_PACKAGE_MANAGER_UPDATE='update'
 
 elif ph_is_installed pacman ; then
     PH_PACKAGE_MANAGER='pacman'
@@ -99,10 +101,17 @@ function ph_install_packages {
             if [ -z ${PH_ORIGINAL_USER} ]; then
                 read -p 'Homebrew requires your username please (not root): ' PH_ORIGINAL_USER
             fi
-            sudo -u ${PH_ORIGINAL_USER} $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]}
+            sudo -u ${PH_ORIGINAL_USER} brew update
+            sudo -u ${PH_ORIGINAL_USER} brew tap homebrew/dupes
+            sudo -u ${PH_ORIGINAL_USER} brew install ${PH_PACKAGES[@]} || \
+                { echo "[phundamental/package_manager] Failed to install packages: ${PH_PACKAGES[@]}"; exit 1; }
 
         else
-            $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]}
+            # Update package list if required
+            [ ! -z ${PH_PACKAGE_MANAGER_UPDATE} ] && ${PH_PACKAGE_MANAGER} ${PH_PACKAGE_MANAGER_UPDATE}
+
+            $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]} || \
+                { echo "[phundamental/package_manager] Failed to install packages: ${PH_PACKAGES[@]}"; exit 1; }
         fi
     fi
 }
