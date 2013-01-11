@@ -103,8 +103,7 @@ function ph_install_packages {
             fi
             sudo -u ${PH_ORIGINAL_USER} brew update
             sudo -u ${PH_ORIGINAL_USER} brew tap homebrew/dupes
-            sudo -u ${PH_ORIGINAL_USER} brew install ${PH_PACKAGES[@]} || \
-                { echo "[phundamental/package_manager] Failed to install packages: ${PH_PACKAGES[@]}"; exit 1; }
+            sudo -u ${PH_ORIGINAL_USER} brew install ${PH_PACKAGES[@]}
 
         else
             # Update package list if required
