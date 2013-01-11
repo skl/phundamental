@@ -10,7 +10,7 @@ PH_INSTALL_DIR="$( cd "${PH_NODEJS_INSTALL_DIR}" && cd ../../ && pwd )"
 
 if ph_is_installed node ; then
     echo "node is already installed!"
-    ls -lh `which node` | awk '{print $9 $10 $11}'
+    ls -l `which node` | awk '{print $9 $10 $11}'
     node -v
 
     read -p "Do you wish to continue with the node installation? [y/n] " REPLY

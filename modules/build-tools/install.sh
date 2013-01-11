@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PH_BUILTOOLS_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PH_BUILDTOOLS_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PH_INSTALL_DIR="$( cd "${PH_BUILDTOOLS_INSTALL_DIR}" && cd ../../ && pwd )"
 . ${PH_INSTALL_DIR}/bootstrap.sh
 

@@ -29,13 +29,6 @@ echo ""
 if [ ${PH_OS} != "windows" ]; then
     if [ 0 -ne `id -u` ]; then
         echo '[phundamental/installer] You must be root to install phundamental modules!'
-
-        if ph_is_installed sudo ; then
-            echo "[phundamental/installer] sudo'ing..."
-            sudo ${PH_INSTALL_DIR}/install.sh
-            exit 0
-        else
-            exit 1
-        fi
+        exit 1
     fi
 fi

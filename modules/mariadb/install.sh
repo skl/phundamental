@@ -10,7 +10,7 @@ PH_INSTALL_DIR="$( cd "${PH_MARIADB_INSTALL_DIR}" && cd ../../ && pwd )"
 
 if ph_is_installed mysql ; then
     echo "MySQL is already installed!"
-    ls -lh `which mysql` | awk '{print $9 $10 $11}'
+    ls -l `which mysql` | awk '{print $9 $10 $11}'
     mysql --version
 
     read -p "Do you wish to continue with the MariaDB installation? [y/n] " REPLY
@@ -57,8 +57,7 @@ else
     read -p "Overwrite existing symlinks? [y/n]: " REPLY
     [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
 
-    ph_mkdirs \
-        /usr/local/src
+    ph_mkdirs /usr/local/src
 
     ph_creategroup mysql
     ph_createuser mysql
@@ -91,7 +90,7 @@ else
     cd /usr/local/mariadb-${MARIADB_VERSION_STRING}
     cp support-files/my-medium.cnf /etc/my.cnf
 
-    ph_search_and_replace "#skip-networking" "skip-networking" /etc/my.cnf
+    ph_search_and_replace "^skip-networking" "#skip-networking" /etc/my.cnf
     ph_search_and_replace "^socket" "#socket" /etc/my.cnf
     ph_search_and_replace "^#innodb" "innodb" /etc/my.cnf
 
@@ -125,12 +124,13 @@ else
         ;;
 
         "mac")
-            ph_cp_inject ${PH_INSTALL_DIR}/modules/mariadb/org.mysql.mysql.plist /Library/LaunchAgents \
+            ph_mkdirs /Library/LaunchAgents
+
+            ph_cp_inject ${PH_INSTALL_DIR}/modules/mariadb/org.mysql.mysqld.plist /Library/LaunchAgents/org.mysql.mysqld.plist \
                 "##MARIADB_VERSION_STRING##" "${MARIADB_VERSION_STRING}"
 
-            chown root:wheel /Library/LaunchAgents/org.mysql.mysql.plist
-            launchctl load -w /Library/LaunchAgents/org.mysql.mysql.plist
-            launchctl start org.mysql.mysql
+            chown root:wheel /Library/LaunchAgents/org.mysql.mysqld.plist
+            launchctl load -w /Library/LaunchAgents/org.mysql.mysqld.plist
         ;;
 
         *)

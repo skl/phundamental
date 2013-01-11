@@ -27,7 +27,7 @@ PH_INSTALL_DIR="$( cd "${PH_PHP_INSTALL_DIR}" && cd ../../ && pwd )"
 
 if ph_is_installed php ; then
     echo "PHP is already installed!"
-    ls -lh `which php` | awk '{print $9 $10 $11}'
+    ls -l `which php` | awk '{print $9 $10 $11}'
     php -v
 
     read -p "Do you wish to continue with the PHP installation? [y/n] " REPLY

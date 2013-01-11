@@ -10,7 +10,7 @@ PH_INSTALL_DIR="$( cd "${PH_NGINX_INSTALL_DIR}" && cd ../../ && pwd )"
 
 if ph_is_installed nginx ; then
     echo "nginx is already installed!"
-    ls -lh `which nginx` | awk '{print $9 $10 $11}'
+    ls -l `which nginx` | awk '{print $9 $10 $11}'
     nginx -v
 
     read -p "Do you wish to continue with the nginx installation? [y/n] " REPLY
