@@ -273,8 +273,8 @@ case "${PH_OS}" in \
             ;;
 
             "mac")
-                ph_cp_inject
-                ${PH_INSTALL_DIR}/modules/php/org.php.php-fpm.plist /Library/LaunchAgents/org.php.php-fpm.plist \
+                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/org.php.php-fpm.plist \
+                    /Library/LaunchAgents/org.php.php-fpm.plist \
                     "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}"
 
                 chown root:wheel /Library/LaunchAgents/org.php.php-fpm.plist
