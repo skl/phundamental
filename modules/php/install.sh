@@ -272,6 +272,16 @@ case "${PH_OS}" in \
                 /usr/local/nginx/sbin/nginx -s reload
             ;;
 
+            "mac")
+                ph_cp_inject
+                ${PH_INSTALL_DIR}/modules/php/org.php.php-fpm.plist /Library/LaunchAgents/org.php.php-fpm.plist \
+                    "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}"
+
+                chown root:wheel /Library/LaunchAgents/org.php.php-fpm.plist
+                launchctl load -w /Library/LaunchAgents/org.php.php-fpm.plist
+
+            ;;
+
             *)
                 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
                     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
