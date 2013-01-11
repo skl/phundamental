@@ -14,7 +14,7 @@ if ph_is_installed mysql ; then
     mysql --version
 
     read -p "Do you wish to continue with the MariaDB installation? [y/n] " REPLY
-    [ $REPLY == "n" ] && return 1 || exit 1
+    [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
 MARIADB_VERSION_STRING=$1
