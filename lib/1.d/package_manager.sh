@@ -103,14 +103,20 @@ function ph_install_packages {
             fi
             sudo -u ${PH_ORIGINAL_USER} brew update
             sudo -u ${PH_ORIGINAL_USER} brew tap homebrew/dupes
-            sudo -u ${PH_ORIGINAL_USER} brew install ${PH_PACKAGES[@]}
+            sudo -u ${PH_ORIGINAL_USER} brew install ${PH_PACKAGES[@]} || { \
+                read -p "[phundamental/package_manager] Do you wish to continue? [y/n]: " REPLY; \
+                [[ $REPLY != "y" ]] && exit 1;
+            }
+
 
         else
             # Update package list if required
             [ ! -z ${PH_PACKAGE_MANAGER_UPDATE} ] && ${PH_PACKAGE_MANAGER} ${PH_PACKAGE_MANAGER_UPDATE}
 
-            $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]} || \
-                { echo "[phundamental/package_manager] Failed to install packages: ${PH_PACKAGES[@]}"; exit 1; }
+            $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]} || { \
+                read -p "[phundamental/package_manager] Do you wish to continue? [y/n]: " REPLY; \
+                [[ $REPLY != "y" ]] && exit 1;
+            }
         fi
     fi
 }
