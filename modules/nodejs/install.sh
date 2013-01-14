@@ -66,7 +66,8 @@ else
 
     CONFIGURE_ARGS=("--prefix=/usr/local/nodejs-${NODEJS_VERSION_STRING}");
 
-    ./configure ${CONFIGURE_ARGS[@]} && make -j ${PH_NUM_CPUS} && make install
+    ./configure ${CONFIGURE_ARGS[@]} && { make -j ${PH_NUM_CPUS} && make install; } || \
+        { echo "./configure failed! Check dependencies and re-run the installer."; exit 1; }
 
     ph_symlink /etc/nodejs-${NODEJS_VERSION_STRING} /etc/nodejs $NODEJS_OVERWRITE_SYMLINKS
     ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING} /usr/local/nodejs $NODEJS_OVERWRITE_SYMLINKS
