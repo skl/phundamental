@@ -8,23 +8,23 @@
 #                                                   #
 #####################################################
 
-if [ 0 -ne `id -u` ]; then
-    echo 'You must be root to run this script!'
-    exit
-fi
+# Absolute path to current script http://stackoverflow.com/a/246128
+PH_UNINSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. ${PH_UNINSTALL_DIR}/bootstrap.sh
 
-WHEREAMI=`dirname $0`
-. ${WHEREAMI}/etc/phundamental.conf
+for i in `ls -1 ${PH_UNINSTALL_DIR}/modules`; do
+    UNINSTALLER=${PH_UNINSTALL_DIR}/modules/$i/uninstall.sh
 
-. ${PH_INSTALL_DIR}/bootstrap.sh
-
-for i in `ls -1 ${PH_INSTALL_DIR}/modules`; do
-    UNINSTALLER=${PH_INSTALL_DIR}/modules/$i/uninstall.sh
-
-    # Uninstall module if there is an executable uninstall.sh
+    # Install module if there is an executable uninstall.sh
     if [ -x $UNINSTALLER ]; then
-        echo ""
-        read -p "Would you like to uninstall '$i'? [y/n] " REPLY
-        [ "y" == $REPLY ] && . ${UNINSTALLER}
+        echo ''
+        read -p "[phundamental/uninstaller] Would you like to uninstall '$i'? [y/n] " REPLY
+        if [ "y" == $REPLY ]; then
+            RESULT='with an unknown status'
+            . ${UNINSTALLER} && RESULT='successfully' || RESULT='unsuccessfully'
+            echo "[phundamental/$i] uninstallation script finished ${RESULT}."
+        fi
     fi
 done
+
+exit 0
