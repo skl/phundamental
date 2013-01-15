@@ -36,7 +36,7 @@ to your `.profile` or `.bashrc`:
 
 Clone the repo to a directory on your server and execute the top-level installer:
 
-    git clone https://github.com/skl/phundamental.git && sudo phundamental/install.sh
+    git clone https://github.com/skl/phundamental.git
 
 **N.B.** If you're running cygwin or you don't have sudo installed, remove `sudo` from the below commands.
 
