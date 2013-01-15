@@ -38,9 +38,29 @@ Clone the repo to a directory on your server and execute the top-level installer
 
     git clone https://github.com/skl/phundamental.git && sudo phundamental/install.sh
 
-**N.B.** If you're running cygwin or you don't have sudo installed, remove `sudo` from the above command. The
-top-level ``phundamental/install.sh`` file will ask you which modules to install. The
-``modules/.../install.sh`` per-module install files will only install the one module if executed directly.
+**N.B.** If you're running cygwin or you don't have sudo installed, remove `sudo` from the below commands.
+
+### Install all modules
+
+Execute the top-level installer, it will ask you which modules to install:
+
+    sudo phundamental/install.sh
+
+### Install some modules
+
+Execute the top-level installer with parameters (one per module, order doesn't matter):
+
+    sudo phundamental/install.sh nodejs php nginx
+
+### Install one module
+
+There are two ways of doing this, as above:
+
+    sudo phundamental/install.sh php
+
+Alternatively:
+
+    sudo phundamental/modules/php/install.php
 
 ## Modules
 
