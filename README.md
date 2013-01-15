@@ -34,7 +34,7 @@ to your `.profile` or `.bashrc`:
 
 ## Instructions
 
-Clone the repo to a directory on your server and execute the top-level installer:
+Clone the repo to a directory on your server:
 
     git clone https://github.com/skl/phundamental.git
 
