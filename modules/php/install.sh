@@ -124,6 +124,7 @@ CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
     "--with-jpeg-dir" \
     "--with-gd" \
     "--with-zlib" \
+    "--enable-pcntl" \
     "--enable-zip" \
     "--enable-exif" \
     "--with-libxml-dir" \
@@ -225,19 +226,20 @@ ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/nginx/global/php-${PHP_VERSION_STRING}.conf
 
+PHP_BIN_DIR=/usr/local/php-${PHP_VERSION_STRING}/bin
+
 # Set PHP extension_dir
-cd /usr/local/php-${PHP_VERSION_STRING}/bin
-PHP_EXTENSION_API=`./php -i | grep "PHP Extension =>" | awk '{print $4}'`
+PHP_EXTENSION_API=`${PHP_BIN_DIR}/php -i | grep "PHP Extension =>" | awk '{print $4}'`
 ph_search_and_replace "##PHP_EXTENSION_API##" "${PHP_EXTENSION_API}" /etc/php-${PHP_VERSION_STRING}/php.ini
 
 # Setup PEAR/PECL
-/usr/local/php-${PHP_VERSION_STRING}/bin/pear config-set php_ini /etc/php-${PHP_VERSION_STRING}/php.ini
-/usr/local/php-${PHP_VERSION_STRING}/bin/pear config-set preferred_state beta
+${PHP_BIN_DIR}/pear config-set php_ini /etc/php-${PHP_VERSION_STRING}/php.ini
+${PHP_BIN_DIR}/pear config-set preferred_state beta
+${PHP_BIN_DIR}/pear config-set auto_discover 1
 
 read -p "Install APC and xdebug? [y/n] " REPLY
 if [ "$REPLY" == "y" ]; then
     # PECL installs need to be done one at a time so that it doesn't mess up php.ini
-    PHP_BIN_DIR=/usr/local/php-${PHP_VERSION_STRING}/bin
     ${PHP_BIN_DIR}/pecl install --alldeps apc
     ${PHP_BIN_DIR}/pecl install --alldeps xdebug
 
@@ -246,6 +248,12 @@ if [ "$REPLY" == "y" ]; then
         "extension=\"xdebug.so\""\
         "zend_extension=\/usr\/local\/php-${PHP_VERSION_STRING}\/lib\/php\/extensions\/no-debug-non-zts-${PHP_EXTENSION_API}\/xdebug.so"\
         /etc/php-${PHP_VERSION_STRING}/php.ini
+fi
+
+read -p "Install PHPUnit? [y/n] " REPLY
+if [ "$REPLY" == "y" ]; then
+    ${PHP_BIN_DIR}/pear install --alldeps pear.phpunit.de/PHPUnit
+    ph_symlink ${PHP_BIN_DIR}/phpunit /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
 case "${PH_OS}" in \
