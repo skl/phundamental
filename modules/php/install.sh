@@ -34,7 +34,7 @@ if ph_is_installed php ; then
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify PHP version (e.g. 5.4.10): " PHP_VERSION_STRING
+read -p "Specify PHP version (e.g. 5.4.11): " PHP_VERSION_STRING
 
 ph_mkdirs \
     /usr/local/src \
