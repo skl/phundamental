@@ -20,6 +20,9 @@ function ph_os {
         if [ -f /etc/arch-release ]; then
             PH_OS_FLAVOUR='arch'
 
+        elif [ -f /etc/debian_version ]; then
+            PH_OS_FLAVOUR='debian'
+
         elif [ -f /etc/SuSE-release ]; then
             PH_OS_FLAVOUR="suse"
 
