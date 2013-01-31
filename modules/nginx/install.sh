@@ -38,9 +38,9 @@ ph_mkdirs \
     /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled \
     /var/www/localhost/public
 
-ph_creategroup nobody
-ph_createuser nobody
-ph_assigngroup nobody nobody
+ph_creategroup www-data
+ph_createuser www-data
+ph_assigngroup www-data www-data
 
 cd /usr/local/src
 
