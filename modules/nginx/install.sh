@@ -73,7 +73,7 @@ if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
         "--with-ld-opt=-L/usr/local/lib")
 fi
 
-./configure ${CONFIGURE_ARGS[@]} && { make -j ${PH_NUM_CPUS} && make install; } || \
+./configure ${CONFIGURE_ARGS[@]} && { make -j ${PH_NUM_THREADS} && make install; } || \
     { echo "./configure failed! Check dependencies and re-run the installer."; exit 1; }
 
 cp ${PH_INSTALL_DIR}/modules/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf

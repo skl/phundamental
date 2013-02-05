@@ -80,7 +80,7 @@ else
     cmake . \
         -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb-${MARIADB_VERSION_STRING} \
         -DMYSQL_DATADIR=/usr/local/mariadb-${MARIADB_VERSION_STRING}/data \
-            && { make -j ${PH_NUM_CPUS} && make install; } || \
+            && { make -j ${PH_NUM_THREADS} && make install; } || \
                 { echo "./configure failed! Check dependencies and re-run the installer."; exit 1; }
 
     chown -R mysql:mysql /usr/local/mariadb-${MARIADB_VERSION_STRING}

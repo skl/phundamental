@@ -201,7 +201,7 @@ fi
 
 # Build!
 CFLAGS='-O2 -DEAPI'
-./configure ${CONFIGURE_ARGS[@]} && { make -j ${PH_NUM_CPUS} && make install; } || \
+./configure ${CONFIGURE_ARGS[@]} && { make -j ${PH_NUM_THREADS} && make install; } || \
     { echo "./configure failed! Check dependencies and re-run the installer."; exit 1; }
 
 ph_symlink /usr/local/php-${PHP_VERSION_STRING} /usr/local/php $PHP_OVERWRITE_SYMLINKS

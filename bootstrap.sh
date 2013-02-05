@@ -20,10 +20,11 @@ done
 
 echo -e "Bootstrap complete \n"
 
-echo "Operating System: ${PH_OS} (${PH_OS_FLAVOUR})"
-echo "    Architecture: ${PH_ARCH}"
-echo "  Number of CPUs: ${PH_NUM_CPUS}"
-echo " Package Manager: ${PH_PACKAGE_MANAGER}"
+echo "   Operating System: ${PH_OS} (${PH_OS_FLAVOUR})"
+echo "       Architecture: ${PH_ARCH}"
+echo "     Number of CPUs: ${PH_NUM_CPUS}"
+echo "Compilation Threads: ${PH_NUM_THREADS}"
+echo "    Package Manager: ${PH_PACKAGE_MANAGER}"
 echo ""
 
 if [ ${PH_OS} != "windows" ]; then
@@ -33,7 +34,3 @@ if [ ${PH_OS} != "windows" ]; then
     fi
 fi
 
-if [ ${PH_NUM_CPUS} -gt 1 ]; then
-    read -p "Use all ${PH_NUM_CPUS} CPUs? [y/n]: " REPLY
-    [ $REPLY == "n" ] && PH_NUM_CPUS=1
-fi
