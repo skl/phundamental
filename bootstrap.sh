@@ -32,3 +32,8 @@ if [ ${PH_OS} != "windows" ]; then
         exit 1
     fi
 fi
+
+if [ ${PH_NUM_CPUS} -gt 1 ]; then
+    read -p "Use all ${PH_NUM_CPUS} CPUs? [y/n]: " REPLY
+    [ $REPLY == "n" ] && PH_NUM_CPUS=1
+fi
