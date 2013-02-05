@@ -52,6 +52,7 @@ ph_install_packages\
     libjpeg\
     libtool\
     libxml\
+    make\
     mcrypt\
     mhash\
     openldap\
