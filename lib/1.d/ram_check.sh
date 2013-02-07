@@ -18,6 +18,11 @@ function ph_ram_check {
     'linux' |\
     'windows')
         PH_NUM_THREADS=`expr $(cat /proc/meminfo | grep MemTotal | awk '{print $2}') / 153600`
+
+        # Don't allow thread count to be greater than number of CPUs
+        if [ ${PH_NUM_THREADS} -gt ${PH_NUM_CPUS} ]; then
+            PH_NUM_THREADS=${PH_NUM_CPUS}
+        fi
     ;;
 
     'mac')
