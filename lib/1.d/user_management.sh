@@ -7,7 +7,7 @@ function ph_createuser_mac() {
     local NEW_USER_ID=`expr ${MAX_USER_ID} + 1`
 
     # Return early if user exists
-    dscl . -read /Users/${USERNAME} >/dev/null 2&>1 && return 0
+    dscl . -read /Users/${USERNAME} >/dev/null 2>&1 && return 0
 
     dscl . -create /Users/${USERNAME}
     dscl . -create /Users/${USERNAME} UniqueID "${NEW_USER_ID}"
@@ -26,7 +26,7 @@ function ph_creategroup_mac() {
     local NEW_GROUP_ID=`expr ${MAX_GROUP_ID} + 1`
 
     # Return early if group exists
-    dscl . -read /Groups/${GROUPNAME} >/dev/null 2&>1 && return 0
+    dscl . -read /Groups/${GROUPNAME} >/dev/null 2>&1 && return 0
 
     dscl . -create /Groups/${GROUPNAME}
     dscl . -create /Groups/${GROUPNAME} PrimaryGroupID ${NEW_GROUP_ID}
