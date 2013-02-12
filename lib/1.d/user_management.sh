@@ -11,12 +11,16 @@ function ph_createuser_mac() {
 
     dscl . -create /Users/${USERNAME}
     dscl . -create /Users/${USERNAME} UniqueID "${NEW_USER_ID}"
+
+    return 0
 }
 
 function ph_deleteuser_mac() {
     local USERNAME=$1
 
     dscl . -delete /Users/${USERNAME}
+
+    return 0
 }
 
 function ph_creategroup_mac() {
@@ -30,12 +34,16 @@ function ph_creategroup_mac() {
 
     dscl . -create /Groups/${GROUPNAME}
     dscl . -create /Groups/${GROUPNAME} PrimaryGroupID ${NEW_GROUP_ID}
+
+    return 0
 }
 
 function ph_deletegroup_mac() {
     local GROUPNAME=$1
 
     dscl . -delete /Groups/${GROUPNAME}
+
+    return 0
 }
 
 function ph_assigngroup_mac() {
@@ -46,6 +54,8 @@ function ph_assigngroup_mac() {
     dscl . -read /Groups/${GROUPNAME} | grep ${USERNAME} >/dev/null && return 0
 
     dscl . -append /Groups/${GROUPNAME} GroupMembership ${USERNAME}
+
+    return 0
 }
 
 function ph_createuser_linux() {
@@ -54,14 +64,19 @@ function ph_createuser_linux() {
     # Return early if user already exists
     id -u ${USERNAME} 2>/dev/null && return 0
 
-    # Create system user
-    useradd -r ${USERNAME}
+    # Create system user, if failed then create user and assign to group with
+    # same name.
+    useradd -r ${USERNAME} 2>/dev/null \
+        || useradd -rg ${USERNAME} ${USERNAME} \
+        || { echo "ph_createuser_linux() failed to add user ${USERNAME}!"; return 1; }
+
+    return 0
 }
 
 function ph_deleteuser_linux() {
     local USERNAME=$1
 
-    userdel ${USERNAME}
+    userdel ${USERNAME} && return 0 || return 1
 }
 
 function ph_creategroup_linux() {
@@ -70,13 +85,13 @@ function ph_creategroup_linux() {
     # Return early if group already exists
     cat /etc/group | grep "^${GROUPNAME}" >/dev/null && return 0
 
-    groupadd -r mysql
+    groupadd -r ${GROUPNAME} && return 0 || return 1
 }
 
 function ph_deletegroup_linux() {
     local GROUPNAME=$1
 
-    groupdel ${GROUPNAME}
+    groupdel ${GROUPNAME} && return 0 || return 1
 }
 
 function ph_assigngroup_linux() {
@@ -86,7 +101,7 @@ function ph_assigngroup_linux() {
     # Return early if membership already exists
     cat /etc/group | grep "^${GROUPNAME}" | cut -d: -f4 | grep ${USERNAME} >/dev/null && return 0
 
-    usermod -G ${GROUPNAME} ${USERNAME}
+    usermod -G ${GROUPNAME} ${USERNAME} && return 0 || return 1
 }
 
 function ph_createuser() {
