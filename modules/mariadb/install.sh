@@ -50,6 +50,7 @@ else
         bison\
         cmake\
         m4\
+        make\
         openssl\
         wget
 
