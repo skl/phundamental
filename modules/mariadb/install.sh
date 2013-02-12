@@ -51,6 +51,7 @@ else
         cmake\
         m4\
         make\
+        ncurses\
         openssl\
         wget
 
