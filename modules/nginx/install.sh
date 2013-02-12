@@ -27,7 +27,7 @@ ph_install_packages\
     wget\
     zlib
 
-read -p "Overwrite existing symlinks? [y/n]: " REPLY
+read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
 [ "$REPLY" == "y" ] && NGINX_OVERWRITE_SYMLINKS=true || NGINX_OVERWRITE_SYMLINKS=false
 
 ph_mkdirs \

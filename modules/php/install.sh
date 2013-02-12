@@ -91,7 +91,7 @@ if [ "${PH_OS}" == "windows" ]; then
     fi
 fi
 
-read -p "Overwrite existing symlinks? [y/n]: " REPLY
+read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
 [ "$REPLY" == "y" ] && PHP_OVERWRITE_SYMLINKS=true || PHP_OVERWRITE_SYMLINKS=false
 
 # e.g. 531 (truncated to three characters in order to construct a valid port number for fpm)

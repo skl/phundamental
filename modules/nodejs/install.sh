@@ -42,7 +42,7 @@ else
         python\
         wget
 
-    read -p "Overwrite existing symlinks? [y/n]: " REPLY
+    read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
     [ "$REPLY" == "y" ] && NODEJS_OVERWRITE_SYMLINKS=true || NODEJS_OVERWRITE_SYMLINKS=false
 
     ph_mkdirs \

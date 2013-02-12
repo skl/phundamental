@@ -56,7 +56,7 @@ else
         openssl\
         wget
 
-    read -p "Overwrite existing symlinks? [y/n]: " REPLY
+    read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
     [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
 
     ph_mkdirs /usr/local/src
