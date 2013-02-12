@@ -21,6 +21,7 @@ read -p "Specify nginx version (e.g. 1.2.6): " NGINX_VERSION_STRING
 
 
 ph_install_packages\
+    gcc\
     make\
     openssl\
     pcre\
