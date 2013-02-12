@@ -49,6 +49,7 @@ else
     ph_install_packages\
         bison\
         cmake\
+        gcc\
         m4\
         make\
         ncurses\
