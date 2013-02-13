@@ -122,23 +122,24 @@ test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib64'
 
 CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
     "--with-config-file-path=/etc/php-${PHP_VERSION_STRING}" \
-    "--with-jpeg-dir" \
-    "--with-gd" \
-    "--with-zlib" \
-    "--enable-pcntl" \
-    "--enable-zip" \
-    "--enable-exif" \
-    "--with-libxml-dir" \
-    "--enable-pdo" \
-    "--with-regex=system" \
-    "--with-openssl" \
-    "--with-mhash" \
-    "--with-mcrypt" \
-    "--with-curl" \
-    "--enable-mbstring" \
-    "--with-ldap=/usr" \
     "--enable-bcmath" \
-    "--enable-ftp");
+    "--enable-calendar" \
+    "--enable-exif" \
+    "--enable-ftp" \
+    "--enable-mbstring" \
+    "--enable-pcntl" \
+    "--enable-pdo" \
+    "--enable-zip" \
+    "--with-curl" \
+    "--with-gd" \
+    "--with-jpeg-dir" \
+    "--with-ldap=/usr" \
+    "--with-libxml-dir" \
+    "--with-mcrypt" \
+    "--with-mhash" \
+    "--with-openssl" \
+    "--with-regex=system" \
+    "--with-zlib");
 
 if [[ "${PH_OS}" == "mac" ]]; then
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
