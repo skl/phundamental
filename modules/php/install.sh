@@ -42,6 +42,10 @@ ph_mkdirs \
 
 cd /usr/local/src
 
+ph_creategroup www-data
+ph_createuser www-data
+ph_assigngroup www-data www-data
+
 ph_install_packages\
     autoconf\
     automake\
