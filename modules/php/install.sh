@@ -191,9 +191,18 @@ fi
 
 # Add Oracle support if sqlplus binary found
 if ph_is_installed sqlplus ; then
-    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-        "--with-pdo-oci=instantclient,/usr,10.2.0.5" \
-        "--with-oci8")
+    case "${PH_OS}" in \
+        "linux")
+            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+                "--with-pdo-oci=instantclient,/usr,10.2.0.5" \
+                "--with-oci8")
+        ;;
+
+        "mac")
+            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+                "--with-oci8=instantclient,/usr/local/instantclient")
+        ;;
+    esac
 fi
 
 if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
