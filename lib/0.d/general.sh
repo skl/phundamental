@@ -78,7 +78,7 @@ function ph_mkdirs() {
 function ph_symlink() {
     local SOURCE="$1"
     local TARGET="$2"
-    local FORCE="$3"
+    local FORCE=$3
 
     if [ -f ${TARGET} ] || [ -d ${TARGET} ] && [ ! -L ${TARGET} ]; then
         echo "ph_symlink() - Aborting! - Real file already exists where you're trying to create a symlink: ${TARGET}"
