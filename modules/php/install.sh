@@ -152,6 +152,12 @@ else
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
         "--with-gettext" \
         "--with-libdir=${LIBDIR}")
+
+    # Compilation will not work without this option when RAM <= 512 MiB
+    if [ ${PH_RAM_MB} -lte 512 ]; then
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+            "--disable-fileinfo")
+    fi
 fi
 
 # Enable FPM for 5.3.3+
