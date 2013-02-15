@@ -109,6 +109,7 @@ case "${PH_OS}" in \
             *)
             cp ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING}
             /etc/init.d/nginx-${NGINX_VERSION_STRING} start
+            update-rc.d nginx-${NGINX_VERSION_STRING} defaults
         esac
     ;;
 

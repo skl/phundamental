@@ -309,6 +309,8 @@ case "${PH_OS}" in \
                 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
 
                 /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
+                update-rc.d php-${PHP_VERSION_STRING}-fpm defaults
+
                 /usr/local/nginx/sbin/nginx -s reload
         esac
     ;;
