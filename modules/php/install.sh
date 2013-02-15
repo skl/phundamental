@@ -154,7 +154,7 @@ else
         "--with-libdir=${LIBDIR}")
 
     # Compilation will not work without this option when RAM <= 512 MiB
-    if [ ${PH_RAM_MB} -lte 512 ]; then
+    if [ ${PH_RAM_MB} -le 512 ]; then
         CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
             "--disable-fileinfo")
     fi
