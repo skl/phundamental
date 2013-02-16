@@ -23,6 +23,10 @@ function ph_ram_check {
         # Don't allow thread count to be greater than number of CPUs
         if [ ${PH_NUM_THREADS} -gt ${PH_NUM_CPUS} ]; then
             PH_NUM_THREADS=${PH_NUM_CPUS}
+
+        # Special case for machine with < 150MiB RAM
+        elif [ ${PH_NUM_THREADS} -eq 0 ]; then
+            PH_NUM_THREADS=1
         fi
     ;;
 
