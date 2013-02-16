@@ -102,12 +102,16 @@ case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
             "arch")
-            cp ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/rc.d/nginx-${NGINX_VERSION_STRING}
+            ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/rc.d/nginx-${NGINX_VERSION_STRING} \
+                "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
+
             /etc/rc.d/nginx-${NGINX_VERSION_STRING} start
             ;;
 
             *)
-            cp ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING}
+            ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
+                "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
+
             /etc/init.d/nginx-${NGINX_VERSION_STRING} start
             update-rc.d nginx-${NGINX_VERSION_STRING} defaults
         esac
