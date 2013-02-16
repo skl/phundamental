@@ -36,6 +36,24 @@ fi
 
 read -p "Specify PHP version (e.g. 5.4.11): " PHP_VERSION_STRING
 
+case "${PH_OS}" in \
+    "windows" | \
+    "linux")
+        HOMEDIRS="/home"
+    ;;
+
+    "mac")
+        HOMEDIRS="/Users"
+    ;;
+esac
+
+for i in `ls -1 ${HOMEDIRS}`; do
+    if [ -f "${HOMEDIRS}/${i}/.pearrc" ]; then
+        read -p ".pearrc detected in ${HOMEDIRS}/${i} - delete? (recommended) [y/n]"
+        [ $REPLY == "y" ] && rm -f ${HOMEDIRS}/${i}/.pearrc
+    fi
+done
+
 ph_mkdirs \
     /usr/local/src \
     /etc/php-${PHP_VERSION_STRING}
@@ -254,6 +272,7 @@ PHP_EXTENSION_API=`${PHP_BIN_DIR}/php -i | grep "PHP Extension =>" | awk '{print
 ph_search_and_replace "##PHP_EXTENSION_API##" "${PHP_EXTENSION_API}" /etc/php-${PHP_VERSION_STRING}/php.ini
 
 # Setup PEAR/PECL
+
 ${PHP_BIN_DIR}/pear config-set php_ini /etc/php-${PHP_VERSION_STRING}/php.ini
 ${PHP_BIN_DIR}/pear config-set preferred_state beta
 ${PHP_BIN_DIR}/pear config-set auto_discover 1
