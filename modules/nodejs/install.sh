@@ -77,4 +77,10 @@ else
     ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm $NODEJS_OVERWRITE_SYMLINKS
 fi
 
+# Cleanup
+echo -n "Deleting source files... "
+rm -rf /usr/local/src/node-v${NODEJS_VERSION_STRING} \
+    /usr/local/src/node-v${NODEJS_VERSION_STRING}.tar.gz
+echo "Complete."
+
 return 0 || exit 0

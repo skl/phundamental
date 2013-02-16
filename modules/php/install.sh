@@ -352,6 +352,12 @@ case "${PH_OS}" in \
         /usr/local/php-${PHP_VERSION_STRING}/sbin/php-fpm --fpm-config /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
 esac
 
+# Cleanup
+echo -n "Deleting source files... "
+rm -rf /usr/local/src/php-${PHP_VERSION_STRING} \
+    /usr/local/src/php-${PHP_VERSION_STRING}.tar.gz
+echo "Complete."
+
 echo ""
 echo "Check out the example configuration file: /etc/nginx/sites-available/www.example.com"
 

@@ -143,4 +143,10 @@ else
     /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysql_secure_installation
 fi
 
+# Cleanup
+echo -n "Deleting source files... "
+rm -rf /usr/local/src/mariadb-${MARIADB_VERSION_STRING} \
+    /usr/local/src/mariadb-${MARIADB_VERSION_STRING}.tar.gz
+echo "Complete."
+
 return 0 || exit 0

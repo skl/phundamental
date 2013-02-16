@@ -126,4 +126,10 @@ case "${PH_OS}" in \
         /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
 esac
 
+# Cleanup
+echo -n "Deleting source files... "
+rm -rf /usr/local/src/nginx-${NGINX_VERSION_STRING} \
+    /usr/local/src/nginx-${NGINX_VERSION_STRING}.tar.gz
+echo "Complete."
+
 return 0 || exit 0
