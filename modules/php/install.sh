@@ -253,22 +253,27 @@ for i in `ls -1 /usr/local/php-${PHP_VERSION_STRING}/bin`; do
     ph_symlink /usr/local/php-${PHP_VERSION_STRING}/bin/$i /usr/local/bin/$i $PHP_OVERWRITE_SYMLINKS
 done
 
-# Install default config files
-ph_cp_inject ${PH_INSTALL_DIR}/modules/php/www.example.com /etc/nginx/sites-available/www.example.com\
-    "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}"
+# Install nginx config files
+if [ -d /etc/nginx ]; then
+    ph_cp_inject ${PH_INSTALL_DIR}/modules/php/www.example.com /etc/nginx/sites-available/www.example.com\
+        "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}"
 
+    ph_cp_inject ${PH_INSTALL_DIR}/modules/php/nginx.conf /etc/nginx/global/php-${PHP_VERSION_STRING}.conf\
+        "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
+
+    ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/nginx/global/php-${PHP_VERSION_STRING}.conf
+fi
+
+# Install PHP config files
 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php.ini /etc/php-${PHP_VERSION_STRING}/php.ini\
     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf /etc/php-${PHP_VERSION_STRING}/php-fpm.conf\
     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
-ph_cp_inject ${PH_INSTALL_DIR}/modules/php/nginx.conf /etc/nginx/global/php-${PHP_VERSION_STRING}.conf\
-    "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php.ini
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
-ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/nginx/global/php-${PHP_VERSION_STRING}.conf
 
 PHP_BIN_DIR=/usr/local/php-${PHP_VERSION_STRING}/bin
 
@@ -300,6 +305,8 @@ if [ "$REPLY" == "y" ]; then
     ph_symlink ${PHP_BIN_DIR}/phpunit /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
+NGINX_SBIN=`which nginx`
+
 case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
@@ -310,7 +317,7 @@ case "${PH_OS}" in \
                 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/rc.d/php-${PHP_VERSION_STRING}-fpm
 
                 /etc/rc.d/php-${PHP_VERSION_STRING}-fpm start
-                /usr/local/nginx/sbin/nginx -s reload
+                [ -x ${NGINX_SBIN} ] && ${NGINX_SBIN} -s reload
             ;;
 
             "suse")
@@ -322,7 +329,7 @@ case "${PH_OS}" in \
                 chkconfig php-${PHP_VERSION_STRING}-fpm on
 
                 /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
-                /usr/local/nginx/sbin/nginx -s reload
+                [ -x ${NGINX_SBIN} ] && ${NGINX_SBIN} -s reload
             ;;
 
             *)
@@ -334,7 +341,7 @@ case "${PH_OS}" in \
                 /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
                 update-rc.d php-${PHP_VERSION_STRING}-fpm defaults
 
-                /usr/local/nginx/sbin/nginx -s reload
+                [ -x ${NGINX_SBIN} ] && ${NGINX_SBIN} -s reload
         esac
     ;;
 
@@ -358,7 +365,9 @@ rm -rf /usr/local/src/php-${PHP_VERSION_STRING} \
     /usr/local/src/php-${PHP_VERSION_STRING}.tar.gz
 echo "Complete."
 
-echo ""
-echo "Check out the example configuration file: /etc/nginx/sites-available/www.example.com"
+if [ -d /etc/nginx ]; then
+    echo ""
+    echo "Check out the example configuration file: /etc/nginx/sites-available/www.example.com"
+fi
 
 return 0 || exit 0
