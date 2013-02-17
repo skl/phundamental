@@ -1,0 +1,16 @@
+#!/bin/bash
+#####################################################
+#      _             _                   _       _  #
+#  ___| |_ _ _ ___ _| |___ _____ ___ ___| |_ ___| | #
+# | . |   | | |   | . | .'|     | -_|   |  _| .'| | #
+# |  _|_|_|___|_|_|___|__,|_|_|_|___|_|_|_| |__,|_| #
+# |_|                                               #
+#                                                   #
+#####################################################
+
+# Absolute path to current script http://stackoverflow.com/a/246128
+PH_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. ${PH_INSTALL_DIR}/bootstrap.sh
+
+ph_front_controller $@ && exit 0 || exit 1

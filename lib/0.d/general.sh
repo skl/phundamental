@@ -95,3 +95,75 @@ function ph_symlink() {
         ln -s ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     fi
 }
+
+
+##
+# Install a phundamental module
+#
+# @param string $1 <install|uninstall>
+# @param string $2 Module name
+#
+function ph_module_action() {
+    local ACTION=$1
+    local MODULE=$2
+    local RESULT_MSG='with an unknown status'
+    local ACTION_FILE=${PH_INSTALL_DIR}/modules/${MODULE}/${ACTION}.sh
+
+    # Check module directory exists
+    if [ ! -d ${PH_INSTALL_DIR}/modules/${MODULE} ]; then
+        echo "ph_module_action(): Module '${MODULE}' does not exist!"
+        return 1
+    fi
+
+    # Check action file is executable
+    if [ ! -x ${ACTION_FILE} ]; then
+        echo "ph_module_action(): ${MODULE}/${ACTION}.sh is not executable, skipping..."
+        return 1
+    fi
+
+    . ${ACTION_FILE} && RESULT='successfully' || RESULT='unsuccessfully'
+    echo "[phundamental/${MODULE}] ${ACTION} script finished ${RESULT}."
+
+    if [[ "${RESULT}" == "successfully" ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+
+##
+# Process application arguments to deal with request appropriately
+#
+# @param string $1 <install|uninstall>
+# @param list      An optional list of module names to action.
+#
+function ph_front_controller() {
+    local ACTION=$1
+
+    case $# in \
+    0)
+        echo "Usage: ${PH_INSTALL_DIR}/plz <install|uninstall> [<module> [<module> ..]]"
+    ;;
+
+    # Action all modules
+    1)
+        for MODULE in `ls -1 ${PH_INSTALL_DIR}/modules`; do
+            echo ''
+            read -p "[phundamental/installer] Would you like to ${ACTION} ${MODULE}? [y/n] " REPLY
+            [ "y" == $REPLY ] && ph_module_action ${ACTION} ${MODULE}
+        done
+    ;;
+
+    # Action one or more modules
+    *)
+        # Ignore first parameter as it's stored in ${ACTION}
+        shift
+
+        # Loop through all remaining arguments and assume they're module names
+        while (( "$#" )); do
+            ph_module_action ${ACTION} $1
+            shift
+        done
+    esac
+}
