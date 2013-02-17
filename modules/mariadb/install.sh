@@ -108,20 +108,41 @@ else
         "linux")
             case "${PH_OS_FLAVOUR}" in \
                 "arch")
-                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/rc.d/mysql ${MARIADB_OVERWRITE_SYMLINKS}
-                /etc/rc.d/mysql start
+                ph_symlink
+                /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server\
+                    /etc/rc.d/mariadb-${MARIADB_VERSION_STRING}\
+                    ${MARIADB_OVERWRITE_SYMLINKS}
+
+                /etc/rc.d/mariadb-${MARIADB_VERSION_STRING} start
                 ;;
 
                 "suse")
-                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/init.d/mysql ${MARIADB_OVERWRITE_SYMLINKS}
-                /etc/init.d/mysql start
+                ph_symlink\
+                    /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server\
+                    /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
+                    ${MARIADB_OVERWRITE_SYMLINKS}
 
+                /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
                 chkconfig --level 3 mysql on
                 ;;
 
+                "debian")
+                ph_symlink\
+                    /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server\
+                    /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
+                    ${MARIADB_OVERWRITE_SYMLINKS}
+
+                /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
+                update-rc.d mariadb-${MARIADB_VERSION_STRING} defaults
+                ;;
+
                 *)
-                ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server /etc/init.d/mysql ${MARIADB_OVERWRITE_SYMLINKS}
-                /etc/init.d/mysql start
+                ph_symlink\
+                    /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server\
+                    /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
+                    ${MARIADB_OVERWRITE_SYMLINKS}
+
+                /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
             esac
         ;;
 
