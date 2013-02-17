@@ -44,19 +44,19 @@ Clone the repo to a directory on your server:
 
 Execute the top-level installer, it will ask you which modules to install:
 
-    sudo phundamental/install.sh
+    sudo phundamental/plz install
 
 ### Install some modules
 
 Execute the top-level installer with parameters (one per module, order doesn't matter):
 
-    sudo phundamental/install.sh nodejs php nginx
+    sudo phundamental/plz install nodejs php nginx
 
 ### Install one module
 
 There are two ways of doing this, as above:
 
-    sudo phundamental/install.sh php
+    sudo phundamental/plz install php
 
 Alternatively:
 
@@ -84,7 +84,7 @@ stay small and portable. A full git clone currently weighs in at about 2 MiB (in
 * Oracle Instant Client [oic](https://github.com/skl/phundamental-oic)
 
 If you'd like add the optional modules, execute the following in your phundamental
-installation directory *prior* to executing `install.sh`:
+installation directory *prior* to executing the installer:
 
     git submodule update --init
 
