@@ -37,6 +37,7 @@ if [ "${PH_OS}" == "windows" ]; then
 
 else
     ph_install_packages\
+        gcc\
         make\
         openssl\
         python\
