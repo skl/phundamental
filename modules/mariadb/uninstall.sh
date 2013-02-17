@@ -8,8 +8,7 @@ PH_MARIADB_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PH_INSTALL_DIR="$( cd "${PH_MARIADB_INSTALL_DIR}" && cd ../../ && pwd )"
 . ${PH_INSTALL_DIR}/bootstrap.sh
 
-MARIADB_VERSION_STRING=$1
-[ -z "$1" ] && read -p "Specify mariadb version (e.g. 5.5.29): " MARIADB_VERSION_STRING
+read -p "Specify mariadb version (e.g. 5.5.29): " MARIADB_VERSION_STRING
 
 read -p "Remove symlinks? [y/n]: " REPLY
 [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
