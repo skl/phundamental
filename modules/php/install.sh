@@ -191,30 +191,31 @@ if [ ${PHP_VERSION_MAJOR} -eq 5 ] && \
         "--enable-fpm")
 fi
 
-# Add appropriate MySQL support if binary found
-if ph_is_installed mysql_config ; then
+# PHP4 MySQL is enabled by default, so only deal with 5
+if [ ${PHP_VERSION_MAJOR} -eq 5 ] ; then
 
-    # PHP4 MySQL is enabled by default, so only deal with 5
-    if [ ${PHP_VERSION_MAJOR} -eq 5 ] ; then
-
-        # MySQLi for 5.0.x, 5.1.x, 5.2.x
-        if [ ${PHP_VERSION_MINOR} -le 2 ]; then
+    # MySQLi for 5.0.x, 5.1.x, 5.2.x
+    if [ ${PHP_VERSION_MINOR} -le 2 ]; then
+        if ph_is_installed mysql_config ; then
             CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
                 "--with-mysqli=`which mysql_config`" \
                 "--with-pdo-mysql=/usr/local/mysql")
-
-        # MySQL native driver for 5.3.x
-        elif [ ${PHP_VERSION_MINOR} -eq 3 ]; then
-            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-                "--with-mysqli=mysqlnd" \
-                "--with-pdo-mysql=mysqlnd")
-
-        # MySQL native driver 5.4+
         else
-            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-                "--with-mysqli" \
-                "--with-pdo-mysql=mysqlnd")
+            echo "mysql_config binary not found: you need to setup MySQL first if installing PHP <= 5.2.x"
+            return 1
         fi
+
+    # MySQL native driver for 5.3.x
+    elif [ ${PHP_VERSION_MINOR} -eq 3 ]; then
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+            "--with-mysqli=mysqlnd" \
+            "--with-pdo-mysql=mysqlnd")
+
+    # MySQL native driver 5.4+
+    else
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+            "--with-mysqli" \
+            "--with-pdo-mysql=mysqlnd")
     fi
 fi
 
