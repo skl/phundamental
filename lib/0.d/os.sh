@@ -20,6 +20,9 @@ function ph_os {
         if [ -f /etc/arch-release ]; then
             PH_OS_FLAVOUR='arch'
 
+        elif [ -f /etc/centos-release ]; then
+            PH_OS_FLAVOUR='centos'
+
         elif [ -f /etc/debian_version ]; then
             PH_OS_FLAVOUR='debian'
 
