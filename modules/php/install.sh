@@ -48,13 +48,13 @@ case "${PH_OS}" in \
 esac
 
 if [ -f /root/.pearrc ]; then
-    read -p ".pearrc detected in /root/.pearrc - delete? (recommended) [y/n]"
+    read -p ".pearrc detected in /root/.pearrc - delete? (recommended) [y/n] "
     [ $REPLY == "y" ] && rm -f /root/.pearrc
 fi
 
 for i in `ls -1 ${HOMEDIRS}`; do
     if [ -f "${HOMEDIRS}/${i}/.pearrc" ]; then
-        read -p ".pearrc detected in ${HOMEDIRS}/${i} - delete? (recommended) [y/n]"
+        read -p ".pearrc detected in ${HOMEDIRS}/${i} - delete? (recommended) [y/n] "
         [ $REPLY == "y" ] && rm -f ${HOMEDIRS}/${i}/.pearrc
     fi
 done
