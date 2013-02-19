@@ -94,9 +94,9 @@ function ph_symlink() {
     echo -n "Creating symlink ${TARGET} -> ${SOURCE} ... "
 
     if ${FORCE} ; then
-        ln -sf ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
+        ln -sf ${SOURCE} ${TARGET} 2>/dev/null && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     else
-        ln -sn ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
+        ln -sn ${SOURCE} ${TARGET} 2>/dev/null && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     fi
 }
 
