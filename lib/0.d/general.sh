@@ -51,7 +51,7 @@ ph_cp_inject() {
         return 1
     fi
 
-    cp ${SOURCE} ${TARGET} && ph_search_and_replace ${SEARCH} ${REPLACE} ${TARGET}
+    cp -i ${SOURCE} ${TARGET} && ph_search_and_replace ${SEARCH} ${REPLACE} ${TARGET}
 }
 
 
@@ -83,8 +83,6 @@ function ph_symlink() {
     if [ -f ${TARGET} ] || [ -d ${TARGET} ] && [ ! -L ${TARGET} ]; then
         echo "ph_symlink() - Aborting! - Real file already exists where you're trying to create a symlink: ${TARGET}"
         return 1
-    else
-        rm -f ${TARGET}
     fi
 
     echo -n "Creating symlink ${TARGET} -> ${SOURCE} ... "
