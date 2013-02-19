@@ -207,7 +207,10 @@ if [ ${PHP_VERSION_MAJOR} -eq 5 ] ; then
 
     # MySQL native driver for 5.3.x
     elif [ ${PHP_VERSION_MINOR} -eq 3 ]; then
+        ph_install_packages libmysql
+
         CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+            "--with-mysql" \
             "--with-mysqli=mysqlnd" \
             "--with-pdo-mysql=mysqlnd")
 
