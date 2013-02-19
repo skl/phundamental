@@ -81,8 +81,14 @@ function ph_symlink() {
     local FORCE=$3
 
     if [ -f ${TARGET} ] || [ -d ${TARGET} ] && [ ! -L ${TARGET} ]; then
-        echo "ph_symlink() - Aborting! - Real file already exists where you're trying to create a symlink: ${TARGET}"
-        return 1
+        echo "ph_symlink(): Real file or directory already exists where you're trying to create a symlink: ${TARGET}"
+        rm -ri ${TARGET}
+
+        # Abort symlink creation if user did not delete existing file/directory
+        if [ -f ${TARGET} ] || [ -d ${TARGET} ] && [ ! -L ${TARGET} ]; then
+            echo "ph_symlink(): Aborting symlink creation..."
+            return 1
+        fi
     fi
 
     echo -n "Creating symlink ${TARGET} -> ${SOURCE} ... "
@@ -90,7 +96,7 @@ function ph_symlink() {
     if ${FORCE} ; then
         ln -sf ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     else
-        ln -s ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
+        ln -si ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     fi
 }
 
