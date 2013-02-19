@@ -23,7 +23,7 @@ function ph_search_and_replace() {
     local REPLACE=$2
     local TARGET=$3
 
-    [ ! -f ${TARGET} ] && echo "ph_search_and_replace() failed! ${TARGET} not found"
+    [ ! -f ${TARGET} ] && echo "ph_search_and_replace() failed! ${TARGET} is not a file"
 
     sed -ie "s/${SEARCH}/${REPLACE}/g" ${TARGET}
 
@@ -68,7 +68,7 @@ function ph_mkdirs() {
 
 
 ##
-# Force ovewrite symlink on filesystem
+# (Nicely) create a symlink
 #
 # @param string   Path to source
 # @param string   Path to target
@@ -96,7 +96,7 @@ function ph_symlink() {
     if ${FORCE} ; then
         ln -sf ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     else
-        ln -si ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
+        ln -sn ${SOURCE} ${TARGET} && { echo "success!"; return 0; } || { echo "failed!"; return 1; }
     fi
 }
 
