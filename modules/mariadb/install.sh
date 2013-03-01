@@ -52,7 +52,6 @@ else
         gcc\
         m4\
         make\
-        ncurses\
         openssl\
         wget
 

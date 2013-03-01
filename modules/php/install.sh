@@ -75,6 +75,7 @@ ph_install_packages\
     bison\
     curl\
     flex\
+    gcc\
     gettext\
     libjpeg\
     libtool\
