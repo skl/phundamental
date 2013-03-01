@@ -146,7 +146,11 @@ cd php-${PHP_VERSION_STRING}
 make clean
 
 # TODO this may only affect SuSE
-test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib64'
+if [[ "${PH_OS_FLAVOUR}" == "suse" ]]; then
+    test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib64'
+else
+    LIBDIR='lib'
+fi
 
 CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
     "--with-config-file-path=/etc/php-${PHP_VERSION_STRING}" \
