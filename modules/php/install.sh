@@ -145,12 +145,18 @@ tar xzf php-${PHP_VERSION_STRING}.tar.gz
 cd php-${PHP_VERSION_STRING}
 make clean
 
-# TODO this may only affect SuSE
-if [[ "${PH_OS_FLAVOUR}" == "suse" ]]; then
-    test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib64'
-else
-    LIBDIR='lib'
-fi
+case "${PH_OS_FLAVOUR}" in \
+    "debian")
+        test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib/x86_64-linux-gnu'
+    ;;
+
+    "suse")
+        test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib64'
+    ;;
+
+    *)
+        LIBDIR='lib'
+esac
 
 CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
     "--with-config-file-path=/etc/php-${PHP_VERSION_STRING}" \
@@ -165,7 +171,7 @@ CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
     "--with-curl" \
     "--with-gd" \
     "--with-jpeg-dir" \
-    "--with-ldap=/usr" \
+    "--with-ldap" \
     "--with-libxml-dir" \
     "--with-mcrypt" \
     "--with-mhash" \
