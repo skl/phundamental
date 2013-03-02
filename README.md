@@ -44,19 +44,19 @@ Clone the repo to a directory on your server:
 
 Execute the top-level installer, it will ask you which modules to install:
 
-    sudo phundamental/plz install
+    sudo phundamental/install
 
 ### Install some modules
 
 Execute the top-level installer with parameters (one per module, order doesn't matter):
 
-    sudo phundamental/plz install nodejs php nginx
+    sudo phundamental/install nodejs php nginx
 
 ### Install one module
 
 There are two ways of doing this, as above:
 
-    sudo phundamental/plz install php
+    sudo phundamental/install php
 
 Alternatively:
 

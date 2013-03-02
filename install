@@ -13,4 +13,4 @@ PH_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 . ${PH_INSTALL_DIR}/bootstrap.sh
 
-ph_front_controller $@ && exit 0 || exit 1
+ph_front_controller install $@ && exit 0 || exit 1
