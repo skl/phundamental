@@ -147,7 +147,7 @@ make clean
 
 case "${PH_OS_FLAVOUR}" in \
     "debian")
-        test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib/x86_64-linux-gnu'
+        [ -d /usr/lib/x86_64-linux-gnu ] && LIBDIR='lib/x86_64-linux-gnu' || LIBDIR='lib'
     ;;
 
     "suse")
