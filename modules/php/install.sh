@@ -147,7 +147,13 @@ make clean
 
 case "${PH_OS_FLAVOUR}" in \
     "debian")
-        [ -d /usr/lib/x86_64-linux-gnu ] && LIBDIR='lib/x86_64-linux-gnu' || LIBDIR='lib'
+        if [ -d /usr/lib/x86_64-linux-gnu ]; then
+            LIBDIR='lib/x86_64-linux-gnu'
+        elif [ -d /usr/lib/i386-linux-gnu ]; then
+            LIBDIR='lib/i386-linux-gnu'
+        else
+            LIBDIR='lib'
+        fi
     ;;
 
     "suse")
