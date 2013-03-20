@@ -79,6 +79,7 @@ else
     tar xzf mariadb-${MARIADB_VERSION_STRING}.tar.gz
     cd mariadb-${MARIADB_VERSION_STRING}
 
+    [ -f CMakeCache.txt ] && rm CMakeCache.txt
     make clean
     cmake . \
         -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb-${MARIADB_VERSION_STRING} \
