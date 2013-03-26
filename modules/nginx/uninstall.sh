@@ -4,29 +4,63 @@
 #                                                                             #
 ###############################################################################
 
-if test -z "$1"
-then
-    echo "nginx version must be specified! e.g. ./install.sh 1.2.3"
-    exit
-fi
+PH_NGINX_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PH_INSTALL_DIR="$( cd "${PH_NGINX_INSTALL_DIR}" && cd ../../ && pwd )"
+. ${PH_INSTALL_DIR}/bootstrap.sh
 
-# e.g. 1.2.3
-NGINX_VERSION_STRING=$1
+read -p "Specify nginx version (e.g. 1.2.7): " NGINX_VERSION_STRING
 
-/etc/init.d/nginx stop
+NGINX_DIRS=/etc/nginx-${NGINX_VERSION_STRING} /var/log/nginx-${NGINX_VERSION_STRING} /usr/local/nginx-${NGINX_VERSION_STRING}
 
-rm -rf /etc/nginx
-rm -rf /var/log/nginx
-rm /var/log/nginx
-rm -rf /usr/local/nginx
+for i in ${NGINX_DIRS}; do
+    [ -d ${i} ] && rm -rf ${i}
+done
 
-chkconfig --set nginx off
-rm /etc/init.d/nginx
+case "${PH_OS}" in
+    "linux")
+        case "${PH_OS_FLAVOUR}" in
+            "debian")
+                PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
 
-# @TODO
-# launchctl quit nginx
-# launchctl unload /Library/LaunchAgents/org.nginx.nginx.plist
-# rm /Library/LaunchAgents/org.nginx.nginx.plist
+                [ -f ${PH_INIT_SCRIPT} ] && {
+                    update-rc.d nginx-${NGINX_VERSION_STRING} remove
+                    ${PH_INIT_SCRIPT} stop
+                    rm ${PH_INIT_SCRIPT}
+                }
+            ;;
+
+            "suse")
+                PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
+
+                [ -f ${PH_INIT_SCRIPT} ] && {
+                    chkconfig --set nginx-${NGINX_VERSION_STRING} off
+                    ${PH_INIT_SCRIPT} stop
+                    rm ${PH_INIT_SCRIPT}
+                }
+            ;;
+
+            *)
+                PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
+
+                [ -f ${PH_INIT_SCRIPT} ] && {
+                    ${PH_INIT_SCRIPT} stop
+                    rm ${PH_INIT_SCRIPT}
+                }
+            ;;
+        esac
+    ;;
+
+    "mac")
+        launchctl quit nginx
+        launchctl unload /Library/LaunchAgents/org.nginx.nginx.plist
+        rm /Library/LaunchAgents/org.nginx.nginx.plist
+    ;;
+
+    *)
+        echo "Init script removal not implemented!"
+    ;;
+
+esac
 
 echo ""
 echo "nginx ${NGINX_VERSION_STRING} has been uninstalled."
