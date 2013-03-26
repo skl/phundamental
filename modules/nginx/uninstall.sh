@@ -10,7 +10,7 @@ PH_INSTALL_DIR="$( cd "${PH_NGINX_INSTALL_DIR}" && cd ../../ && pwd )"
 
 read -p "Specify nginx version (e.g. 1.2.7): " NGINX_VERSION_STRING
 
-NGINX_DIRS=/etc/nginx-${NGINX_VERSION_STRING} /var/log/nginx-${NGINX_VERSION_STRING} /usr/local/nginx-${NGINX_VERSION_STRING}
+NGINX_DIRS="/etc/nginx-${NGINX_VERSION_STRING} /var/log/nginx-${NGINX_VERSION_STRING} /usr/local/nginx-${NGINX_VERSION_STRING}"
 
 for i in ${NGINX_DIRS}; do
     [ -d ${i} ] && rm -rf ${i}
