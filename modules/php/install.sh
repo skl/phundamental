@@ -34,7 +34,7 @@ if ph_is_installed php ; then
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify PHP version (e.g. 5.4.11): " PHP_VERSION_STRING
+read -p "Specify PHP version (e.g. 5.4.14): " PHP_VERSION_STRING
 
 case "${PH_OS}" in \
     "windows" | \
@@ -80,6 +80,7 @@ ph_install_packages\
     libjpeg\
     libtool\
     libxml\
+    libxsl\
     make\
     mcrypt\
     mhash\
@@ -179,6 +180,7 @@ CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
     "--with-jpeg-dir" \
     "--with-ldap" \
     "--with-libxml-dir" \
+    "--with-xsl" \
     "--with-mcrypt" \
     "--with-mhash" \
     "--with-openssl" \
@@ -326,6 +328,13 @@ if [ "$REPLY" == "y" ]; then
     ph_symlink ${PHP_BIN_DIR}/phpunit /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
+read -p "Install phpDocumentor [y/n] " REPLY
+if [ "$REPLY" == "y" ]; then
+    ${PHP_BIN_DIR}/pear channel-discover pear.phpdoc.org
+    ${PHP_BIN_DIR}/pear install phpdoc/phpDocumentor-alpha
+    ph_symlink ${PHP_BIN_DIR}/phpdoc /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
+fi
+
 NGINX_SBIN=`which nginx`
 
 case "${PH_OS}" in \
@@ -389,6 +398,7 @@ echo "Complete."
 if [ -d /etc/nginx ]; then
     echo ""
     echo "Check out the example configuration file: /etc/nginx/sites-available/www.example.com"
+    echo "To enable Graph generation in phpDocumentor install Graphviz: http://graphviz.org/Download.php"
 fi
 
 return 0 || exit 0
