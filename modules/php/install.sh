@@ -328,11 +328,17 @@ if [ "$REPLY" == "y" ]; then
     ph_symlink ${PHP_BIN_DIR}/phpunit /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
-read -p "Install phpDocumentor [y/n] " REPLY
+read -p "Install phpDocumentor? [y/n] " REPLY
 if [ "$REPLY" == "y" ]; then
     ${PHP_BIN_DIR}/pear channel-discover pear.phpdoc.org
     ${PHP_BIN_DIR}/pear install phpdoc/phpDocumentor-alpha
     ph_symlink ${PHP_BIN_DIR}/phpdoc /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
+fi
+
+read -p "Install Composer? [y/n] " REPLY
+if [ "$REPLY" == "y" ]; then
+    curl -sS https://getcomposer.org/installer | php
+    mv composer.phar /usr/local/bin/composer
 fi
 
 NGINX_SBIN=`which nginx`
