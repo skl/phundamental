@@ -317,9 +317,17 @@ if [ "$REPLY" == "y" ]; then
 
     # Fix xdebug.so ini directive
     ph_search_and_replace\
-        "extension=\"xdebug.so\""\
-        "zend_extension=\/usr\/local\/php-${PHP_VERSION_STRING}\/lib\/php\/extensions\/no-debug-non-zts-${PHP_EXTENSION_API}\/xdebug.so"\
+        "zend_extension=\"xdebug.so\""\
+        ""\
         /etc/php-${PHP_VERSION_STRING}/php.ini
+
+    ph_search_and_replace\
+        "extension=\"xdebug.so\""\
+        ""\
+        /etc/php-${PHP_VERSION_STRING}/php.ini
+
+    echo "zend_extension=\/usr\/local\/php-${PHP_VERSION_STRING}\/lib\/php\/extensions\/no-debug-non-zts-${PHP_EXTENSION_API}\/xdebug.so"\
+        > /etc/php-${PHP_VERSION_STRING}/php.ini
 fi
 
 read -p "Install PHPUnit? [y/n] " REPLY
