@@ -338,7 +338,7 @@ fi
 read -p "Install Composer? [y/n] " REPLY
 if [ "$REPLY" == "y" ]; then
     curl -sS https://getcomposer.org/installer | php
-    mv composer.phar /usr/local/bin/composer
+    mv -i composer.phar /usr/local/bin/composer
 fi
 
 NGINX_SBIN=`which nginx`
