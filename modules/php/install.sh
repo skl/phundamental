@@ -327,7 +327,7 @@ if [ "$REPLY" == "y" ]; then
         /etc/php-${PHP_VERSION_STRING}/php.ini
 
     echo "zend_extension=\/usr\/local\/php-${PHP_VERSION_STRING}\/lib\/php\/extensions\/no-debug-non-zts-${PHP_EXTENSION_API}\/xdebug.so"\
-        > /etc/php-${PHP_VERSION_STRING}/php.ini
+        >> /etc/php-${PHP_VERSION_STRING}/php.ini
 fi
 
 read -p "Install PHPUnit? [y/n] " REPLY
