@@ -17,7 +17,7 @@ if ph_is_installed node ; then
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify node.js version (e.g. 0.8.20): " NODEJS_VERSION_STRING
+read -p "Specify node.js version (e.g. 0.10.9): " NODEJS_VERSION_STRING
 
 if [ "${PH_OS}" == "windows" ]; then
     ph_mkdirs /usr/local/src

@@ -17,7 +17,7 @@ if ph_is_installed nginx ; then
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify nginx version (e.g. 1.2.7): " NGINX_VERSION_STRING
+read -p "Specify nginx version (e.g. 1.4.1): " NGINX_VERSION_STRING
 
 
 ph_install_packages\
