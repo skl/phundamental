@@ -66,7 +66,6 @@ Alternatively:
 
 phundamental is based on modules. The current out-of-the-box modules are as follows:
 
-* **build-tools** - Uses your package manager to install autoconf, make, libtool etc. for compilation tasks
 * **mariadb** - An open-source drop-in replacement for MySQL
 * **nginx** - A fast and lightweight alternative to Apache
 * **nodejs** - Server-side JavaScript. Recent versions include `npm`
