@@ -34,7 +34,7 @@ if ph_is_installed php ; then
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify PHP version (e.g. 5.4.15): " PHP_VERSION_STRING
+read -p "Specify PHP version (e.g. 5.4.16): " PHP_VERSION_STRING
 
 case "${PH_OS}" in \
     "windows" | \
@@ -326,7 +326,7 @@ if [ "$REPLY" == "y" ]; then
         ""\
         /etc/php-${PHP_VERSION_STRING}/php.ini
 
-    echo "zend_extension=\/usr\/local\/php-${PHP_VERSION_STRING}\/lib\/php\/extensions\/no-debug-non-zts-${PHP_EXTENSION_API}\/xdebug.so"\
+    echo "zend_extension=/usr/local/php-${PHP_VERSION_STRING}/lib/php/extensions/no-debug-non-zts-${PHP_EXTENSION_API}/xdebug.so"
         >> /etc/php-${PHP_VERSION_STRING}/php.ini
 fi
 
