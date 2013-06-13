@@ -147,7 +147,7 @@ function ph_front_controller() {
 
     case $# in \
     0)
-        echo "Usage: ${PH_INSTALL_DIR}/plz <install|uninstall> [<module> [<module> ..]]"
+        echo "Usage: ${PH_INSTALL_DIR}/<install|uninstall> [<module> [<module> ..]]"
     ;;
 
     # Action all modules
