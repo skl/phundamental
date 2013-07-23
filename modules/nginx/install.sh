@@ -118,14 +118,14 @@ case "${PH_OS}" in \
         case "${PH_OS_FLAVOUR}" in \
             "arch")
             ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/rc.d/nginx-${NGINX_VERSION_STRING} \
-                "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
+                "##NGINX_PREFIX##" "${NGINX_PREFIX}"
 
             /etc/rc.d/nginx-${NGINX_VERSION_STRING} start
             ;;
 
             "suse")
             ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
-                "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
+                "##NGINX_PREFIX##" "${NGINX_PREFIX}"
 
             chkconfig nginx-${NGINX_VERSION_STRING} on
             /etc/init.d/nginx-${NGINX_VERSION_STRING} start
@@ -133,7 +133,7 @@ case "${PH_OS}" in \
 
             *)
             ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
-                "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
+                "##NGINX_PREFIX##" "${NGINX_PREFIX}"
 
             /etc/init.d/nginx-${NGINX_VERSION_STRING} start
             update-rc.d nginx-${NGINX_VERSION_STRING} defaults

@@ -10,11 +10,10 @@
 # Description:       The lightweight webserver
 # ### END INIT INFO
 
-DAEMON=/usr/local/nginx-##NGINX_VERSION_STRING##/sbin/nginx
+DAEMON=##NGINX_PREFIX##/sbin/nginx
 NAME=nginx
 DESC=nginx
-PIDFILE=/usr/local/nginx-##NGINX_VERSION_STRING##/logs/$NAME.pid
-DAEMON_CONFIG=/usr/local/nginx-##NGINX_VERSION_STRING##/conf/nginx.conf
+PIDFILE=##NGINX_PREFIX##/logs/$NAME.pid
 
 test -x $DAEMON || exit 0
 
