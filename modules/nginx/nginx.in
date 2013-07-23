@@ -94,10 +94,14 @@ case "$1" in
 	;;
 	status)
 		echo "Status $DESC: "
-		ps aux | grep -v grep | grep -v /bin/sh | grep $NAME
+		ps aux | grep -v grep | grep -v /bin/sh | grep $NAME && exit 0 || exit 1
 	;;
-	*)
+    try-restart)
+        $0 status && $0 restart
+    ;;
+    *)
 		N=/etc/init.d/$NAME
+        echo "$N $1 is not a valid paramater..." >&2
 		echo "Usage: $N {start|stop|status|restart}" >&2
 		exit 1
 	;;
