@@ -29,9 +29,8 @@ read -p "Specify nginx user [www-data]: " NGINX_USER
 read -p "Specify nginx group [www-data]: " NGINX_GROUP
 [ -z ${NGINX_GROUP} ] && NGINX_GROUP="www-data"
 
-REPLY="y"
 read -p "Should I create the user and group for you? [Y/n]: " REPLY
-if [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
+if [ -z $REPLY ] || [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
     ph_creategroup ${NGINX_GROUP}
     ph_createuser ${NGINX_USER}
     ph_assigngroup ${NGINX_GROUP} ${NGINX_USER}
