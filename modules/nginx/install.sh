@@ -108,6 +108,14 @@ case "${PH_OS}" in \
             /etc/rc.d/nginx-${NGINX_VERSION_STRING} start
             ;;
 
+            "suse")
+            ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
+                "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
+
+            chkconfig nginx-${NGINX_VERSION_STRING} on
+            /etc/init.d/nginx-${NGINX_VERSION_STRING} start
+            ;;
+
             *)
             ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
                 "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
