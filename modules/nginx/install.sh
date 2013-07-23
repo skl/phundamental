@@ -13,12 +13,29 @@ if ph_is_installed nginx ; then
     ls -l `which nginx` | awk '{print $9 $10 $11}'
     nginx -v
 
-    read -p "Do you wish to continue with the nginx installation? [y/n] " REPLY
+    read -p "Do you wish to continue with the nginx installation? [Y/n] " REPLY
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify nginx version (e.g. 1.4.1): " NGINX_VERSION_STRING
+read -p "Specify nginx version [1.4.2]: " NGINX_VERSION_STRING
+[ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.2"
 
+read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_STRING}]: " NGINX_PREFIX
+[ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_STRING}"
+
+read -p "Specify nginx user [www-data]: " NGINX_USER
+[ -z ${NGINX_USER} ] && NGINX_USER="www-data"
+
+read -p "Specify nginx group [www-data]: " NGINX_GROUP
+[ -z ${NGINX_GROUP} ] && NGINX_GROUP="www-data"
+
+REPLY="y"
+read -p "Should I create the user and group for you? [Y/n]: " REPLY
+if [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
+    ph_creategroup ${NGINX_GROUP}
+    ph_createuser ${NGINX_USER}
+    ph_assigngroup ${NGINX_GROUP} ${NGINX_USER}
+fi
 
 ph_install_packages\
     gcc\
@@ -28,7 +45,7 @@ ph_install_packages\
     wget\
     zlib
 
-read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
+read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/N]: " REPLY
 [ "$REPLY" == "y" ] && NGINX_OVERWRITE_SYMLINKS=true || NGINX_OVERWRITE_SYMLINKS=false
 
 ph_mkdirs \
@@ -39,10 +56,6 @@ ph_mkdirs \
     /etc/nginx-${NGINX_VERSION_STRING}/sites-available \
     /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled \
     /var/www/localhost/public
-
-ph_creategroup www-data
-ph_createuser www-data
-ph_assigngroup www-data www-data
 
 cd /usr/local/src
 
@@ -58,10 +71,10 @@ fi
 tar xzf nginx-${NGINX_VERSION_STRING}.tar.gz
 cd nginx-${NGINX_VERSION_STRING}
 
-CONFIGURE_ARGS=("--prefix=/usr/local/nginx-${NGINX_VERSION_STRING}" \
-    "--pid-path=/usr/local/nginx-${NGINX_VERSION_STRING}/logs/nginx.pid" \
-    "--error-log-path=/var/log/nginx-${NGINX_VERSION_STRING}/error.log" \
-    "--http-log-path=/var/log/nginx-${NGINX_VERSION_STRING}/access.log" \
+CONFIGURE_ARGS=("--prefix=${NGINX_PREFIX}" \
+    "--pid-path=${NGINX_PREFIX}/logs/nginx.pid" \
+    "--error-log-path=${NGINX_PREFIX}/logs/error.log" \
+    "--http-log-path=${NGINX_PREFIX}/logs/access.log" \
     "--conf-path=/etc/nginx-${NGINX_VERSION_STRING}/nginx.conf" \
     "--with-pcre" \
     "--with-http_ssl_module" \
@@ -77,7 +90,10 @@ fi
 ./configure ${CONFIGURE_ARGS[@]} && { make -j ${PH_NUM_THREADS} && make install; } || \
     { echo "./configure failed! Check dependencies and re-run the installer."; exit 1; }
 
-cp ${PH_INSTALL_DIR}/modules/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
+ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf\
+    "##NGINX_USER##" "${NGINX_USER}"
+ph_search_and_replace "##NGINX_GROUP##" "${NGINX_GROUP}" /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
+
 cp ${PH_INSTALL_DIR}/modules/nginx/restrictions.conf /etc/nginx-${NGINX_VERSION_STRING}/global/restrictions.conf
 cp ${PH_INSTALL_DIR}/modules/nginx/localhost.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost
 cp ${PH_INSTALL_DIR}/modules/nginx/000-catchall.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/000-catchall
