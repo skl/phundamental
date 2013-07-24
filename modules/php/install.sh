@@ -216,9 +216,7 @@ else
 fi
 
 # Enable FPM for 5.3.3+
-if [ ${PHP_VERSION_MAJOR} -ge 5 ] && \
-   [ ${PHP_VERSION_MINOR} -ge 3 ] && \
-   [ ${PHP_VERSION_RELEASE} -ge 3 ] ; then
+if [ ${PHP_VERSION_INTEGER} -ge 533 ]; then
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
         "--enable-fpm")
 fi
