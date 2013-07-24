@@ -19,8 +19,8 @@ function ph_is_installed() {
 # @param string Path to target file
 #
 function ph_search_and_replace() {
-    local SEARCH=$1
-    local REPLACE=$2
+    local SEARCH=`echo $1 | sed 's#/#\\\/#g'`
+    local REPLACE=`echo $2 | sed 's#/#\\\/#g'`
     local TARGET=$3
 
     [ ! -f ${TARGET} ] && echo "ph_search_and_replace() failed! ${TARGET} is not a file"
