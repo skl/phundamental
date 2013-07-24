@@ -34,7 +34,24 @@ if ph_is_installed php ; then
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify PHP version (e.g. 5.4.16): " PHP_VERSION_STRING
+read -p "Specify PHP version [5.5.1]: " PHP_VERSION_STRING
+[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.1"
+
+read -p "Specify installation directory [/usr/local/php-${PHP_VERSION_STRING}]: " PHP_PREFIX
+[ -z ${PHP_PREFIX} ] && PHP_PREFIX="/usr/local/php-${PHP_VERSION_STRING}"
+
+read -p "Specify php-fpm user [www-data]: " PHP_USER
+[ -z ${PHP_USER} ] && PHP_USER="www-data"
+
+read -p "Specify php-fpm group [www-data]: " PHP_GROUP
+[ -z ${PHP_GROUP} ] && PHP_GROUP="www-data"
+
+read -p "Should I create the user and group for you? [Y/n]: " REPLY
+if [ -z $REPLY ] || [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
+    ph_creategroup ${PHP_GROUP}
+    ph_createuser ${PHP_USER}
+    ph_assigngroup ${PHP_GROUP} ${PHP_USER}
+fi
 
 case "${PH_OS}" in \
     "windows" | \
@@ -64,10 +81,6 @@ ph_mkdirs \
     /etc/php-${PHP_VERSION_STRING}
 
 cd /usr/local/src
-
-ph_creategroup www-data
-ph_createuser www-data
-ph_assigngroup www-data www-data
 
 ph_install_packages\
     autoconf\
@@ -120,7 +133,7 @@ if [ "${PH_OS}" == "windows" ]; then
     fi
 fi
 
-read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
+read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/N]: " REPLY
 [ "$REPLY" == "y" ] && PHP_OVERWRITE_SYMLINKS=true || PHP_OVERWRITE_SYMLINKS=false
 
 # e.g. 531 (truncated to three characters in order to construct a valid port number for fpm)
@@ -165,7 +178,7 @@ case "${PH_OS_FLAVOUR}" in \
         LIBDIR='lib'
 esac
 
-CONFIGURE_ARGS=("--prefix=/usr/local/php-${PHP_VERSION_STRING}" \
+CONFIGURE_ARGS=("--prefix=${PHP_PREFIX}" \
     "--with-config-file-path=/etc/php-${PHP_VERSION_STRING}" \
     "--enable-bcmath" \
     "--enable-calendar" \
@@ -203,15 +216,15 @@ else
 fi
 
 # Enable FPM for 5.3.3+
-if [ ${PHP_VERSION_MAJOR} -eq 5 ] && \
+if [ ${PHP_VERSION_MAJOR} -ge 5 ] && \
    [ ${PHP_VERSION_MINOR} -ge 3 ] && \
    [ ${PHP_VERSION_RELEASE} -ge 3 ] ; then
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
         "--enable-fpm")
 fi
 
-# PHP4 MySQL is enabled by default, so only deal with 5
-if [ ${PHP_VERSION_MAJOR} -eq 5 ] ; then
+# PHP4 MySQL is enabled by default, so only deal with 5+
+if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
 
     # MySQLi for 5.0.x, 5.1.x, 5.2.x
     if [ ${PHP_VERSION_MINOR} -le 2 ]; then
@@ -270,10 +283,10 @@ CFLAGS='-O2 -DEAPI'
 ./configure ${CONFIGURE_ARGS[@]} && { make -j ${PH_NUM_THREADS} && make install; } || \
     { echo "./configure failed! Check dependencies and re-run the installer."; exit 1; }
 
-ph_symlink /usr/local/php-${PHP_VERSION_STRING} /usr/local/php $PHP_OVERWRITE_SYMLINKS
+ph_symlink ${PHP_PREFIX} /usr/local/php $PHP_OVERWRITE_SYMLINKS
 
-for i in `ls -1 /usr/local/php-${PHP_VERSION_STRING}/bin`; do
-    ph_symlink /usr/local/php-${PHP_VERSION_STRING}/bin/$i /usr/local/bin/$i $PHP_OVERWRITE_SYMLINKS
+for i in `ls -1 ${PHP_PREFIX}/bin`; do
+    ph_symlink ${PHP_PREFIX}/bin/$i /usr/local/bin/$i $PHP_OVERWRITE_SYMLINKS
 done
 
 # Install nginx config files
@@ -298,7 +311,7 @@ ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf /etc/php-${PHP_VERSION_S
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php.ini
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
 
-PHP_BIN_DIR=/usr/local/php-${PHP_VERSION_STRING}/bin
+PHP_BIN_DIR=${PHP_PREFIX}/bin
 
 # Set PHP extension_dir
 PHP_EXTENSION_API=`${PHP_BIN_DIR}/php -i | grep "PHP Extension =>" | awk '{print $4}'`
@@ -326,7 +339,7 @@ if [ "$REPLY" == "y" ]; then
         ""\
         /etc/php-${PHP_VERSION_STRING}/php.ini
 
-    echo "zend_extension=/usr/local/php-${PHP_VERSION_STRING}/lib/php/extensions/no-debug-non-zts-${PHP_EXTENSION_API}/xdebug.so"
+    echo "zend_extension=${PHP_PREFIX}/lib/php/extensions/no-debug-non-zts-${PHP_EXTENSION_API}/xdebug.so"
         >> /etc/php-${PHP_VERSION_STRING}/php.ini
 fi
 
@@ -356,7 +369,7 @@ case "${PH_OS}" in \
         case "${PH_OS_FLAVOUR}" in \
             "arch")
                 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/rc.d/php-${PHP_VERSION_STRING}-fpm\
-                    "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
+                    "##PHP_PREFIX##" "${PHP_PREFIX}"
 
                 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/rc.d/php-${PHP_VERSION_STRING}-fpm
 
@@ -366,7 +379,7 @@ case "${PH_OS}" in \
 
             "suse")
                 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
-                    "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
+                    "##PHP_PREFIX##" "${PHP_PREFIX}"
 
                 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
 
@@ -378,7 +391,7 @@ case "${PH_OS}" in \
 
             *)
                 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
-                    "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
+                    "##PHP_PREFIX##" "${PHP_PREFIX}"
 
                 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
 
@@ -392,7 +405,7 @@ case "${PH_OS}" in \
     "mac")
         ph_cp_inject ${PH_INSTALL_DIR}/modules/php/org.php.php-fpm.plist \
             /Library/LaunchAgents/org.php.php-fpm.plist \
-            "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}"
+            "##PHP_PREFIX##" "${PHP_PREFIX}"
 
         chown root:wheel /Library/LaunchAgents/org.php.php-fpm.plist
         launchctl load -w /Library/LaunchAgents/org.php.php-fpm.plist
@@ -400,7 +413,7 @@ case "${PH_OS}" in \
 
     *)
         echo "PHP-FPM startup script not implemented for this OS! Starting manually..."
-        /usr/local/php-${PHP_VERSION_STRING}/sbin/php-fpm --fpm-config /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
+        ${PHP_PREFIX}/sbin/php-fpm --fpm-config /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
 esac
 
 # Cleanup

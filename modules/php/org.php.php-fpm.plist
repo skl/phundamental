@@ -3,7 +3,7 @@
 <plist version="1.0">
     <dict>
         <key>Label</key><string>php-fpm</string>
-        <key>Program</key><string>/usr/local/php-##PHP_VERSION_STRING##/sbin/php-fpm</string>
+        <key>Program</key><string>##PHP_PREFIX##/sbin/php-fpm</string>
         <key>KeepAlive</key><true/>
     </dict>
 </plist>
