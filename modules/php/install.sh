@@ -305,11 +305,13 @@ ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php.ini /etc/php-${PHP_VERSION_STRING
     "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf /etc/php-${PHP_VERSION_STRING}/php-fpm.conf\
-    "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
+    "##PHP_USER##" "${PHP_USER}"
+ph_search_and_replace "##PHP_GROUP##" "${PHP_GROUP}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
 
 
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php.ini
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
+ph_search_and_replace "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
 
 PHP_BIN_DIR=${PHP_PREFIX}/bin
 
