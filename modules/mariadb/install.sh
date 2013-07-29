@@ -17,7 +17,8 @@ if ph_is_installed mysql ; then
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify MariaDB version (e.g. 5.5.31): " MARIADB_VERSION_STRING
+read -p "Specify MariaDB version [5.5.32]: " MARIADB_VERSION_STRING
+[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="5.5.32"
 
 if [ "${PH_OS}" == "windows" ]; then
 
@@ -45,9 +46,6 @@ if [ "${PH_OS}" == "windows" ]; then
     msiexec /i ${MARIADB_INSTALLER_FILENAME} SERVICENAME=MySQL /qn
 
 else
-
-    read -p "Specify MariaDB version [5.5.32]: " MARIADB_VERSION_STRING
-    [ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="5.5.32"
 
     read -p "Specify installation directory [/usr/local/mariadb-${MARIADB_VERSION_STRING}]: " MARIADB_PREFIX
     [ -z ${MARIADB_PREFIX} ] && MARIADB_PREFIX="/usr/local/mariadb-${MARIADB_VERSION_STRING}"
