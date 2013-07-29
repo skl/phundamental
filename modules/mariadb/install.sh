@@ -46,6 +46,25 @@ if [ "${PH_OS}" == "windows" ]; then
 
 else
 
+    read -p "Specify MariaDB version [5.5.32]: " MARIADB_VERSION_STRING
+    [ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="5.5.32"
+
+    read -p "Specify installation directory [/usr/local/mariadb-${MARIADB_VERSION_STRING}]: " MARIADB_PREFIX
+    [ -z ${MARIADB_PREFIX} ] && MARIADB_PREFIX="/usr/local/mariadb-${MARIADB_VERSION_STRING}"
+
+    read -p "Specify MariaDB user [mysql]: " MARIADB_USER
+    [ -z ${MARIADB_USER} ] && MARIADB_USER="mysql"
+
+    read -p "Specify MariaDB group [mysql]: " MARIADB_GROUP
+    [ -z ${MARIADB_GROUP} ] && MARIADB_GROUP="mysql"
+
+    read -p "Should I create the user and group for you? [Y/n]: " REPLY
+    if [ -z $REPLY ] || [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
+        ph_creategroup ${MARIADB_GROUP}
+        ph_createuser ${MARIADB_USER}
+        ph_assigngroup ${MARIADB_GROUP} ${MARIADB_USER}
+    fi
+
     ph_install_packages\
         bison\
         cmake\
@@ -60,10 +79,6 @@ else
     [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
 
     ph_mkdirs /usr/local/src
-
-    ph_creategroup mysql
-    ph_createuser mysql
-    ph_assigngroup mysql mysql
 
     cd /usr/local/src
 
@@ -82,35 +97,39 @@ else
     [ -f CMakeCache.txt ] && rm CMakeCache.txt
     make clean
     cmake . \
-        -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb-${MARIADB_VERSION_STRING} \
-        -DMYSQL_DATADIR=/usr/local/mariadb-${MARIADB_VERSION_STRING}/data \
+        -DCMAKE_INSTALL_PREFIX=${MARIADB_PREFIX} \
+        -DMYSQL_DATADIR=${MARIADB_PREFIX}/data \
             && { make -j ${PH_NUM_THREADS} && make install; } || \
                 { echo "./configure failed! Check dependencies and re-run the installer."; exit 1; }
 
-    chown -R mysql:mysql /usr/local/mariadb-${MARIADB_VERSION_STRING}
-    chmod -R 0755 /usr/local/mariadb-${MARIADB_VERSION_STRING}/data
+    chown -R ${MARIADB_USER}:${MARIADB_GROUP} ${MARIADB_PREFIX}
+    chmod -R 0755 ${MARIADB_PREFIX}/data
 
-    cd /usr/local/mariadb-${MARIADB_VERSION_STRING}
+    cd ${MARIADB_PREFIX}
+
+    # See issue #39
+    ph_search_and_replace "^parse_server_arguments" "#parse_server_arguments" support-files/mysql.server
+
     cp support-files/my-medium.cnf /etc/my.cnf
 
     ph_search_and_replace "^skip-networking" "#skip-networking" /etc/my.cnf
     ph_search_and_replace "^socket" "#socket" /etc/my.cnf
     ph_search_and_replace "^#innodb" "innodb" /etc/my.cnf
 
-    scripts/mysql_install_db --user=mysql
+    scripts/mysql_install_db --user=${MARIADB_USER}
 
-    ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING} /usr/local/mysql ${MARIADB_OVERWRITE_SYMLINKS}
+    ph_symlink ${MARIADB_PREFIX} /usr/local/mysql ${MARIADB_OVERWRITE_SYMLINKS}
 
-    for i in `ls -1 /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin`; do
-        ph_symlink /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/$i /usr/local/bin/$i ${MARIADB_OVERWRITE_SYMLINKS}
+    for i in `ls -1 ${MARIADB_PREFIX}/bin`; do
+        ph_symlink ${MARIADB_PREFIX}/bin/$i /usr/local/bin/$i ${MARIADB_OVERWRITE_SYMLINKS}
     done
 
     case "${PH_OS}" in \
         "linux")
             case "${PH_OS_FLAVOUR}" in \
                 "arch")
-                ph_symlink
-                /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server\
+                ph_symlink\
+                ${MARIADB_PREFIX}/support-files/mysql.server\
                     /etc/rc.d/mariadb-${MARIADB_VERSION_STRING}\
                     ${MARIADB_OVERWRITE_SYMLINKS}
 
@@ -119,17 +138,17 @@ else
 
                 "suse")
                 ph_symlink\
-                    /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server\
+                    ${MARIADB_PREFIX}/support-files/mysql.server\
                     /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
                     ${MARIADB_OVERWRITE_SYMLINKS}
 
                 /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
-                chkconfig --level 3 mysql on
+                chkconfig --level 3 mariadb-${MARIADB_VERSION_STRING} on
                 ;;
 
                 "debian")
                 ph_symlink\
-                    /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server\
+                    ${MARIADB_PREFIX}/support-files/mysql.server\
                     /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
                     ${MARIADB_OVERWRITE_SYMLINKS}
 
@@ -139,7 +158,7 @@ else
 
                 *)
                 ph_symlink\
-                    /usr/local/mariadb-${MARIADB_VERSION_STRING}/support-files/mysql.server\
+                    ${MARIADB_PREFIX}/support-files/mysql.server\
                     /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
                     ${MARIADB_OVERWRITE_SYMLINKS}
 
@@ -159,10 +178,10 @@ else
 
         *)
             echo "mariadb startup script not implemented for this OS... starting manually"
-            /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysqld_safe --user=mysql >/dev/null &
+            ${MARIADB_PREFIX}/bin/mysqld_safe --user=${MARIADB_USER} >/dev/null &
     esac
 
-    /usr/local/mariadb-${MARIADB_VERSION_STRING}/bin/mysql_secure_installation
+    ${MARIADB_PREFIX}/bin/mysql_secure_installation
 fi
 
 # Cleanup
