@@ -140,6 +140,7 @@ read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/N]: " REPLY
 # So for PHP 5.4.7,  php-fpm will bind to 127.0.0.1:9547
 # .. for PHP 5.3.17, php-fpm will bind to 127.0.0.1:9531
 PHP_VERSION_INTEGER=`echo ${PHP_VERSION_STRING} | tr -d '.' | cut -c1-3`
+PHP_VERSION_INTEGER_FULL=`echo ${PHP_VERSION_STRING} | tr -d '.'`
 
 PHP_VERSION_MAJOR=`echo ${PHP_VERSION_STRING} | cut -d. -f1`
 PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
@@ -216,7 +217,7 @@ else
 fi
 
 # Enable FPM for 5.3.3+
-if [ ${PHP_VERSION_INTEGER} -ge 533 ]; then
+if [ ${PHP_VERSION_INTEGER_FULL} -ge 533 ]; then
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
         "--enable-fpm")
 fi
