@@ -50,11 +50,16 @@ else
     read -p "Specify installation directory [/usr/local/mariadb-${MARIADB_VERSION_STRING}]: " MARIADB_PREFIX
     [ -z ${MARIADB_PREFIX} ] && MARIADB_PREFIX="/usr/local/mariadb-${MARIADB_VERSION_STRING}"
 
-    read -p "Specify MariaDB user [mysql]: " MARIADB_USER
-    [ -z ${MARIADB_USER} ] && MARIADB_USER="mysql"
+    case "${PH_OS}" in \
+        "linux")    SUGGESTED_USER="mysql"  ;;
+        "mac")      SUGGESTED_USER="_mysql" ;;
+    esac
 
-    read -p "Specify MariaDB group [mysql]: " MARIADB_GROUP
-    [ -z ${MARIADB_GROUP} ] && MARIADB_GROUP="mysql"
+    read -p "Specify MariaDB user [${SUGGESTED_USER}]: " MARIADB_USER
+    [ -z ${MARIADB_USER} ] && MARIADB_USER="${SUGGESTED_USER}"
+
+    read -p "Specify MariaDB group [${SUGGESTED_USER}]: " MARIADB_GROUP
+    [ -z ${MARIADB_GROUP} ] && MARIADB_GROUP="${SUGGESTED_USER}"
 
     read -p "Should I create the user and group for you? [Y/n]: " REPLY
     if [ -z $REPLY ] || [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then

@@ -23,11 +23,16 @@ read -p "Specify nginx version [1.4.2]: " NGINX_VERSION_STRING
 read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_STRING}]: " NGINX_PREFIX
 [ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_STRING}"
 
-read -p "Specify nginx user [www-data]: " NGINX_USER
-[ -z ${NGINX_USER} ] && NGINX_USER="www-data"
+case "${PH_OS}" in \
+    "linux")    SUGGESTED_USER="www-data"  ;;
+    "mac")      SUGGESTED_USER="_www" ;;
+esac
 
-read -p "Specify nginx group [www-data]: " NGINX_GROUP
-[ -z ${NGINX_GROUP} ] && NGINX_GROUP="www-data"
+read -p "Specify nginx user [${SUGGESTED_USER}]: " NGINX_USER
+[ -z ${NGINX_USER} ] && NGINX_USER="${SUGGESTED_USER}"
+
+read -p "Specify nginx group [${SUGGESTED_USER}]: " NGINX_GROUP
+[ -z ${NGINX_GROUP} ] && NGINX_GROUP="${SUGGESTED_USER}"
 
 read -p "Should I create the user and group for you? [Y/n]: " REPLY
 if [ -z $REPLY ] || [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then

@@ -40,11 +40,16 @@ read -p "Specify PHP version [5.5.1]: " PHP_VERSION_STRING
 read -p "Specify installation directory [/usr/local/php-${PHP_VERSION_STRING}]: " PHP_PREFIX
 [ -z ${PHP_PREFIX} ] && PHP_PREFIX="/usr/local/php-${PHP_VERSION_STRING}"
 
-read -p "Specify php-fpm user [www-data]: " PHP_USER
-[ -z ${PHP_USER} ] && PHP_USER="www-data"
+case "${PH_OS}" in \
+    "linux")    SUGGESTED_USER="www-data"  ;;
+    "mac")      SUGGESTED_USER="_www" ;;
+esac
 
-read -p "Specify php-fpm group [www-data]: " PHP_GROUP
-[ -z ${PHP_GROUP} ] && PHP_GROUP="www-data"
+read -p "Specify php-fpm user [${SUGGESTED_USER}]: " PHP_USER
+[ -z ${PHP_USER} ] && PHP_USER="${SUGGESTED_USER}"
+
+read -p "Specify php-fpm group [${SUGGESTED_USER}]: " PHP_GROUP
+[ -z ${PHP_GROUP} ] && PHP_GROUP="${SUGGESTED_USER}"
 
 read -p "Should I create the user and group for you? [Y/n]: " REPLY
 if [ -z $REPLY ] || [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
@@ -216,11 +221,17 @@ else
     fi
 fi
 
-# Enable FPM for 5.3.3+
-if [ ${PHP_VERSION_INTEGER_FULL} -ge 533 ]; then
+# Enable FPM for 5.3 if 5.3.3+
+[ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 3 ] && [ ${PHP_VERSION_RELEASE} -ge 3 ] && {
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
         "--enable-fpm")
-fi
+}
+
+# Always enable FPM for 5.4+
+[ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 4 ] && {
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+        "--enable-fpm")
+}
 
 # PHP4 MySQL is enabled by default, so only deal with 5+
 if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
