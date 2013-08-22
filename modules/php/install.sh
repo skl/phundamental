@@ -34,8 +34,8 @@ if ph_is_installed php ; then
     [ $REPLY == "n" ] && { return 1 || exit 1; }
 fi
 
-read -p "Specify PHP version [5.5.1]: " PHP_VERSION_STRING
-[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.1"
+read -p "Specify PHP version [5.5.2]: " PHP_VERSION_STRING
+[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.2"
 
 read -p "Specify PHP installation directory [/usr/local/php-${PHP_VERSION_STRING}]: " PHP_PREFIX
 [ -z ${PHP_PREFIX} ] && PHP_PREFIX="/usr/local/php-${PHP_VERSION_STRING}"
