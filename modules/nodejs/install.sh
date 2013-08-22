@@ -55,7 +55,7 @@ else
 
     CONFIGURE_ARGS=("--prefix=/usr/local/nodejs-${NODEJS_VERSION_STRING}");
 
-    ph_autobuild "`pwd`" "${CONFIGURE_ARGS[@]}" || return 1
+    ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
 
     ph_symlink /etc/nodejs-${NODEJS_VERSION_STRING} /etc/nodejs $NODEJS_OVERWRITE_SYMLINKS
     ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING} /usr/local/nodejs $NODEJS_OVERWRITE_SYMLINKS
@@ -67,8 +67,7 @@ fi
 
 # Cleanup
 echo -n "Deleting source files... "
-rm -rf /usr/local/src/node-v${NODEJS_VERSION_STRING} \
-    /usr/local/src/node-v${NODEJS_VERSION_STRING}.tar.gz
+rm -rf /usr/local/src/node-v${NODEJS_VERSION_STRING}
 echo "Complete."
 
 return 0 || exit 0

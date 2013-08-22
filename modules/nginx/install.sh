@@ -84,7 +84,7 @@ if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
         "--with-ld-opt=-L/usr/local/lib")
 fi
 
-ph_autobuild "`pwd`" "${CONFIGURE_ARGS[@]}" || return 1
+ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
 
 ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf\
     "##NGINX_USER##" "${NGINX_USER}"
@@ -154,8 +154,7 @@ esac
 
 # Cleanup
 echo -n "Deleting source files... "
-rm -rf /usr/local/src/nginx-${NGINX_VERSION_STRING} \
-    /usr/local/src/nginx-${NGINX_VERSION_STRING}.tar.gz
+rm -rf /usr/local/src/nginx-${NGINX_VERSION_STRING}
 echo "Complete."
 
 return 0 || exit 0

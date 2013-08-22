@@ -159,12 +159,15 @@ function ph_cd_tar() {
 # Proxy to autotools build process
 #
 # @param    The directory containing the configure script
-# @param    options to pass to configure script
+# @param    variable amount of options to pass to configure script
 # @return boolean True if build completed successfully
 #
 function ph_autobuild() {
     local BUILD_DIR="$1"
-    local CONFIGURE_OPTIONS="$2"
+    shift
+
+    # Support variable argument number
+    local CONFIGURE_OPTIONS="$@"
 
     local configure_log="/tmp/${FUNCNAME}.log"
 
@@ -189,7 +192,7 @@ function ph_autobuild() {
 
     # Configure silently and write to log file
     echo -n "./configure ${CONFIGURE_OPTIONS}"
-    ./configure "${CONFIGURE_OPTIONS}" 2>&1 | tee ${configure_log} | while read line; do echo -n .; done
+    ./configure "${CONFIGURE_OPTIONS}" 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
     echo ''
 
     # Check exit stature of ./configure
@@ -203,7 +206,7 @@ function ph_autobuild() {
     fi
 
     echo -n "make -j ${PH_NUM_THREADS}"
-    make -j ${PH_NUM_THREADS} 2>&1 | tee ${configure_log} | while read line; do echo -n .; done
+    make -j ${PH_NUM_THREADS} 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
     echo ''
 
     # Check exit status of make
@@ -214,7 +217,7 @@ function ph_autobuild() {
     fi
 
     echo -n 'make install'
-    make install 2>&1 | tee ${configure_log} | while read line; do echo -n .; done
+    make install 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
 
     # Check exit status of make install
     if [ ${PIPESTATUS[0]} -ne 0 ]; then

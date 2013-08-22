@@ -287,7 +287,7 @@ if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
 fi
 
 # Build!
-CFLAGS='-O2 -DEAPI' ph_autobuild "`pwd`" "${CONFIGURE_ARGS[@]}" || return 1
+CFLAGS='-O2 -DEAPI' ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
 
 ph_symlink ${PHP_PREFIX} /usr/local/php $PHP_OVERWRITE_SYMLINKS
 
@@ -473,8 +473,7 @@ esac
 
 # Cleanup
 echo -n "Deleting source files... "
-rm -rf /usr/local/src/php-${PHP_VERSION_STRING} \
-    /usr/local/src/php-${PHP_VERSION_STRING}.tar.gz
+rm -rf /usr/local/src/php-${PHP_VERSION_STRING}
 echo "Complete."
 
 if [ -d /etc/nginx ]; then
