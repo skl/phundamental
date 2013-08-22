@@ -59,8 +59,8 @@ read -p "Specify php-fpm user [${SUGGESTED_USER}]: " PHP_USER
 read -p "Specify php-fpm group [${SUGGESTED_USER}]: " PHP_GROUP
 [ -z ${PHP_GROUP} ] && PHP_GROUP="${SUGGESTED_USER}"
 
-read -p "Should I create the user and group for you? [Y/n]: " REPLY
-if [ -z $REPLY ] || [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
+read -p "Should I create the user and group for you? [y/N]: " REPLY
+if [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
     ph_creategroup ${PHP_GROUP}
     ph_createuser ${PHP_USER}
     ph_assigngroup ${PHP_GROUP} ${PHP_USER}
