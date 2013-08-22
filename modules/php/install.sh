@@ -161,7 +161,6 @@ PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
 
 # Retrieve source code from php.net
 ph_cd_tar xzf php-${PHP_VERSION_STRING} .tar.gz http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
-make clean
 
 case "${PH_OS_FLAVOUR}" in \
 "debian")
@@ -288,9 +287,7 @@ if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
 fi
 
 # Build!
-CFLAGS='-O2 -DEAPI'
-./configure ${CONFIGURE_ARGS[@]} && { make -j ${PH_NUM_THREADS} && make install; } || \
-    { echo "./configure failed! Check dependencies and re-run the installer."; exit 1; }
+CFLAGS='-O2 -DEAPI' ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
 
 ph_symlink ${PHP_PREFIX} /usr/local/php $PHP_OVERWRITE_SYMLINKS
 
@@ -374,12 +371,12 @@ if [ "$REPLY" == "y" ]; then
     ph_cd_tar xzf libmemcached-1.0.10 .tar.gz https://launchpad.net/libmemcached/1.0/1.0.10/+download/libmemcached-1.0.10.tar.gz
 
     # build memcached library
-    ./configure --prefix=/usr/local/libmemcached-1.0.10 && make -j ${PH_NUM_THREADS} && make install && {
+    ph_autobuild "`pwd`" --prefix=/usr/local/libmemcached-1.0.10 && {
         ph_cd_tar xzf memcached-2.1.0 .tgz http://pecl.php.net/get/memcached-2.1.0.tgz
         ${PHP_BIN_DIR}/phpize
 
         # Now safe to build PECL extension
-        ./configure --with-libmemcached-dir=/usr/local/libmemcached-1.0.10 && make -j ${PH_NUM_THREADS} && make install && {
+        ph_autobuild "`pwd`" --with-libmemcached-dir=/usr/local/libmemcached-1.0.10 && {
             echo "extension=memcached.so" >> ${PHP_INI_PATH}/php.ini
         }
     }

@@ -155,6 +155,78 @@ function ph_cd_tar() {
 
 
 ##
+# Proxy to autotools build process
+#
+# @param    The directory containing the configure script
+# @param    options to pass to configure script
+# @return boolean True if build completed successfully
+#
+function ph_autobuild() {
+    local BUILD_DIR="$1"
+    local CONFIGURE_OPTIONS="$2"
+
+    local configure_log="/tmp/${FUNCNAME}.log"
+
+    [ ! -d "${BUILD_DIR}" ] && {
+        echo "${FUNCNAME}(): Cannot compile in directory that does not exist: ${BUILD_DIR}"
+        return 1
+    }
+
+    cd "${BUILD_DIR}"
+
+    [ ! -x configure ] && {
+        echo "${FUNCNAME}(): Cannot compile if ${BUILD_DIR}/configure is not an executable script."
+        return 1
+    }
+
+    echo -n 'make clean'
+    make clean | while read line; do echo -n .; done
+    echo ''
+
+    # Ensure log file exists and is empty
+    cat /dev/null > ${configure_log}
+
+    # Configure silently and write to log file
+    echo -n "./configure ${CONFIGURE_OPTIONS}"
+    ./configure "${CONFIGURE_OPTIONS}" 2>&1 | tee ${configure_log} | while read line; do echo -n .; done
+    echo ''
+
+    # Check exit stature of ./configure
+    [ ${PIPESTATUS[0]} -eq 0 ] || {
+        echo "${FUNCNAME}(): Failed when running:"
+        echo "./configure ${CONFIGURE_OPTIONS}"
+        echo ''
+        echo "See ${configure_log} for full details or tail of it below:"
+        tail "${configure_log}"
+        return 1
+    }
+
+    echo -n "make -j ${PH_NUM_THREADS}"
+    make -j ${PH_NUM_THREADS} 2>&1 | tee ${configure_log} | while read line; do echo -n .; done
+    echo ''
+
+    # Check exit status of make
+    [ ${PIPESTATUS[0]} -eq 0 ] || {
+        echo "${FUNCNAME}(): Failed to compile. See ${configure_log} for full details or tail of it below:"
+        tail "${configure_log}"
+        return 1
+    }
+
+    echo -n 'make install'
+    make install 2>&1 | tee ${configure_log} | while read line; do echo -n .; done
+
+    # Check exit status of make install
+    [ ${PIPESTATUS[0]} -eq 0 ] || {
+        echo "${FUNCNAME}(): Failed to make install. See ${configure_log} for full details or tail of it below:"
+        tail "${configure_log}"
+        return 1
+    }
+
+    return 0
+}
+
+
+##
 # Install a phundamental module
 #
 # @param string $1 <install|uninstall>
