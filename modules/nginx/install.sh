@@ -24,8 +24,13 @@ read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_STRING
 [ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_STRING}"
 
 case "${PH_OS}" in \
-    "linux")    SUGGESTED_USER="www-data"  ;;
-    "mac")      SUGGESTED_USER="_www" ;;
+"linux")
+    SUGGESTED_USER="www-data"
+    ;;
+
+"mac")
+    SUGGESTED_USER="_www"
+    ;;
 esac
 
 read -p "Specify nginx user [${SUGGESTED_USER}]: " NGINX_USER
@@ -119,43 +124,45 @@ ph_symlink /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost /etc/ngi
 ph_symlink /etc/nginx-${NGINX_VERSION_STRING}/sites-available/000-catchall /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled/000-catchall ${NGINX_OVERWRITE_SYMLINKS}
 
 case "${PH_OS}" in \
-    "linux")
-        case "${PH_OS_FLAVOUR}" in \
-            "arch")
-            ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/rc.d/nginx-${NGINX_VERSION_STRING} \
-                "##NGINX_PREFIX##" "${NGINX_PREFIX}"
+"linux")
+    case "${PH_OS_FLAVOUR}" in \
+    "arch")
+        ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/rc.d/nginx-${NGINX_VERSION_STRING} \
+            "##NGINX_PREFIX##" "${NGINX_PREFIX}"
 
-            /etc/rc.d/nginx-${NGINX_VERSION_STRING} start
-            ;;
+        /etc/rc.d/nginx-${NGINX_VERSION_STRING} start
+        ;;
 
-            "suse")
-            ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
-                "##NGINX_PREFIX##" "${NGINX_PREFIX}"
+    "suse")
+        ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
+            "##NGINX_PREFIX##" "${NGINX_PREFIX}"
 
-            chkconfig nginx-${NGINX_VERSION_STRING} on
-            /etc/init.d/nginx-${NGINX_VERSION_STRING} start
-            ;;
-
-            *)
-            ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
-                "##NGINX_PREFIX##" "${NGINX_PREFIX}"
-
-            /etc/init.d/nginx-${NGINX_VERSION_STRING} start
-            update-rc.d nginx-${NGINX_VERSION_STRING} defaults
-        esac
-    ;;
-
-    "mac")
-        ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/org.nginx.nginx.plist /Library/LaunchAgents/org.nginx.nginx.plist \
-            "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
-
-        chown root:wheel /Library/LaunchAgents/org.nginx.nginx.plist
-        launchctl load -w /Library/LaunchAgents/org.nginx.nginx.plist
-    ;;
+        chkconfig nginx-${NGINX_VERSION_STRING} on
+        /etc/init.d/nginx-${NGINX_VERSION_STRING} start
+        ;;
 
     *)
-        echo "nginx startup script not implemented for this OS... starting manually"
-        /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
+        ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
+            "##NGINX_PREFIX##" "${NGINX_PREFIX}"
+
+        /etc/init.d/nginx-${NGINX_VERSION_STRING} start
+        update-rc.d nginx-${NGINX_VERSION_STRING} defaults
+        ;;
+    esac
+    ;;
+
+"mac")
+    ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/org.nginx.nginx.plist /Library/LaunchAgents/org.nginx.nginx.plist \
+        "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
+
+    chown root:wheel /Library/LaunchAgents/org.nginx.nginx.plist
+    launchctl load -w /Library/LaunchAgents/org.nginx.nginx.plist
+    ;;
+
+*)
+    echo "nginx startup script not implemented for this OS... starting manually"
+    /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
+    ;;
 esac
 
 # Cleanup

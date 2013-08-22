@@ -51,8 +51,13 @@ else
     [ -z ${MARIADB_PREFIX} ] && MARIADB_PREFIX="/usr/local/mariadb-${MARIADB_VERSION_STRING}"
 
     case "${PH_OS}" in \
-        "linux")    SUGGESTED_USER="mysql"  ;;
-        "mac")      SUGGESTED_USER="_mysql" ;;
+    "linux")
+        SUGGESTED_USER="mysql"
+        ;;
+
+    "mac")
+        SUGGESTED_USER="_mysql"
+        ;;
     esac
 
     read -p "Specify MariaDB user [${SUGGESTED_USER}]: " MARIADB_USER
@@ -128,60 +133,62 @@ else
     done
 
     case "${PH_OS}" in \
-        "linux")
-            case "${PH_OS_FLAVOUR}" in \
-                "arch")
-                ph_symlink\
+    "linux")
+        case "${PH_OS_FLAVOUR}" in \
+        "arch")
+            ph_symlink\
+            ${MARIADB_PREFIX}/support-files/mysql.server\
+                /etc/rc.d/mariadb-${MARIADB_VERSION_STRING}\
+                ${MARIADB_OVERWRITE_SYMLINKS}
+
+            /etc/rc.d/mariadb-${MARIADB_VERSION_STRING} start
+            ;;
+
+        "suse")
+            ph_symlink\
                 ${MARIADB_PREFIX}/support-files/mysql.server\
-                    /etc/rc.d/mariadb-${MARIADB_VERSION_STRING}\
-                    ${MARIADB_OVERWRITE_SYMLINKS}
+                /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
+                ${MARIADB_OVERWRITE_SYMLINKS}
 
-                /etc/rc.d/mariadb-${MARIADB_VERSION_STRING} start
-                ;;
+            /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
+            chkconfig --level 3 mariadb-${MARIADB_VERSION_STRING} on
+            ;;
 
-                "suse")
-                ph_symlink\
-                    ${MARIADB_PREFIX}/support-files/mysql.server\
-                    /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
-                    ${MARIADB_OVERWRITE_SYMLINKS}
+        "debian")
+            ph_symlink\
+                ${MARIADB_PREFIX}/support-files/mysql.server\
+                /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
+                ${MARIADB_OVERWRITE_SYMLINKS}
 
-                /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
-                chkconfig --level 3 mariadb-${MARIADB_VERSION_STRING} on
-                ;;
-
-                "debian")
-                ph_symlink\
-                    ${MARIADB_PREFIX}/support-files/mysql.server\
-                    /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
-                    ${MARIADB_OVERWRITE_SYMLINKS}
-
-                /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
-                update-rc.d mariadb-${MARIADB_VERSION_STRING} defaults
-                ;;
-
-                *)
-                ph_symlink\
-                    ${MARIADB_PREFIX}/support-files/mysql.server\
-                    /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
-                    ${MARIADB_OVERWRITE_SYMLINKS}
-
-                /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
-            esac
-        ;;
-
-        "mac")
-            ph_mkdirs /Library/LaunchAgents
-
-            ph_cp_inject ${PH_INSTALL_DIR}/modules/mariadb/org.mysql.mysqld.plist /Library/LaunchAgents/org.mysql.mysqld.plist \
-                "##MARIADB_VERSION_STRING##" "${MARIADB_VERSION_STRING}"
-
-            chown root:wheel /Library/LaunchAgents/org.mysql.mysqld.plist
-            launchctl load -w /Library/LaunchAgents/org.mysql.mysqld.plist
-        ;;
+            /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
+            update-rc.d mariadb-${MARIADB_VERSION_STRING} defaults
+            ;;
 
         *)
-            echo "mariadb startup script not implemented for this OS... starting manually"
-            ${MARIADB_PREFIX}/bin/mysqld_safe --user=${MARIADB_USER} >/dev/null &
+            ph_symlink\
+                ${MARIADB_PREFIX}/support-files/mysql.server\
+                /etc/init.d/mariadb-${MARIADB_VERSION_STRING}\
+                ${MARIADB_OVERWRITE_SYMLINKS}
+
+            /etc/init.d/mariadb-${MARIADB_VERSION_STRING} start
+            ;;
+        esac
+    ;;
+
+    "mac")
+        ph_mkdirs /Library/LaunchAgents
+
+        ph_cp_inject ${PH_INSTALL_DIR}/modules/mariadb/org.mysql.mysqld.plist /Library/LaunchAgents/org.mysql.mysqld.plist \
+            "##MARIADB_VERSION_STRING##" "${MARIADB_VERSION_STRING}"
+
+        chown root:wheel /Library/LaunchAgents/org.mysql.mysqld.plist
+        launchctl load -w /Library/LaunchAgents/org.mysql.mysqld.plist
+    ;;
+
+    *)
+        echo "mariadb startup script not implemented for this OS... starting manually"
+        ${MARIADB_PREFIX}/bin/mysqld_safe --user=${MARIADB_USER} >/dev/null &
+        ;;
     esac
 
     ${MARIADB_PREFIX}/bin/mysql_secure_installation
