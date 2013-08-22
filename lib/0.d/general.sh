@@ -134,13 +134,14 @@ function ph_cd_tar() {
         fi
 
         # Extract (hopefully)
-        tar ${TAR_ARGS} "${TAR_FILENAME}${TAR_EXTENSION}" || {
+        if ! tar ${TAR_ARGS} "${TAR_FILENAME}${TAR_EXTENSION}"; then
             echo "${FUNCNAME}(): tar ${TAR_ARGS} ${TAR_FILENAME}${TAR_EXTENSION} failed. Maybe bad download/URI."
             return 1
-        }
+        fi
 
         # Cleanup
-        rm -iv "${TAR_FILENAME}${TAR_EXTENSION}"
+        echo "Source code downloaded and extracted, deleting tarball..."
+        rm -v "${TAR_FILENAME}${TAR_EXTENSION}"
 
         # Ensure expected directory was actually created
         if [ ! -d "${TAR_FILENAME}" ]; then
@@ -167,17 +168,17 @@ function ph_autobuild() {
 
     local configure_log="/tmp/${FUNCNAME}.log"
 
-    [ ! -d "${BUILD_DIR}" ] && {
+    if [ ! -d "${BUILD_DIR}" ]; then
         echo "${FUNCNAME}(): Cannot compile in directory that does not exist: ${BUILD_DIR}"
         return 1
-    }
+    fi
 
     cd "${BUILD_DIR}"
 
-    [ ! -x configure ] && {
+    if [ ! -x configure ]; then
         echo "${FUNCNAME}(): Cannot compile if ${BUILD_DIR}/configure is not an executable script."
         return 1
-    }
+    fi
 
     echo -n 'make clean'
     make clean | while read line; do echo -n .; done
@@ -192,35 +193,35 @@ function ph_autobuild() {
     echo ''
 
     # Check exit stature of ./configure
-    [ ${PIPESTATUS[0]} -eq 0 ] || {
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
         echo "${FUNCNAME}(): Failed when running:"
         echo "./configure ${CONFIGURE_OPTIONS}"
         echo ''
         echo "See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
         return 1
-    }
+    fi
 
     echo -n "make -j ${PH_NUM_THREADS}"
     make -j ${PH_NUM_THREADS} 2>&1 | tee ${configure_log} | while read line; do echo -n .; done
     echo ''
 
     # Check exit status of make
-    [ ${PIPESTATUS[0]} -eq 0 ] || {
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
         echo "${FUNCNAME}(): Failed to compile. See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
         return 1
-    }
+    fi
 
     echo -n 'make install'
     make install 2>&1 | tee ${configure_log} | while read line; do echo -n .; done
 
     # Check exit status of make install
-    [ ${PIPESTATUS[0]} -eq 0 ] || {
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
         echo "${FUNCNAME}(): Failed to make install. See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
         return 1
-    }
+    fi
 
     return 0
 }
