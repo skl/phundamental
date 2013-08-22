@@ -44,8 +44,13 @@ read -p "Specify php.ini installation directory [/etc/php-${PHP_VERSION_STRING}]
 [ -z ${PHP_INI_PATH} ] && PHP_INI_PATH="/etc/php-${PHP_VERSION_STRING}"
 
 case "${PH_OS}" in \
-    "linux")    SUGGESTED_USER="www-data"  ;;
-    "mac")      SUGGESTED_USER="_www" ;;
+"linux")
+    SUGGESTED_USER="www-data"
+    ;;
+
+"mac")
+    SUGGESTED_USER="_www"
+    ;;
 esac
 
 read -p "Specify php-fpm user [${SUGGESTED_USER}]: " PHP_USER
@@ -62,13 +67,13 @@ if [ -z $REPLY ] || [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
 fi
 
 case "${PH_OS}" in \
-    "windows" | \
-    "linux")
-        HOMEDIRS="/home"
+"windows" \
+| "linux")
+    HOMEDIRS="/home"
     ;;
 
-    "mac")
-        HOMEDIRS="/Users"
+"mac")
+    HOMEDIRS="/Users"
     ;;
 esac
 
@@ -86,7 +91,7 @@ done
 
 ph_mkdirs \
     /usr/local/src \
-    /etc/php-${PHP_VERSION_STRING}
+    ${PHP_INI_PATH}
 
 cd /usr/local/src
 
@@ -169,22 +174,23 @@ cd php-${PHP_VERSION_STRING}
 make clean
 
 case "${PH_OS_FLAVOUR}" in \
-    "debian")
-        if [ -d /usr/lib/x86_64-linux-gnu ]; then
-            LIBDIR='lib/x86_64-linux-gnu'
-        elif [ -d /usr/lib/i386-linux-gnu ]; then
-            LIBDIR='lib/i386-linux-gnu'
-        else
-            LIBDIR='lib'
-        fi
-    ;;
-
-    "suse")
-        test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib64'
-    ;;
-
-    *)
+"debian")
+    if [ -d /usr/lib/x86_64-linux-gnu ]; then
+        LIBDIR='lib/x86_64-linux-gnu'
+    elif [ -d /usr/lib/i386-linux-gnu ]; then
+        LIBDIR='lib/i386-linux-gnu'
+    else
         LIBDIR='lib'
+    fi
+    ;;
+
+"suse")
+    test "${PH_ARCH}" == "32bit" && LIBDIR='lib' || LIBDIR='lib64'
+    ;;
+
+*)
+    LIBDIR='lib'
+    ;;
 esac
 
 CONFIGURE_ARGS=("--prefix=${PHP_PREFIX}" \
@@ -270,15 +276,15 @@ fi
 # Add Oracle support if sqlplus binary found
 if ph_is_installed sqlplus ; then
     case "${PH_OS}" in \
-        "linux")
-            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-                "--with-pdo-oci=instantclient,/usr,10.2.0.5" \
-                "--with-oci8")
+    "linux")
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+            "--with-pdo-oci=instantclient,/usr,10.2.0.5" \
+            "--with-oci8")
         ;;
 
-        "mac")
-            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-                "--with-oci8=instantclient,/usr/local/instantclient")
+    "mac")
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+            "--with-oci8=instantclient,/usr/local/instantclient")
         ;;
     esac
 fi
@@ -317,13 +323,13 @@ fi
 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php.ini ${PHP_INI_PATH}/php.ini\
     "##PHP_PREFIX##" "${PHP_PREFIX}"
 
-ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf /etc/php-${PHP_VERSION_STRING}/php-fpm.conf\
+ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf ${PHP_INI_PATH}/php-fpm.conf\
     "##PHP_USER##" "${PHP_USER}"
-ph_search_and_replace "##PHP_GROUP##" "${PHP_GROUP}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
+ph_search_and_replace "##PHP_GROUP##" "${PHP_GROUP}" ${PHP_INI_PATH}/php-fpm.conf
 
 
-ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
-ph_search_and_replace "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}" /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
+ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" ${PHP_INI_PATH}/php-fpm.conf
+ph_search_and_replace "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}" ${PHP_INI_PATH}/php-fpm.conf
 
 PHP_BIN_DIR=${PHP_PREFIX}/bin
 
@@ -376,61 +382,52 @@ if [ "$REPLY" == "y" ]; then
     mv -i composer.phar /usr/local/bin/composer
 fi
 
-NGINX_SBIN=`which nginx`
-
 case "${PH_OS}" in \
-    "linux")
-        case "${PH_OS_FLAVOUR}" in \
-            "arch")
-                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/rc.d/php-${PHP_VERSION_STRING}-fpm\
-                    "##PHP_PREFIX##" "${PHP_PREFIX}"
-
-                ph_search_and_replace "##PHP_PREFIX##" "${PHP_PREFIX}" /etc/rc.d/php-${PHP_VERSION_STRING}-fpm
-                ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/rc.d/php-${PHP_VERSION_STRING}-fpm
-
-                /etc/rc.d/php-${PHP_VERSION_STRING}-fpm start
-                [ -x ${NGINX_SBIN} ] && ${NGINX_SBIN} -s reload
-            ;;
-
-            "suse")
-                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
-                    "##PHP_PREFIX##" "${PHP_PREFIX}"
-
-                ph_search_and_replace "##PHP_PREFIX##" "${PHP_PREFIX}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
-                ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
-
-                chkconfig php-${PHP_VERSION_STRING}-fpm on
-
-                /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
-                [ -x ${NGINX_SBIN} ] && ${NGINX_SBIN} -s reload
-            ;;
-
-            *)
-                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.iINI_PATH/init.d/php-${PHP_VERSION_STRING}-fpm\
-                    "##PHP_PREFIX##" "${PHP_PREFIX}"
-
-                ph_search_and_replace "##PHP_PREFIX##" "${PHP_PREFIX}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
-                ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
-
-                /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
-                update-rc.d php-${PHP_VERSION_STRING}-fpm defaults
-
-                [ -x ${NGINX_SBIN} ] && ${NGINX_SBIN} -s reload
-        esac
-    ;;
-
-    "mac")
-        ph_cp_inject ${PH_INSTALL_DIR}/modules/php/org.php.php-fpm.plist \
-            /Library/LaunchAgents/org.php.php-fpm.plist \
+"linux")
+    case "${PH_OS_FLAVOUR}" in \
+    "suse")
+        ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
             "##PHP_PREFIX##" "${PHP_PREFIX}"
 
-        chown root:wheel /Library/LaunchAgents/org.php.php-fpm.plist
-        launchctl load -w /Library/LaunchAgents/org.php.php-fpm.plist
-    ;;
+        ph_search_and_replace "##PHP_PREFIX##" "${PHP_PREFIX}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
+        ph_search_and_replace "##PHP_INI_PATH##" "${PHP_INI_PATH}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
+        ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
+
+        chkconfig php-${PHP_VERSION_STRING}-fpm on
+
+        /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
+        [ ph_is_installed nginx ] && nginx -s reload
+        ;;
 
     *)
-        echo "PHP-FPM startup script not implemented for this OS! Starting manually..."
-        ${PHP_PREFIX}/sbin/php-fpm --fpm-config /etc/php-${PHP_VERSION_STRING}/php-fpm.conf
+        ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
+            "##PHP_PREFIX##" "${PHP_PREFIX}"
+
+        ph_search_and_replace "##PHP_PREFIX##" "${PHP_PREFIX}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
+        ph_search_and_replace "##PHP_INI_PATH##" "${PHP_INI_PATH}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
+        ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
+
+        /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
+        update-rc.d php-${PHP_VERSION_STRING}-fpm defaults
+
+        [ ph_is_installed nginx ] && nginx -s reload
+        ;;
+    esac
+    ;;
+
+"mac")
+    ph_cp_inject ${PH_INSTALL_DIR}/modules/php/org.php.php-fpm.plist \
+        /Library/LaunchAgents/org.php.php-fpm.plist \
+        "##PHP_PREFIX##" "${PHP_PREFIX}"
+
+    chown root:wheel /Library/LaunchAgents/org.php.php-fpm.plist
+    launchctl load -w /Library/LaunchAgents/org.php.php-fpm.plist
+    ;;
+
+*)
+    echo "PHP-FPM startup script not implemented for this OS! Starting manually..."
+    ${PHP_PREFIX}/sbin/php-fpm --fpm-config ${PHP_INI_PATH}/php-fpm.conf
+    ;;
 esac
 
 # Cleanup

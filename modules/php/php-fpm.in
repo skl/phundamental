@@ -14,7 +14,7 @@ prefix=
 exec_prefix=
 
 php_fpm_BIN=##PHP_PREFIX##/sbin/php-fpm
-php_fpm_CONF=/etc/php-##PHP_VERSION_STRING##/php-fpm.conf
+php_fpm_CONF=##PHP_INI_PATH##/php-fpm.conf
 php_fpm_PID=/var/run/php-##PHP_VERSION_STRING##-fpm.pid
 
 
