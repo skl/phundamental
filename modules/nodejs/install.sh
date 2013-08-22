@@ -51,19 +51,7 @@ else
         /etc/nodejs-${NOEJS_VERSION_STRING} \
         /var/log/nodejs-${NODEJS_VERSION_STRING}
 
-    cd /usr/local/src
-
-    if [ ! -f node-v${NODEJS_VERSION_STRING}.tar.gz ]; then
-        wget http://nodejs.org/dist/v${NODEJS_VERSION_STRING}/node-v${NODEJS_VERSION_STRING}.tar.gz
-
-        if [ ! -f node-v${NODEJS_VERSION_STRING}.tar.gz ]; then
-            echo "node.js source download failed!"
-            return 1 || exit 1
-        fi
-    fi
-
-    tar xzf node-v${NODEJS_VERSION_STRING}.tar.gz
-    cd node-v${NODEJS_VERSION_STRING}
+    ph_cd_tar xzf node-v${NODEJS_VERSION_STRING} .tar.gz http://nodejs.org/dist/v${NODEJS_VERSION_STRING}/node-v${NODEJS_VERSION_STRING}.tar.gz
 
     CONFIGURE_ARGS=("--prefix=/usr/local/nodejs-${NODEJS_VERSION_STRING}");
 

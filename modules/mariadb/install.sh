@@ -86,21 +86,7 @@ else
     read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
     [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
 
-    ph_mkdirs /usr/local/src
-
-    cd /usr/local/src
-
-    if [ ! -f mariadb-${MARIADB_VERSION_STRING}.tar.gz ]; then
-        wget http://ftp.osuosl.org/pub/mariadb/mariadb-${MARIADB_VERSION_STRING}/kvm-tarbake-jaunty-x86/mariadb-${MARIADB_VERSION_STRING}.tar.gz
-
-        if [ ! -f mariadb-${MARIADB_VERSION_STRING}.tar.gz ]; then
-            echo "mariadb source download failed!"
-            return 1 || exit 1
-        fi
-    fi
-
-    tar xzf mariadb-${MARIADB_VERSION_STRING}.tar.gz
-    cd mariadb-${MARIADB_VERSION_STRING}
+    ph_cd_tar xzf mariadb-${MARIADB_VERSION_STRING} .tar.gz http://ftp.osuosl.org/pub/mariadb/mariadb-${MARIADB_VERSION_STRING}/kvm-tarbake-jaunty-x86/mariadb-${MARIADB_VERSION_STRING}.tar.gz
 
     [ -f CMakeCache.txt ] && rm CMakeCache.txt
     make clean

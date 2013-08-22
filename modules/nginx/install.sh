@@ -66,19 +66,7 @@ ph_mkdirs \
     /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled \
     /var/www/localhost/public
 
-cd /usr/local/src
-
-if [ ! -f nginx-${NGINX_VERSION_STRING}.tar.gz ]; then
-    wget http://nginx.org/download/nginx-${NGINX_VERSION_STRING}.tar.gz
-
-    if [ ! -f nginx-${NGINX_VERSION_STRING}.tar.gz ]; then
-        echo "nginx source download failed!"
-        return 1 || exit 1
-    fi
-fi
-
-tar xzf nginx-${NGINX_VERSION_STRING}.tar.gz
-cd nginx-${NGINX_VERSION_STRING}
+ph_cd_tar xzf nginx-${NGINX_VERSION_STRING} .tar.gz http://nginx.org/download/nginx-${NGINX_VERSION_STRING}.tar.gz
 
 CONFIGURE_ARGS=("--prefix=${NGINX_PREFIX}" \
     "--pid-path=${NGINX_PREFIX}/logs/nginx.pid" \
