@@ -122,7 +122,7 @@ if [ "${PH_OS}" == "windows" ]; then
     # Manually install re2c
     if ! ph_is_installed re2c ; then
         if [ ! -f re2c.zip ]; then
-            wget "http://downloads.sourceforge.net/project/gnuwin32/re2c/0.9.4/re2c-0.9.4-bin.zip?r=&ts=1356710822&use_mirror=netcologne" -O re2c.zip
+            wget -O re2c.zip 'http://downloads.sourceforge.net/project/gnuwin32/re2c/0.9.4/re2c-0.9.4-bin.zip?r=&ts=1356710822&use_mirror=netcologne'
 
             if [ ! -f re2c.zip ]; then
                 echo "re2c download failed!"
@@ -160,17 +160,7 @@ PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
 PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
 
 # Retrieve source code from php.net
-if [ ! -f php-${PHP_VERSION_STRING}.tar.gz ]; then
-    wget http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
-
-    if [ ! -f php-${PHP_VERSION_STRING}.tar.gz ]; then
-        echo "PHP source download failed!"
-        return 1 || exit 1
-    fi
-fi
-
-tar xzf php-${PHP_VERSION_STRING}.tar.gz
-cd php-${PHP_VERSION_STRING}
+ph_cd_tar xzf php-${PHP_VERSION_STRING} .tar.gz http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
 make clean
 
 case "${PH_OS_FLAVOUR}" in \
@@ -344,7 +334,7 @@ ${PHP_BIN_DIR}/pear config-set auto_discover 1
 
 # Default to OPcache for 5.5+
 if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 5 ]; then
-    read -p "Install Zend OPcache? [y/n] " REPLY
+    read -p "Install Zend OPcache PECL extension? [y/n] " REPLY
     if [ "$REPLY" == "y" ]; then
         ${PHP_BIN_DIR}/pecl install zendopcache
 
@@ -358,7 +348,7 @@ opcache.enable_cli=1
 EOF
 
         if ph_is_installed git; then
-            read -p "Install APCu 4.0.2? [y/n] " REPLY
+            read -p "Install APCu 4.0.2 PECL extension? [y/n] " REPLY
             if [ "$REPLY" == "y" ]; then
                 # Credit: https://gist.github.com/bcremer/5450321
                 [ -d /usr/local/src/apcu ] || git clone http://github.com/krakjoe/apcu.git /usr/local/src/apcu
@@ -370,13 +360,32 @@ EOF
         fi
     fi
 else
-    read -p "Install APC? [y/n] " REPLY
+    read -p "Install APC PECL extension? [y/n] " REPLY
     if [ "$REPLY" == "y" ]; then
         ${PHP_BIN_DIR}/pecl install apc
     fi
 fi
 
-read -p "Install xdebug? [y/n] " REPLY
+read -p "Install memcached PECL extension? [y/n] " REPLY
+if [ "$REPLY" == "y" ]; then
+    ph_install_packages libevent
+
+    # memcached PECL extension depends on libmemcached-1.0.10
+    ph_cd_tar xzf libmemcached-1.0.10 .tar.gz https://launchpad.net/libmemcached/1.0/1.0.10/+download/libmemcached-1.0.10.tar.gz
+
+    # build memcached library
+    ./configure --prefix=/usr/local/libmemcached-1.0.10 && make -j ${PH_NUM_THREADS} && make install && {
+        ph_cd_tar xzf memcached-2.1.0 .tgz http://pecl.php.net/get/memcached-2.1.0.tgz
+        ${PHP_BIN_DIR}/phpize
+
+        # Now safe to build PECL extension
+        ./configure --with-libmemcached-dir=/usr/local/libmemcached-1.0.10 && make -j ${PH_NUM_THREADS} && make install && {
+            echo "extension=memcached.so" >> ${PHP_INI_PATH}/php.ini
+        }
+    }
+fi
+
+read -p "Install xdebug PECL extension? [y/n] " REPLY
 if [ "$REPLY" == "y" ]; then
     ${PHP_BIN_DIR}/pecl install xdebug
 
@@ -395,13 +404,14 @@ if [ "$REPLY" == "y" ]; then
         >> ${PHP_INI_PATH}/php.ini
 fi
 
-read -p "Install PHPUnit? [y/n] " REPLY
+read -p "Install PHPUnit PEAR package? [y/n] " REPLY
 if [ "$REPLY" == "y" ]; then
-    ${PHP_BIN_DIR}/pear install --alldeps pear.phpunit.de/PHPUnit
+    ${PHP_BIN_DIR}/pear channel-discover pear.phpunit.de
+    ${PHP_BIN_DIR}/pear install --alldeps phpunit/PHPUnit
     ph_symlink ${PHP_BIN_DIR}/phpunit /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
-read -p "Install phpDocumentor? [y/n] " REPLY
+read -p "Install phpDocumentor PEAR package? [y/n] " REPLY
 if [ "$REPLY" == "y" ]; then
     ${PHP_BIN_DIR}/pear channel-discover pear.phpdoc.org
     ${PHP_BIN_DIR}/pear install phpdoc/phpDocumentor-alpha
@@ -409,7 +419,7 @@ if [ "$REPLY" == "y" ]; then
 fi
 
 if ph_is_installed curl; then
-    read -p "Install Composer? [y/n] " REPLY
+    read -p "Install Composer PHAR? [y/n] " REPLY
     if [ "$REPLY" == "y" ]; then
         curl -sS https://getcomposer.org/installer | ${PHP_BIN_DIR}/php
         mv -i composer.phar /usr/local/bin/composer

@@ -102,6 +102,59 @@ function ph_symlink() {
 
 
 ##
+# (Paranoid) tarball download, extract and cd into created directory
+#
+# @param string     args for tar (e.g. xzf)
+# @param string     filename (without extension)
+# @param string     file extension (e.g. tar.gz)
+# @param string     URI to download original tarball
+# @param string     Destination directory (default: /usr/local/src)
+# @return boolean   True if managed to cd into extracted tarball directory
+#
+function ph_cd_tar() {
+    local TAR_ARGS="$1"
+    local TAR_FILENAME="$2"
+    local TAR_EXTENSION="$3"
+    local URI="$4" # Ampersand (&) must be escaped (\&)
+    local DESTINATION_DIR=${5-"/usr/local/src"}
+
+    [ ! -d "${DESTINATION_DIR}" ] && mkdir -piv "${DESTINATION_DIR}"
+
+    cd "${DESTINATION_DIR}"
+
+    if [ ! -d "${TAR_FILENAME}" ]; then
+        if [ ! -f "${TAR_FILENAME}${TAR_EXTENSION}" ]; then
+            wget -O "${TAR_FILENAME}${TAR_EXTENSION}" "${URI}"
+
+            # Ensure file downloaded
+            if [ ! -f "${TAR_FILENAME}${TAR_EXTENSION}" ]; then
+                echo "${FUNCNAME}(): Download failed: ${URI}"
+                return 1
+            fi
+        fi
+
+        # Extract (hopefully)
+        tar ${TAR_ARGS} "${TAR_FILENAME}${TAR_EXTENSION}" || {
+            echo "${FUNCNAME}(): tar ${TAR_ARGS} ${TAR_FILENAME}${TAR_EXTENSION} failed. Maybe bad download/URI."
+            return 1
+        }
+
+        # Cleanup
+        rm -iv "${TAR_FILENAME}${TAR_EXTENSION}"
+
+        # Ensure expected directory was actually created
+        if [ ! -d "${TAR_FILENAME}" ]; then
+            echo "${FUNCNAME}(): ${TAR_FILENAME}${TAR_EXTENSION} did not extract to ${DESTINATION_DIR}/${TAR_FILENAME}"
+            return 1
+        fi
+    fi
+
+    # Directory _definately_ exists now
+    cd "${TAR_FILENAME}" && return 0 || return 1
+}
+
+
+##
 # Install a phundamental module
 #
 # @param string $1 <install|uninstall>
