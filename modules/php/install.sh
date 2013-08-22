@@ -37,8 +37,11 @@ fi
 read -p "Specify PHP version [5.5.1]: " PHP_VERSION_STRING
 [ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.1"
 
-read -p "Specify installation directory [/usr/local/php-${PHP_VERSION_STRING}]: " PHP_PREFIX
+read -p "Specify PHP installation directory [/usr/local/php-${PHP_VERSION_STRING}]: " PHP_PREFIX
 [ -z ${PHP_PREFIX} ] && PHP_PREFIX="/usr/local/php-${PHP_VERSION_STRING}"
+
+read -p "Specify php.ini installation directory [/etc/php-${PHP_VERSION_STRING}]: " PHP_INI_PATH
+[ -z ${PHP_INI_PATH} ] && PHP_INI_PATH="/etc/php-${PHP_VERSION_STRING}"
 
 case "${PH_OS}" in \
     "linux")    SUGGESTED_USER="www-data"  ;;
@@ -185,7 +188,7 @@ case "${PH_OS_FLAVOUR}" in \
 esac
 
 CONFIGURE_ARGS=("--prefix=${PHP_PREFIX}" \
-    "--with-config-file-path=/etc/php-${PHP_VERSION_STRING}" \
+    "--with-config-file-path=${PHP_INI_PATH}" \
     "--enable-bcmath" \
     "--enable-calendar" \
     "--enable-exif" \
@@ -311,7 +314,7 @@ if [ -d /etc/nginx ]; then
 fi
 
 # Install PHP config files
-ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php.ini /etc/php-${PHP_VERSION_STRING}/php.ini\
+ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php.ini ${PHP_INI_PATH}/php.ini\
     "##PHP_PREFIX##" "${PHP_PREFIX}"
 
 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf /etc/php-${PHP_VERSION_STRING}/php-fpm.conf\
@@ -326,10 +329,10 @@ PHP_BIN_DIR=${PHP_PREFIX}/bin
 
 # Set PHP extension_dir
 PHP_EXTENSION_API=`${PHP_BIN_DIR}/php -i | grep "PHP Extension =>" | awk '{print $4}'`
-ph_search_and_replace "##PHP_EXTENSION_API##" "${PHP_EXTENSION_API}" /etc/php-${PHP_VERSION_STRING}/php.ini
+ph_search_and_replace "##PHP_EXTENSION_API##" "${PHP_EXTENSION_API}" ${PHP_INI_PATH}/php.ini
 
 # Setup PEAR/PECL
-${PHP_BIN_DIR}/pear config-set php_ini /etc/php-${PHP_VERSION_STRING}/php.ini
+${PHP_BIN_DIR}/pear config-set php_ini ${PHP_INI_PATH}/php.ini
 ${PHP_BIN_DIR}/pear config-set preferred_state beta
 ${PHP_BIN_DIR}/pear config-set auto_discover 1
 
@@ -343,15 +346,15 @@ if [ "$REPLY" == "y" ]; then
     ph_search_and_replace\
         "zend_extension=\"xdebug.so\""\
         ""\
-        /etc/php-${PHP_VERSION_STRING}/php.ini
+        ${PHP_INI_PATH}/php.ini
 
     ph_search_and_replace\
         "extension=\"xdebug.so\""\
         ""\
-        /etc/php-${PHP_VERSION_STRING}/php.ini
+        ${PHP_INI_PATH}/php.ini
 
     echo "zend_extension=${PHP_PREFIX}/lib/php/extensions/no-debug-non-zts-${PHP_EXTENSION_API}/xdebug.so"
-        >> /etc/php-${PHP_VERSION_STRING}/php.ini
+        >> ${PHP_INI_PATH}/php.ini
 fi
 
 read -p "Install PHPUnit? [y/n] " REPLY
@@ -403,7 +406,7 @@ case "${PH_OS}" in \
             ;;
 
             *)
-                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.in /etc/init.d/php-${PHP_VERSION_STRING}-fpm\
+                ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.iINI_PATH/init.d/php-${PHP_VERSION_STRING}-fpm\
                     "##PHP_PREFIX##" "${PHP_PREFIX}"
 
                 ph_search_and_replace "##PHP_PREFIX##" "${PHP_PREFIX}" /etc/init.d/php-${PHP_VERSION_STRING}-fpm
