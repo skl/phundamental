@@ -356,6 +356,18 @@ opcache.revalidate_freq=60
 opcache.fast_shutdown=1
 opcache.enable_cli=1
 EOF
+
+        if ph_is_installed git; then
+            read -p "Install APCu 4.0.2? [y/n] " REPLY
+            if [ "$REPLY" == "y" ]; then
+                # Credit: https://gist.github.com/bcremer/5450321
+                [ -d /usr/local/src/apcu ] || git clone http://github.com/krakjoe/apcu.git /usr/local/src/apcu
+                cd /usr/local/src/apcu
+                ${PHP_BIN_DIR}/pecl package package.xml
+                ${PHP_BIN_DIR}/pecl install -f apcu-4.0.2.tgz
+                echo "extension=apcu.so" >> ${PHP_INI_PATH}/php.ini
+            fi
+        fi
     fi
 else
     read -p "Install APC? [y/n] " REPLY
@@ -396,10 +408,12 @@ if [ "$REPLY" == "y" ]; then
     ph_symlink ${PHP_BIN_DIR}/phpdoc /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
-read -p "Install Composer? [y/n] " REPLY
-if [ "$REPLY" == "y" ]; then
-    curl -sS https://getcomposer.org/installer | ${PHP_BIN_DIR}/php
-    mv -i composer.phar /usr/local/bin/composer
+if ph_is_installed curl; then
+    read -p "Install Composer? [y/n] " REPLY
+    if [ "$REPLY" == "y" ]; then
+        curl -sS https://getcomposer.org/installer | ${PHP_BIN_DIR}/php
+        mv -i composer.phar /usr/local/bin/composer
+    fi
 fi
 
 case "${PH_OS}" in \
