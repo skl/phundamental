@@ -342,11 +342,31 @@ ${PHP_BIN_DIR}/pear config-set php_ini ${PHP_INI_PATH}/php.ini
 ${PHP_BIN_DIR}/pear config-set preferred_state beta
 ${PHP_BIN_DIR}/pear config-set auto_discover 1
 
-read -p "Install APC and xdebug? [y/n] " REPLY
+# Default to OPcache for 5.5+
+if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 5 ]; then
+    read -p "Install Zend OPcache? [y/n] " REPLY
+    if [ "$REPLY" == "y" ]; then
+        ${PHP_BIN_DIR}/pecl install zendopcache
+
+        cat >> ${PHP_INI_PATH}/php.ini <<EOF
+opcache.memory_consumption=128
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=4000
+opcache.revalidate_freq=60
+opcache.fast_shutdown=1
+opcache.enable_cli=1
+EOF
+    fi
+else
+    read -p "Install APC? [y/n] " REPLY
+    if [ "$REPLY" == "y" ]; then
+        ${PHP_BIN_DIR}/pecl install apc
+    fi
+fi
+
+read -p "Install xdebug? [y/n] " REPLY
 if [ "$REPLY" == "y" ]; then
-    # PECL installs need to be done one at a time so that it doesn't mess up php.ini
-    ${PHP_BIN_DIR}/pecl install --alldeps apc
-    ${PHP_BIN_DIR}/pecl install --alldeps xdebug
+    ${PHP_BIN_DIR}/pecl install xdebug
 
     # Fix xdebug.so ini directive
     ph_search_and_replace\
