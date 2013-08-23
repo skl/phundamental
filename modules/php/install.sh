@@ -411,7 +411,7 @@ fi
 
 if ph_ask_yesno "Install phpDocumentor PEAR package?"; then
     ${PHP_BIN_DIR}/pear channel-discover pear.phpdoc.org
-    ${PHP_BIN_DIR}/pear install phpdoc/phpDocumentor-alpha
+    ${PHP_BIN_DIR}/pear install phpdoc/phpDocumentor-stable
     ph_symlink ${PHP_BIN_DIR}/phpdoc /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
     echo "To enable Graph generation in phpDocumentor install Graphviz: http://graphviz.org/Download.php"
 fi
