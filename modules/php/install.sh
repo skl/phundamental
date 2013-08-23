@@ -336,7 +336,6 @@ EOF
                 cd /usr/local/src/apcu
                 ${PHP_BIN_DIR}/pecl package package.xml
                 ${PHP_BIN_DIR}/pecl install -f apcu-4.0.2.tgz
-                echo "extension=apcu.so" >> ${PHP_INI_PATH}/php.ini
             fi
         fi
     fi
@@ -360,7 +359,7 @@ if [ "$REPLY" == "y" ]; then
         ${PHP_BIN_DIR}/phpize
 
         # Now safe to build PECL extension
-        ph_autobuild "`pwd`" --with-libmemcached-dir=/usr/local/libmemcached-1.0.10 && {
+        ph_autobuild "`pwd`" --with-php-config=${PHP_BIN_DIR}/php-config --with-libmemcached-dir=/usr/local/libmemcached-1.0.10 && {
             echo "extension=memcached.so" >> ${PHP_INI_PATH}/php.ini
         }
     }
@@ -421,7 +420,7 @@ case "${PH_OS}" in \
         chkconfig php-${PHP_VERSION_STRING}-fpm on
 
         /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
-        [ ph_is_installed nginx ] && nginx -s reload
+        ph_is_installed nginx && nginx -s reload
         ;;
 
     *)
