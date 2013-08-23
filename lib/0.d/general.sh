@@ -192,7 +192,7 @@ function ph_autobuild() {
 
     # Configure silently and write to log file
     echo -n "./configure ${CONFIGURE_OPTIONS}"
-    ./configure "${CONFIGURE_OPTIONS}" 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
+    ./configure ${CONFIGURE_OPTIONS} 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
     echo ''
 
     # Check exit stature of ./configure

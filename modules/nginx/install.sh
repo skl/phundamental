@@ -68,19 +68,19 @@ ph_mkdirs \
 
 ph_cd_tar xzf nginx-${NGINX_VERSION_STRING} .tar.gz http://nginx.org/download/nginx-${NGINX_VERSION_STRING}.tar.gz
 
-CONFIGURE_ARGS=("--prefix=${NGINX_PREFIX}" \
-    "--pid-path=${NGINX_PREFIX}/logs/nginx.pid" \
-    "--error-log-path=${NGINX_PREFIX}/logs/error.log" \
-    "--http-log-path=${NGINX_PREFIX}/logs/access.log" \
-    "--conf-path=/etc/nginx-${NGINX_VERSION_STRING}/nginx.conf" \
-    "--with-pcre" \
-    "--with-http_ssl_module" \
+CONFIGURE_ARGS=("--prefix=${NGINX_PREFIX}"
+    "--pid-path=${NGINX_PREFIX}/logs/nginx.pid"
+    "--error-log-path=${NGINX_PREFIX}/logs/error.log"
+    "--http-log-path=${NGINX_PREFIX}/logs/access.log"
+    "--conf-path=/etc/nginx-${NGINX_VERSION_STRING}/nginx.conf"
+    "--with-pcre"
+    "--with-http_ssl_module"
     "--with-http_realip_module");
 
 if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
     # Add homebrew include directories
-    CONFIGURE_ARGS=("${CONFIGURE_ARGS[@]}" \
-        "--with-cc-opt=-I/usr/local/include" \
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+        "--with-cc-opt=-I/usr/local/include"
         "--with-ld-opt=-L/usr/local/lib")
 fi
 

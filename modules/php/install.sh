@@ -264,14 +264,14 @@ fi
 
 if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
     # Add homebrew include directories
-    CONFIGURE_ARGS=("${CONFIGURE_ARGS[@]}"
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
         "--with-png-dir=/usr/X11"
         "--with-cc-opt=-I/usr/local/include"
         "--with-ld-opt=-L/usr/local/lib")
 fi
 
 # Build!
-CFLAGS='-O2 -DEAPI' ph_autobuild "`pwd`" "${CONFIGURE_ARGS[@]}" || return 1
+CFLAGS='-O2 -DEAPI' ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
 
 ph_symlink ${PHP_PREFIX} /usr/local/php $PHP_OVERWRITE_SYMLINKS
 
