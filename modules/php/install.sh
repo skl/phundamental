@@ -432,6 +432,24 @@ if ph_ask_yesno "Install GraphicsMagick and associated PECL extension?" "n"; the
     }
 fi
 
+if ph_ask_yesno "Install ImageMagick and associated PECL extension?" "n"; then
+    ph_install_packages imagemagick
+
+    read -p "Specify imagick PECL extension version [3.1.0RC2]: " IM_PECL_VERSION
+    [ -z ${IM_PECL_VERSION} ] && IM_PECL_VERSION="3.1.0RC2"
+
+    ph_cd_tar xzf imagick-${IM_PECL_VERSION} .tgz \
+        http://pecl.php.net/get/imagick-${IM_PECL_VERSION}.tgz
+    ${PHP_BIN_DIR}/phpize
+
+    ph_autobuild "`pwd`" --with-php-config=${PHP_BIN_DIR}/php-config && {
+        echo "extension=imagick.so" >> ${PHP_INI_PATH}/php.ini
+        cd /usr/local/src
+        rm -rf /usr/local/src/imagick-${IM_PECL_VERSION} \
+            /usr/local/src/package.xml
+    }
+fi
+
 if ph_ask_yesno "Install PHPUnit PEAR package?"; then
     ${PHP_BIN_DIR}/pear channel-discover pear.phpunit.de
     ${PHP_BIN_DIR}/pear install --alldeps phpunit/PHPUnit
