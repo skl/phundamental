@@ -266,7 +266,8 @@ function ph_autobuild() {
     fi
 
     echo "${FUNCNAME}(): Successfully compiled ${BUILD_DIR}, cleaning up source files:"
-    rm -rvf "${BUILD_DIR}"
+    rm -rvf "${BUILD_DIR}" | while read line; do echo -n .; done
+    echo
 
     return 0
 }
