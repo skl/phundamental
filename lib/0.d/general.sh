@@ -319,8 +319,9 @@ function ph_front_controller() {
     1)
         for MODULE in `ls -1 ${PH_INSTALL_DIR}/modules`; do
             echo ''
-            read -p "[phundamental/installer] Would you like to ${ACTION} ${MODULE}? [y/n] " REPLY
-            [ "y" == $REPLY ] && ph_module_action ${ACTION} ${MODULE}
+            if ph_ask_yesno "[phundamental/installer] Would you like to ${ACTION} ${MODULE}?" "n"; then
+                ph_module_action ${ACTION} ${MODULE}
+            fi
         done
     ;;
 

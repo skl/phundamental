@@ -104,8 +104,7 @@ function ph_install_packages {
             sudo -u ${PH_ORIGINAL_USER} brew update
             sudo -u ${PH_ORIGINAL_USER} brew tap homebrew/dupes
             sudo -u ${PH_ORIGINAL_USER} brew install ${PH_PACKAGES[@]} || { \
-                read -p "[phundamental/package_manager] Do you wish to continue? [Y/n]: " REPLY
-                if [ "$REPLY" == "n" ] || [ "$REPLY" == "N" ]; then
+                if ! ph_ask_yesno "[phundamental/package_manager] Do you wish to continue?"; then
                     return 1
                 fi
             }
@@ -116,8 +115,7 @@ function ph_install_packages {
             [ ! -z ${PH_PACKAGE_MANAGER_UPDATE} ] && ${PH_PACKAGE_MANAGER} ${PH_PACKAGE_MANAGER_UPDATE}
 
             $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]} || { \
-                read -p "[phundamental/package_manager] Do you wish to continue? [Y/n]: " REPLY
-                if [ "$REPLY" == "n" ] || [ "$REPLY" == "N" ]; then
+                if ! ph_ask_yesno "[phundamental/package_manager] Do you wish to continue?"; then
                     return 1
                 fi
             }
