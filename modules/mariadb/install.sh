@@ -13,8 +13,9 @@ if ph_is_installed mysql ; then
     ls -l `which mysql` | awk '{print $9 $10 $11}'
     mysql --version
 
-    read -p "Do you wish to continue with the MariaDB installation? [y/n] " REPLY
-    [ $REPLY == "n" ] && { return 1 || exit 1; }
+    if ! ph_ask_yesno "Do you wish to continue with the MariaDB installation?"; then
+        return 1 || exit 1
+    fi
 fi
 
 read -p "Specify MariaDB version [5.5.32]: " MARIADB_VERSION_STRING
@@ -66,8 +67,7 @@ else
     read -p "Specify MariaDB group [${SUGGESTED_USER}]: " MARIADB_GROUP
     [ -z ${MARIADB_GROUP} ] && MARIADB_GROUP="${SUGGESTED_USER}"
 
-    read -p "Should I create the user and group for you? [y/N]: " REPLY
-    if [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
+    if ph_ask_yesno "Should I create the user and group for you?" "n"; then
         ph_creategroup ${MARIADB_GROUP}
         ph_createuser ${MARIADB_USER}
         ph_assigngroup ${MARIADB_GROUP} ${MARIADB_USER}
@@ -83,8 +83,11 @@ else
         openssl\
         wget
 
-    read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
-    [ "$REPLY" == "y" ] && MARIADB_OVERWRITE_SYMLINKS=true || MARIADB_OVERWRITE_SYMLINKS=false
+    if ph_ask_yesno "Overwrite existing symlinks in /usr/local?"; then
+        MARIADB_OVERWRITE_SYMLINKS=true
+    else
+        MARIADB_OVERWRITE_SYMLINKS=false
+    fi
 
     ph_cd_tar xzf mariadb-${MARIADB_VERSION_STRING} .tar.gz http://ftp.osuosl.org/pub/mariadb/mariadb-${MARIADB_VERSION_STRING}/kvm-tarbake-jaunty-x86/mariadb-${MARIADB_VERSION_STRING}.tar.gz
 

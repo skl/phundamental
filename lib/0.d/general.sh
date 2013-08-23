@@ -12,6 +12,42 @@ function ph_is_installed() {
 
 
 ##
+# Ask the user a yes or no question
+#
+# @param string The question to ask
+# @param string Optional default response if user simpy hits enter <y|n>
+# @return boolean True if yes, false if no
+#
+function ph_ask_yesno() {
+    local QUESTION="$1"
+    local DEFAULT=${2-"y"}
+    local REPLY=
+
+    if [ "${DEFAULT}" == "y" ]; then
+        QUESTION="${QUESTION} [Y/n]: "
+    else
+        QUESTION="${QUESTION} [y/N]: "
+    fi
+
+    while true; do
+        read -p "${QUESTION}" REPLY
+
+        if [ -z ${REPLY} ]; then
+            REPLY="${DEFAULT}"
+        fi
+
+        if [ "${REPLY}" == "y" ] || [ "${REPLY}" == "Y" ]; then
+            return 0
+        elif [ "${REPLY}" == "n" ] || [ "${REPLY}" == "N" ]; then
+            return 1
+        else
+            echo 'Please enter y or n!'
+        fi
+    done
+}
+
+
+##
 # Cross-platform wrapper for sed -i
 #
 # @param string Search pattern

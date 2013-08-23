@@ -30,8 +30,9 @@ if ph_is_installed php ; then
     ls -l `which php` | awk '{print $9 $10 $11}'
     php -v
 
-    read -p "Do you wish to continue with the PHP installation? [y/n] " REPLY
-    [ $REPLY == "n" ] && { return 1 || exit 1; }
+    if ! ph_ask_yesno "Do you wish to continue with the PHP installation?"; then
+        return 1 || exit 1
+    fi
 fi
 
 read -p "Specify PHP version [5.5.2]: " PHP_VERSION_STRING
@@ -59,8 +60,7 @@ read -p "Specify php-fpm user [${SUGGESTED_USER}]: " PHP_USER
 read -p "Specify php-fpm group [${SUGGESTED_USER}]: " PHP_GROUP
 [ -z ${PHP_GROUP} ] && PHP_GROUP="${SUGGESTED_USER}"
 
-read -p "Should I create the user and group for you? [y/N]: " REPLY
-if [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
+if ph_ask_yesno "Should I create the user and group for you?" "n"; then
     ph_creategroup ${PHP_GROUP}
     ph_createuser ${PHP_USER}
     ph_assigngroup ${PHP_GROUP} ${PHP_USER}
@@ -78,14 +78,16 @@ case "${PH_OS}" in \
 esac
 
 if [ -f /root/.pearrc ]; then
-    read -p ".pearrc detected in /root/.pearrc - delete? (recommended) [y/n] "
-    [ $REPLY == "y" ] && rm -f /root/.pearrc
+    if ph_ask_yesno ".pearrc detected in /root/.pearrc - delete?"; then
+        rm -vf /root/.pearrc
+    fi
 fi
 
 for i in `ls -1 ${HOMEDIRS}`; do
     if [ -f "${HOMEDIRS}/${i}/.pearrc" ]; then
-        read -p ".pearrc detected in ${HOMEDIRS}/${i} - delete? (recommended) [y/n] "
-        [ $REPLY == "y" ] && rm -f ${HOMEDIRS}/${i}/.pearrc
+        if ph_ask_yesno ".pearrc detected in ${HOMEDIRS}/${i} - delete?"; then
+            rm -f ${HOMEDIRS}/${i}/.pearrc
+        fi
     fi
 done
 
@@ -146,8 +148,11 @@ if [ "${PH_OS}" == "windows" ]; then
     fi
 fi
 
-read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/N]: " REPLY
-[ "$REPLY" == "y" ] && PHP_OVERWRITE_SYMLINKS=true || PHP_OVERWRITE_SYMLINKS=false
+if ph_ask_yesno "Overwrite existing symlinks in /usr/local?"; then
+    PHP_OVERWRITE_SYMLINKS=true
+else
+    PHP_OVERWRITE_SYMLINKS=false
+fi
 
 # e.g. 531 (truncated to three characters in order to construct a valid port number for fpm)
 # So for PHP 5.4.7,  php-fpm will bind to 127.0.0.1:9547
@@ -315,8 +320,7 @@ ${PHP_BIN_DIR}/pear config-set auto_discover 1
 
 # Default to OPcache for 5.5+
 if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 5 ]; then
-    read -p "Install Zend OPcache PECL extension? [y/n] " REPLY
-    if [ "$REPLY" == "y" ]; then
+    if ph_ask_yesno "Install Zend OPcache PECL extension?"; then
         ${PHP_BIN_DIR}/pecl install zendopcache
 
         cat >> ${PHP_INI_PATH}/php.ini <<EOF
@@ -329,8 +333,7 @@ opcache.enable_cli=1
 EOF
 
         if ph_is_installed git; then
-            read -p "Install APCu 4.0.2 PECL extension? [y/n] " REPLY
-            if [ "$REPLY" == "y" ]; then
+            if ph_ask_yesno "Install APCu 4.0.2 PECL extension?"; then
                 # Credit: https://gist.github.com/bcremer/5450321
                 [ -d /usr/local/src/apcu ] || git clone http://github.com/krakjoe/apcu.git /usr/local/src/apcu
                 cd /usr/local/src/apcu
@@ -340,14 +343,12 @@ EOF
         fi
     fi
 else
-    read -p "Install APC PECL extension? [y/n] " REPLY
-    if [ "$REPLY" == "y" ]; then
+    if ph_ask_yesno "Install APC PECL extension?"; then
         ${PHP_BIN_DIR}/pecl install apc
     fi
 fi
 
-read -p "Install memcached PECL extension? [y/n] " REPLY
-if [ "$REPLY" == "y" ]; then
+if ph_ask_yesno "Install memcached PECL extension?"; then
     ph_install_packages libevent
 
     # memcached PECL extension depends on libmemcached-1.0.10
@@ -365,8 +366,7 @@ if [ "$REPLY" == "y" ]; then
     }
 fi
 
-read -p "Install xdebug PECL extension? [y/n] " REPLY
-if [ "$REPLY" == "y" ]; then
+if ph_ask_yesno "Install xdebug PECL extension?"; then
     ${PHP_BIN_DIR}/pecl install xdebug
 
     # Fix xdebug.so ini directive
@@ -384,23 +384,20 @@ if [ "$REPLY" == "y" ]; then
         >> ${PHP_INI_PATH}/php.ini
 fi
 
-read -p "Install PHPUnit PEAR package? [y/n] " REPLY
-if [ "$REPLY" == "y" ]; then
+if ph_ask_yesno "Install PHPUnit PEAR package?"; then
     ${PHP_BIN_DIR}/pear channel-discover pear.phpunit.de
     ${PHP_BIN_DIR}/pear install --alldeps phpunit/PHPUnit
     ph_symlink ${PHP_BIN_DIR}/phpunit /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
-read -p "Install phpDocumentor PEAR package? [y/n] " REPLY
-if [ "$REPLY" == "y" ]; then
+if ph_ask_yesno "Install phpDocumentor PEAR package?"; then
     ${PHP_BIN_DIR}/pear channel-discover pear.phpdoc.org
     ${PHP_BIN_DIR}/pear install phpdoc/phpDocumentor-alpha
     ph_symlink ${PHP_BIN_DIR}/phpdoc /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
 if ph_is_installed curl; then
-    read -p "Install Composer PHAR? [y/n] " REPLY
-    if [ "$REPLY" == "y" ]; then
+    if ph_ask_yesno "Install Composer PHAR?"; then
         curl -sS https://getcomposer.org/installer | ${PHP_BIN_DIR}/php
         mv -i composer.phar /usr/local/bin/composer
     fi

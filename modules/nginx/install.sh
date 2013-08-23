@@ -13,8 +13,9 @@ if ph_is_installed nginx ; then
     ls -l `which nginx` | awk '{print $9 $10 $11}'
     nginx -v
 
-    read -p "Do you wish to continue with the nginx installation? [Y/n] " REPLY
-    [ $REPLY == "n" ] && { return 1 || exit 1; }
+    if ! ph_ask_yesno "Do you wish to continue with the nginx installation?"; then
+        return 1 || exit 1
+    fi
 fi
 
 read -p "Specify nginx version [1.4.2]: " NGINX_VERSION_STRING
@@ -39,8 +40,7 @@ read -p "Specify nginx user [${SUGGESTED_USER}]: " NGINX_USER
 read -p "Specify nginx group [${SUGGESTED_USER}]: " NGINX_GROUP
 [ -z ${NGINX_GROUP} ] && NGINX_GROUP="${SUGGESTED_USER}"
 
-read -p "Should I create the user and group for you? [y/N]: " REPLY
-if [ "$REPLY" == "Y" ] || [ "$REPLY" = "y" ]; then
+if ph_ask_yesno "Should I create the user and group for you?" "n"; then
     ph_creategroup ${NGINX_GROUP}
     ph_createuser ${NGINX_USER}
     ph_assigngroup ${NGINX_GROUP} ${NGINX_USER}
@@ -54,8 +54,11 @@ ph_install_packages\
     wget\
     zlib
 
-read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/N]: " REPLY
-[ "$REPLY" == "y" ] && NGINX_OVERWRITE_SYMLINKS=true || NGINX_OVERWRITE_SYMLINKS=false
+if ph_ask_yesno "Overwrite existing symlinks in /usr/local?"; then
+    NGINX_OVERWRITE_SYMLINKS=true
+else
+    NGINX_OVERWRITE_SYMLINKS=false
+fi
 
 ph_mkdirs \
     /usr/local/src \

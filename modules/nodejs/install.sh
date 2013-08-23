@@ -13,8 +13,9 @@ if ph_is_installed node ; then
     ls -l `which node` | awk '{print $9 $10 $11}'
     node -v
 
-    read -p "Do you wish to continue with the node installation? [y/n] " REPLY
-    [ $REPLY == "n" ] && { return 1 || exit 1; }
+    if ! ph_ask_yesno "Do you wish to continue with the node installation?"; then
+        return 1 || exit 1
+    fi
 fi
 
 read -p "Specify node.js version (e.g. 0.10.9): " NODEJS_VERSION_STRING
@@ -43,8 +44,11 @@ else
         python\
         wget
 
-    read -p "Overwrite existing symlinks in /usr/local? (recommended) [y/n]: " REPLY
-    [ "$REPLY" == "y" ] && NODEJS_OVERWRITE_SYMLINKS=true || NODEJS_OVERWRITE_SYMLINKS=false
+    if ph_ask_yesno "Overwrite existing symlinks in /usr/local?"; then
+        NODEJS_OVERWRITE_SYMLINKS=true
+    else
+        NODEJS_OVERWRITE_SYMLINKS=false
+    fi
 
     ph_mkdirs \
         /usr/local/src \
