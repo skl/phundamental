@@ -285,10 +285,12 @@ for i in `ls -1 ${PHP_PREFIX}/bin`; do
 done
 
 # Install nginx config files
-if [ -d /etc/nginx ]; then
+if [ -d /etc/nginx/sites-available ]; then
     ph_cp_inject ${PH_INSTALL_DIR}/modules/php/www.example.com /etc/nginx/sites-available/www.example.com\
         "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}"
+fi
 
+if [ -d /etc/nginx/global ]; then
     ph_cp_inject ${PH_INSTALL_DIR}/modules/php/nginx.conf /etc/nginx/global/php-${PHP_VERSION_STRING}.conf\
         "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}"
 
