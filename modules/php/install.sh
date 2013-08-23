@@ -378,7 +378,9 @@ if ph_ask_yesno "Install memcached PECL extension?"; then
             --with-libmemcached-dir=/usr/local/libmemcached-${LIBMEMCACHED_VERSION} && {
             echo "extension=memcached.so" >> ${PHP_INI_PATH}/php.ini
             cd /usr/local/src
-            rm -rf /usr/local/src/memcached-${MEMCACHED_PECL_VERSION} /usr/local/src/libmemcached-${LIBMEMCACHED_VERSION}
+            rm -rf /usr/local/src/memcached-${MEMCACHED_PECL_VERSION} \
+                /usr/local/src/package.xml \
+                /usr/local/src/libmemcached-${LIBMEMCACHED_VERSION}
         }
     }
 fi
