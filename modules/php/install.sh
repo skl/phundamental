@@ -417,7 +417,7 @@ if ph_ask_yesno "Install GraphicsMagick and associated PECL extension?" "n"; the
 
     ph_autobuild "`pwd`" --prefix=/usr/local/graphicsmagick-${GM_VERSION} && {
         ph_cd_tar xzf gmagick-${GM_PECL_VERSION} .tgz \
-            http://pecl.php.net/get/gmacgick-${GM_PECL_VERSION}.tgz
+            http://pecl.php.net/get/gmagick-${GM_PECL_VERSION}.tgz
         ${PHP_BIN_DIR}/phpize
 
         ph_autobuild "`pwd`" \
@@ -426,7 +426,7 @@ if ph_ask_yesno "Install GraphicsMagick and associated PECL extension?" "n"; the
             echo "extension=gmagick.so" >> ${PHP_INI_PATH}/php.ini
             cd /usr/local/src
             rm -rf /usr/local/src/GraphicsMagick-${GM_VERSION} \
-                /usr/local/src/gmacgick-${GM_PECL_VERSION} \
+                /usr/local/src/gmagick-${GM_PECL_VERSION} \
                 /usr/local/src/package.xml
         }
     }
