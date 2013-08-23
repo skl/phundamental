@@ -359,7 +359,7 @@ if ph_ask_yesno "Install memcached PECL extension?"; then
     read -p "Specify libmemcached version [1.0.10]: " LIBMEMCACHED_VERSION
     [ -z ${LIBMEMCACHED_VERSION} ] && LIBMEMCACHED_VERSION="1.0.10"
 
-    read -p "Specify memcached PECL package version [2.1.0]: " MEMCACHED_PECL_VERSION
+    read -p "Specify memcached PECL extension version [2.1.0]: " MEMCACHED_PECL_VERSION
     [ -z ${MEMCACHED_PECL_VERSION} ] && MEMCACHED_PECL_VERSION="2.1.0"
 
     # memcached PECL extension depends on libmemcached-1.0.10
@@ -401,6 +401,35 @@ if ph_ask_yesno "Install xdebug PECL extension?"; then
 
     echo "zend_extension=${PHP_PREFIX}/lib/php/extensions/no-debug-non-zts-${PHP_EXTENSION_API}/xdebug.so"
         >> ${PHP_INI_PATH}/php.ini
+fi
+
+if ph_ask_yesno "Install GraphicsMagick and associated PECL extension?" "n"; then
+    ph_install_packages ghostscript libtiff freetype
+
+    read -p "Specify GraphicsMagick version [1.3.18]: " GM_VERSION
+    [ -z ${GM_VERSION} ] && GM_VERSION="1.3.18"
+
+    read -p "Specify gmagick PECL extension version [1.1.2RC1]: " GM_PECL_VERSION
+    [ -z ${GM_PECL_VERSION} ] && GM_PECL_VERSION="1.1.2RC1"
+
+    ph_cd_tar xzf graphicsmagick-${GM_VERSION} .tar.gz \
+        http://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/${GM_VERSION}/GraphicsMagick-${GM_VERSION}.tar.gz
+
+    ph_autobuild "`pwd`" --prefix=/usr/local/graphicsmagick-${GM_VERSION} && {
+        ph_cd_tar xzf gmagick-${GM_PECL_VERSION} .tgz \
+            http://pecl.php.net/get/gmacgick-${GM_PECL_VERSION}.tgz
+        ${PHP_BIN_DIR}/phpize
+
+        ph_autobuild "`pwd`" \
+            --with-php-config=${PHP_BIN_DIR}/php-config \
+            --with-gmagick=/usr/local/graphicsmagick-${GM_VERSION} && {
+            echo "extension=gmagick.so" >> ${PHP_INI_PATH}/php.ini
+            cd /usr/local/src
+            rm -rf /usr/local/src/graphicsmagick-${GM_VERSION} \
+                /usr/local/src/gmacgick-${GM_PECL_VERSION} \
+                /usr/local/src/package.xml
+        }
+    }
 fi
 
 if ph_ask_yesno "Install PHPUnit PEAR package?"; then
