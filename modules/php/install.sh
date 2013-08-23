@@ -182,52 +182,52 @@ case "${PH_OS_FLAVOUR}" in \
     ;;
 esac
 
-CONFIGURE_ARGS=("--prefix=${PHP_PREFIX}" \
-    "--with-config-file-path=${PHP_INI_PATH}" \
-    "--enable-bcmath" \
-    "--enable-calendar" \
-    "--enable-exif" \
-    "--enable-ftp" \
-    "--enable-mbstring" \
-    "--enable-pcntl" \
-    "--enable-pdo" \
-    "--enable-zip" \
-    "--with-curl" \
-    "--with-gd" \
-    "--with-jpeg-dir" \
-    "--with-ldap" \
-    "--with-libxml-dir" \
-    "--with-xsl" \
-    "--with-mcrypt" \
-    "--with-mhash" \
-    "--with-openssl" \
-    "--with-regex=system" \
+CONFIGURE_ARGS=("--prefix=${PHP_PREFIX}"
+    "--with-config-file-path=${PHP_INI_PATH}"
+    "--enable-bcmath"
+    "--enable-calendar"
+    "--enable-exif"
+    "--enable-ftp"
+    "--enable-mbstring"
+    "--enable-pcntl"
+    "--enable-pdo"
+    "--enable-zip"
+    "--with-curl"
+    "--with-gd"
+    "--with-jpeg-dir"
+    "--with-ldap"
+    "--with-libxml-dir"
+    "--with-xsl"
+    "--with-mcrypt"
+    "--with-mhash"
+    "--with-openssl"
+    "--with-regex=system"
     "--with-zlib");
 
 if [[ "${PH_OS}" == "mac" ]]; then
-    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
         "--with-gettext=`find /usr/local/Cellar/gettext -depth 1 | sort | tail -1`")
 else
-    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-        "--with-gettext" \
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+        "--with-gettext"
         "--with-libdir=${LIBDIR}")
 
     # Compilation will not work without this option when RAM <= 512 MiB
     if [ ${PH_RAM_MB} -le 512 ]; then
-        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
             "--disable-fileinfo")
     fi
 fi
 
 # Enable FPM for 5.3 if 5.3.3+
 [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 3 ] && [ ${PHP_VERSION_RELEASE} -ge 3 ] && {
-    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
         "--enable-fpm")
 }
 
 # Always enable FPM for 5.4+
 [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 4 ] && {
-    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
         "--enable-fpm")
 }
 
@@ -237,8 +237,8 @@ if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
     # MySQLi for 5.0.x, 5.1.x, 5.2.x
     if [ ${PHP_VERSION_MINOR} -le 2 ]; then
         if ph_is_installed mysql_config ; then
-            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-                "--with-mysqli=`which mysql_config`" \
+            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+                "--with-mysqli=`which mysql_config`"
                 "--with-pdo-mysql=/usr/local/mysql")
         else
             echo "mysql_config binary not found: you need to setup MySQL first if installing PHP <= 5.2.x"
@@ -249,29 +249,29 @@ if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
     elif [ ${PHP_VERSION_MINOR} -eq 3 ]; then
         ph_install_packages libmysql
 
-        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-            "--with-mysql" \
-            "--with-mysqli=mysqlnd" \
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+            "--with-mysql"
+            "--with-mysqli=mysqlnd"
             "--with-pdo-mysql=mysqlnd")
 
     # MySQL native driver 5.4+
     else
-        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]} \
-            "--with-mysqli" \
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+            "--with-mysqli"
             "--with-pdo-mysql=mysqlnd")
     fi
 fi
 
 if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
     # Add homebrew include directories
-    CONFIGURE_ARGS=("${CONFIGURE_ARGS[@]}" \
-        "--with-png-dir=/usr/X11" \
-        "--with-cc-opt=-I/usr/local/include" \
+    CONFIGURE_ARGS=("${CONFIGURE_ARGS[@]}"
+        "--with-png-dir=/usr/X11"
+        "--with-cc-opt=-I/usr/local/include"
         "--with-ld-opt=-L/usr/local/lib")
 fi
 
 # Build!
-CFLAGS='-O2 -DEAPI' ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
+CFLAGS='-O2 -DEAPI' ph_autobuild "`pwd`" "${CONFIGURE_ARGS[@]}" || return 1
 
 ph_symlink ${PHP_PREFIX} /usr/local/php $PHP_OVERWRITE_SYMLINKS
 
