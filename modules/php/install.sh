@@ -341,6 +341,7 @@ EOF
                 cd /usr/local/src/apcu
                 ${PHP_BIN_DIR}/pecl package package.xml
                 ${PHP_BIN_DIR}/pecl install -f apcu-4.0.2.tgz
+                rm -rf /usr/local/src/apcu
             fi
         fi
     fi
@@ -353,17 +354,28 @@ fi
 if ph_ask_yesno "Install memcached PECL extension?"; then
     ph_install_packages libevent
 
+    read -p "Specify libmemcached version [1.0.10]: " LIBMEMCACHED_VERSION
+    [ -z ${LIBMEMCACHED_VERSION} ] && LIBMEMCACHED_VERSION="1.0.10"
+
+    read -p "Specify memcached PECL package version [2.1.0]: " MEMCACHED_PECL_VERSION
+    [ -z ${MEMCACHED_PECL_VERSION} ] && MEMCACHED_PECL_VERSION="2.1.0"
+
     # memcached PECL extension depends on libmemcached-1.0.10
-    ph_cd_tar xzf libmemcached-1.0.10 .tar.gz https://launchpad.net/libmemcached/1.0/1.0.10/+download/libmemcached-1.0.10.tar.gz
+    ph_cd_tar xzf libmemcached-${LIBMEMCACHED_VERSION} .tar.gz \
+        https://launchpad.net/libmemcached/`echo ${LIBMEMCACHED_VERSION} | cut -d. -f1-2`/${LIBMEMCACHED_VERSION}\
+        /+download/libmemcached-${LIBMEMCACHED_VERSION}.tar.gz
 
     # build memcached library
-    ph_autobuild "`pwd`" --prefix=/usr/local/libmemcached-1.0.10 && {
-        ph_cd_tar xzf memcached-2.1.0 .tgz http://pecl.php.net/get/memcached-2.1.0.tgz
+    ph_autobuild "`pwd`" --prefix=/usr/local/libmemcached-${LIBMEMCACHED_VERSION} && {
+        ph_cd_tar xzf memcached-${MEMCACHED_PECL_VERSION} .tgz http://pecl.php.net/get/memcached-${MEMCACHED_PECL_VERSION}.tgz
         ${PHP_BIN_DIR}/phpize
 
         # Now safe to build PECL extension
-        ph_autobuild "`pwd`" --with-php-config=${PHP_BIN_DIR}/php-config --with-libmemcached-dir=/usr/local/libmemcached-1.0.10 && {
+        ph_autobuild "`pwd`" \
+            --with-php-config=${PHP_BIN_DIR}/php-config \
+            --with-libmemcached-dir=/usr/local/libmemcached-${LIBMEMCACHED_VERSION} && {
             echo "extension=memcached.so" >> ${PHP_INI_PATH}/php.ini
+            rm -rf /usr/local/src/memcached-${MEMCACHED_PECL_VERSION} /usr/local/src/libmemcached-${LIBMEMCACHED_VERSION}
         }
     }
 fi
