@@ -155,5 +155,8 @@ case "${PH_OS}" in \
     ;;
 esac
 
+echo -n "Deleting source files... "
+rm -rf /usr/local/src/nginx-${NGINX_VERSION_STRING}
+
 echo "Complete."
 return 0 || exit 0

@@ -69,5 +69,8 @@ else
     ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm $NODEJS_OVERWRITE_SYMLINKS
 fi
 
+echo -n "Deleting source files... "
+rm -rf /usr/local/src/node-v${NODEJS_VERSION_STRING}
+
 echo "Complete."
 return 0 || exit 0

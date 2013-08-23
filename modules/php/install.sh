@@ -456,5 +456,8 @@ if [ -d /etc/nginx ]; then
     echo "Check out the example configuration file: /etc/nginx/sites-available/www.example.com"
 fi
 
+echo -n "Deleting source files... "
+rm -rf /usr/local/src/php-${PHP_VERSION_STRING}
+
 echo "Complete."
 return 0 || exit 0
