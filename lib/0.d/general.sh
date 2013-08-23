@@ -212,6 +212,8 @@ function ph_autobuild() {
         return 1
     fi
 
+    echo "${FUNCNAME}(): Preparing to compile ${BUILD_DIR}"
+
     cd "${BUILD_DIR}"
 
     if [ ! -x configure ]; then
@@ -221,7 +223,7 @@ function ph_autobuild() {
 
     echo -n 'make clean'
     make clean | while read line; do echo -n .; done
-    echo ''
+    echo
 
     # Ensure log file exists and is empty
     cat /dev/null > ${configure_log}
@@ -229,13 +231,13 @@ function ph_autobuild() {
     # Configure silently and write to log file
     echo -n "./configure ${CONFIGURE_OPTIONS}"
     ./configure ${CONFIGURE_OPTIONS} 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
-    echo ''
+    echo
 
     # Check exit stature of ./configure
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
         echo "${FUNCNAME}(): Failed when running:"
         echo "./configure ${CONFIGURE_OPTIONS}"
-        echo ''
+        echo
         echo "See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
         return 1
@@ -243,7 +245,7 @@ function ph_autobuild() {
 
     echo -n "make -j ${PH_NUM_THREADS}"
     make -j ${PH_NUM_THREADS} 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
-    echo ''
+    echo
 
     # Check exit status of make
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
@@ -254,6 +256,7 @@ function ph_autobuild() {
 
     echo -n 'make install'
     make install 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
+    echo
 
     # Check exit status of make install
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
@@ -261,6 +264,9 @@ function ph_autobuild() {
         tail "${configure_log}"
         return 1
     fi
+
+    echo "${FUNCNAME}(): Successfully compiled ${BUILD_DIR}, cleaning up source files:"
+    rm -rvf "${BUILD_DIR}"
 
     return 0
 }
@@ -318,7 +324,7 @@ function ph_front_controller() {
     # Action all modules
     1)
         for MODULE in `ls -1 ${PH_INSTALL_DIR}/modules`; do
-            echo ''
+            echo
             if ph_ask_yesno "[phundamental/installer] Would you like to ${ACTION} ${MODULE}?" "n"; then
                 ph_module_action ${ACTION} ${MODULE}
             fi

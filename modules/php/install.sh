@@ -394,6 +394,7 @@ if ph_ask_yesno "Install phpDocumentor PEAR package?"; then
     ${PHP_BIN_DIR}/pear channel-discover pear.phpdoc.org
     ${PHP_BIN_DIR}/pear install phpdoc/phpDocumentor-alpha
     ph_symlink ${PHP_BIN_DIR}/phpdoc /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
+    echo "To enable Graph generation in phpDocumentor install Graphviz: http://graphviz.org/Download.php"
 fi
 
 if ph_is_installed curl; then
@@ -451,15 +452,9 @@ case "${PH_OS}" in \
     ;;
 esac
 
-# Cleanup
-echo -n "Deleting source files... "
-rm -rf /usr/local/src/php-${PHP_VERSION_STRING}
-echo "Complete."
-
 if [ -d /etc/nginx ]; then
-    echo ""
     echo "Check out the example configuration file: /etc/nginx/sites-available/www.example.com"
-    echo "To enable Graph generation in phpDocumentor install Graphviz: http://graphviz.org/Download.php"
 fi
 
+echo "Complete."
 return 0 || exit 0
