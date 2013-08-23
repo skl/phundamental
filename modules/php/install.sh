@@ -342,6 +342,7 @@ EOF
                 cd /usr/local/src/apcu
                 ${PHP_BIN_DIR}/pecl package package.xml
                 ${PHP_BIN_DIR}/pecl install -f apcu-4.0.2.tgz
+                cd /usr/local/src
                 rm -rf /usr/local/src/apcu
             fi
         fi
@@ -376,6 +377,7 @@ if ph_ask_yesno "Install memcached PECL extension?"; then
             --with-php-config=${PHP_BIN_DIR}/php-config \
             --with-libmemcached-dir=/usr/local/libmemcached-${LIBMEMCACHED_VERSION} && {
             echo "extension=memcached.so" >> ${PHP_INI_PATH}/php.ini
+            cd /usr/local/src
             rm -rf /usr/local/src/memcached-${MEMCACHED_PECL_VERSION} /usr/local/src/libmemcached-${LIBMEMCACHED_VERSION}
         }
     }
