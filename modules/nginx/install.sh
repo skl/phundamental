@@ -69,7 +69,8 @@ ph_mkdirs \
     /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled \
     /var/www/localhost/public
 
-ph_cd_tar xzf nginx-${NGINX_VERSION_STRING} .tar.gz http://nginx.org/download/nginx-${NGINX_VERSION_STRING}.tar.gz
+ph_cd_tar xzf nginx-${NGINX_VERSION_STRING} .tar.gz \
+    http://nginx.org/download/nginx-${NGINX_VERSION_STRING}.tar.gz
 
 CONFIGURE_ARGS=("--prefix=${NGINX_PREFIX}"
     "--pid-path=${NGINX_PREFIX}/logs/nginx.pid"

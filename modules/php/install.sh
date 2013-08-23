@@ -165,7 +165,8 @@ PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
 PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
 
 # Retrieve source code from php.net
-ph_cd_tar xzf php-${PHP_VERSION_STRING} .tar.gz http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
+ph_cd_tar xzf php-${PHP_VERSION_STRING} .tar.gz \
+    http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
 
 case "${PH_OS_FLAVOUR}" in \
 "debian")
@@ -362,12 +363,12 @@ if ph_ask_yesno "Install memcached PECL extension?"; then
 
     # memcached PECL extension depends on libmemcached-1.0.10
     ph_cd_tar xzf libmemcached-${LIBMEMCACHED_VERSION} .tar.gz \
-        https://launchpad.net/libmemcached/`echo ${LIBMEMCACHED_VERSION} | cut -d. -f1-2`/${LIBMEMCACHED_VERSION}\
-        /+download/libmemcached-${LIBMEMCACHED_VERSION}.tar.gz
+        https://launchpad.net/libmemcached/`echo ${LIBMEMCACHED_VERSION} | cut -d. -f1-2`/${LIBMEMCACHED_VERSION}/+download/libmemcached-${LIBMEMCACHED_VERSION}.tar.gz
 
     # build memcached library
     ph_autobuild "`pwd`" --prefix=/usr/local/libmemcached-${LIBMEMCACHED_VERSION} && {
-        ph_cd_tar xzf memcached-${MEMCACHED_PECL_VERSION} .tgz http://pecl.php.net/get/memcached-${MEMCACHED_PECL_VERSION}.tgz
+        ph_cd_tar xzf memcached-${MEMCACHED_PECL_VERSION} .tgz \
+            http://pecl.php.net/get/memcached-${MEMCACHED_PECL_VERSION}.tgz
         ${PHP_BIN_DIR}/phpize
 
         # Now safe to build PECL extension
