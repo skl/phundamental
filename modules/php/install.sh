@@ -433,7 +433,7 @@ if ph_ask_yesno "Install GraphicsMagick and associated PECL extension?" "n"; the
 fi
 
 if ph_ask_yesno "Install ImageMagick and associated PECL extension?" "n"; then
-    ph_install_packages imagemagick
+    ph_install_packages ghostscript libtiff imagemagick
 
     read -p "Specify imagick PECL extension version [3.1.0RC2]: " IM_PECL_VERSION
     [ -z ${IM_PECL_VERSION} ] && IM_PECL_VERSION="3.1.0RC2"
