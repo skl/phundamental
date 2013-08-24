@@ -164,9 +164,16 @@ PHP_VERSION_MAJOR=`echo ${PHP_VERSION_STRING} | cut -d. -f1`
 PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
 PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
 
+if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -le 2 ]; then
+    PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz
+elif [ ${PHP_VERSION_MAJOR} -eq 4 ]; then
+    PHP_DOWNLOAD_URI=http://museum.php.net/php4/php-${PHP_VERSION_STRING}.tar.gz
+else
+    PHP_DOWNLOAD_URI=http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
+fi
+
 # Retrieve source code from php.net
-ph_cd_archive tar xzf php-${PHP_VERSION_STRING} .tar.gz \
-    http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
+ph_cd_archive tar xzf php-${PHP_VERSION_STRING} .tar.gz ${PHP_DOWNLOAD_URI}
 
 case "${PH_OS_FLAVOUR}" in \
 "debian")
@@ -225,19 +232,27 @@ else
     fi
 fi
 
-# Patch PHP 5.2.17
-[ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 2 ] && [ ${PHP_VERSION_RELEASE} -eq 17 ] && {
-    ph_install_packages libevent
+# FPM Patch for PHP 5.2
+[ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 2 ] && [ ${PHP_VERSION_RELEASE} -ge 3 ] && {
+    PHP_FPM_PATCH_VERSION=`grep "^${PHP_VERSION_STRING}:" ${PH_INSTALL_DIR}/modules/php/fpm-patch-versions.conf | cut -d: -f2`
 
-    wget http://php-fpm.org/downloads/php-5.2.17-fpm-0.5.14.diff.gz
-    gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d . -p1
+    if [ -z ${PHP_FPM_PATCH_VERSION} ]; then
+        if ph_ask_yesno "Sorry, no PHP-FPM patch available for PHP ${PHP_VERSION_STRING}, abort?"; then
+            exit 1
+        fi
+    else
+        ph_install_packages libevent
 
-    PHP_FPM_CONF=${PH_INSTALL_DIR}/modules/php/php-fpm.5.2.conf
+        wget http://php-fpm.org/downloads/php-${PHP_VERSION_STRING}-fpm-${PHP_FPM_PATCH_VERSION}.diff.gz
+        gzip -cd php-${PHP_VERSION_STRING}-fpm-${PHP_FPM_PATCH_VERSION}.diff.gz | patch -d . -p1
 
-    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
-        "--enable-fastcgi"
-        "--enable-fpm"
-        "--with-libevent")
+        PHP_FPM_CONF=${PH_INSTALL_DIR}/modules/php/php-fpm.5.2.conf
+
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+            "--enable-fastcgi"
+            "--enable-fpm"
+            "--with-libevent")
+    fi
 }
 
 # Enable FPM for 5.3 if 5.3.3+

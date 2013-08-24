@@ -174,6 +174,7 @@ function ph_cd_archive() {
         # Extract (hopefully)
         if ! ${ARCHIVE_CMD} ${CMD_ARGS} "${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION}"; then
             echo "${FUNCNAME}(): ${ARCHIVE_CMD} ${CMD_ARGS} ${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION} failed. Maybe bad download/URI."
+            rm -iv ${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION}
             exit 1
         fi
 
