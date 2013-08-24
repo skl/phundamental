@@ -89,7 +89,8 @@ else
         MARIADB_OVERWRITE_SYMLINKS=false
     fi
 
-    ph_cd_tar xzf mariadb-${MARIADB_VERSION_STRING} .tar.gz http://ftp.osuosl.org/pub/mariadb/mariadb-${MARIADB_VERSION_STRING}/kvm-tarbake-jaunty-x86/mariadb-${MARIADB_VERSION_STRING}.tar.gz
+    ph_cd_archive tar xzf mariadb-${MARIADB_VERSION_STRING} .tar.gz \
+        http://ftp.osuosl.org/pub/mariadb/mariadb-${MARIADB_VERSION_STRING}/kvm-tarbake-jaunty-x86/mariadb-${MARIADB_VERSION_STRING}.tar.gz
 
     [ -f CMakeCache.txt ] && rm CMakeCache.txt
     make clean

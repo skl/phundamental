@@ -165,7 +165,7 @@ PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
 PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
 
 # Retrieve source code from php.net
-ph_cd_tar xzf php-${PHP_VERSION_STRING} .tar.gz \
+ph_cd_archive tar xzf php-${PHP_VERSION_STRING} .tar.gz \
     http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
 
 case "${PH_OS_FLAVOUR}" in \
@@ -225,14 +225,33 @@ else
     fi
 fi
 
+# Patch PHP 5.2.17
+[ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 2 ] && [ ${PHP_VERSION_RELEASE} -eq 17 ] && {
+    ph_install_packages libevent
+
+    wget http://php-fpm.org/downloads/php-5.2.17-fpm-0.5.14.diff.gz
+    gzip -cd php-5.2.17-fpm-0.5.14.diff.gz | patch -d . -p1
+
+    PHP_FPM_CONF=${PH_INSTALL_DIR}/modules/php/php-fpm.5.2.conf
+
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+        "--enable-fastcgi"
+        "--enable-fpm"
+        "--with-libevent")
+}
+
 # Enable FPM for 5.3 if 5.3.3+
 [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 3 ] && [ ${PHP_VERSION_RELEASE} -ge 3 ] && {
+    PHP_FPM_CONF=${PH_INSTALL_DIR}/modules/php/php-fpm.conf
+
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
         "--enable-fpm")
 }
 
 # Always enable FPM for 5.4+
 [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 4 ] && {
+    PHP_FPM_CONF=${PH_INSTALL_DIR}/modules/php/php-fpm.conf
+
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
         "--enable-fpm")
 }
@@ -243,9 +262,30 @@ if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
     # MySQLi for 5.0.x, 5.1.x, 5.2.x
     if [ ${PHP_VERSION_MINOR} -le 2 ]; then
         if ph_is_installed mysql_config ; then
+            USER_MYSQL_CONFIG=$(ls -l `which mysql_config` | awk '{print $NF}')
+
+            if [ "${USER_MYSQL_CONFIG}" == "/usr/local/mysql/bin/mysql_config" ]; then
+                USER_MYSQL_PREFIX="/usr/local/mysql"
+            else
+                USER_MYSQL_PREFIX=
+            fi
+
             CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
-                "--with-mysqli=`which mysql_config`"
-                "--with-pdo-mysql=/usr/local/mysql")
+                "--with-mysqli=${USER_MYSQL_CONFIG}"
+                "--with-pdo-mysql=${USER_MYSQL_PREFIX}")
+
+
+            if [ -d ${USER_MYSQL_PREFIX}/lib ]; then
+                USER_MYSQL_LIBCLIENT=`find ${USER_MYSQL_PREFIX}/lib -name "libmysqlclient.*.dylib"`
+                if [ -f ${USER_MYSQL_LIBCLIENT} ]; then
+                    ph_symlink ${USER_MYSQL_LIBCLIENT} /usr/lib/`basename ${USER_MYSQL_LIBCLIENT}` $PHP_OVERWRITE_SYMLINKS
+                fi
+            fi
+
+            if [ ! -e `find /usr/lib/libmysqlclient.*.dylib` ]; then
+                echo 'WARNING: Unable to locate /usr/lib/libmysqlclient.*.dylib - you may have to symlink this yourself!'
+            fi
+
         else
             echo "mysql_config binary not found: you need to setup MySQL first if installing PHP <= 5.2.x"
             return 1
@@ -302,18 +342,16 @@ fi
 ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php.ini ${PHP_INI_PATH}/php.ini\
     "##PHP_PREFIX##" "${PHP_PREFIX}"
 
-ph_cp_inject ${PH_INSTALL_DIR}/modules/php/php-fpm.conf ${PHP_INI_PATH}/php-fpm.conf\
+ph_cp_inject ${PHP_FPM_CONF} ${PHP_INI_PATH}/php-fpm.conf\
     "##PHP_USER##" "${PHP_USER}"
 ph_search_and_replace "##PHP_GROUP##" "${PHP_GROUP}" ${PHP_INI_PATH}/php-fpm.conf
-
-
 ph_search_and_replace "##PHP_VERSION_STRING##" "${PHP_VERSION_STRING}" ${PHP_INI_PATH}/php-fpm.conf
 ph_search_and_replace "##PHP_VERSION_INTEGER##" "${PHP_VERSION_INTEGER}" ${PHP_INI_PATH}/php-fpm.conf
 
 PHP_BIN_DIR=${PHP_PREFIX}/bin
 
-# Set PHP extension_dir
-PHP_EXTENSION_API=`${PHP_BIN_DIR}/php -i | grep "PHP Extension =>" | awk '{print $4}'`
+# Set PHP extension_dir (ignore PHP errors, if any)
+PHP_EXTENSION_API=`${PHP_BIN_DIR}/php -i 2>/dev/null | grep "PHP Extension =>" | awk '{print $4}'`
 ph_search_and_replace "##PHP_EXTENSION_API##" "${PHP_EXTENSION_API}" ${PHP_INI_PATH}/php.ini
 
 # Setup PEAR/PECL
@@ -363,12 +401,12 @@ if ph_ask_yesno "Install memcached PECL extension?"; then
     [ -z ${MEMCACHED_PECL_VERSION} ] && MEMCACHED_PECL_VERSION="2.1.0"
 
     # memcached PECL extension depends on libmemcached-1.0.10
-    ph_cd_tar xzf libmemcached-${LIBMEMCACHED_VERSION} .tar.gz \
+    ph_cd_archive tar xzf libmemcached-${LIBMEMCACHED_VERSION} .tar.gz \
         https://launchpad.net/libmemcached/`echo ${LIBMEMCACHED_VERSION} | cut -d. -f1-2`/${LIBMEMCACHED_VERSION}/+download/libmemcached-${LIBMEMCACHED_VERSION}.tar.gz
 
     # build memcached library
     ph_autobuild "`pwd`" --prefix=/usr/local/libmemcached-${LIBMEMCACHED_VERSION} && {
-        ph_cd_tar xzf memcached-${MEMCACHED_PECL_VERSION} .tgz \
+        ph_cd_archive tar xzf memcached-${MEMCACHED_PECL_VERSION} .tgz \
             http://pecl.php.net/get/memcached-${MEMCACHED_PECL_VERSION}.tgz
         ${PHP_BIN_DIR}/phpize
 
@@ -399,7 +437,7 @@ if ph_ask_yesno "Install xdebug PECL extension?"; then
         ""\
         ${PHP_INI_PATH}/php.ini
 
-    echo "zend_extension=${PHP_PREFIX}/lib/php/extensions/no-debug-non-zts-${PHP_EXTENSION_API}/xdebug.so"
+    echo "zend_extension=${PHP_PREFIX}/lib/php/extensions/no-debug-non-zts-${PHP_EXTENSION_API}/xdebug.so" \
         >> ${PHP_INI_PATH}/php.ini
 fi
 
@@ -412,11 +450,11 @@ if ph_ask_yesno "Install GraphicsMagick and associated PECL extension?" "n"; the
     read -p "Specify gmagick PECL extension version [1.1.2RC1]: " GM_PECL_VERSION
     [ -z ${GM_PECL_VERSION} ] && GM_PECL_VERSION="1.1.2RC1"
 
-    ph_cd_tar xzf GraphicsMagick-${GM_VERSION} .tar.gz \
+    ph_cd_archive tar xzf GraphicsMagick-${GM_VERSION} .tar.gz \
         http://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/${GM_VERSION}/GraphicsMagick-${GM_VERSION}.tar.gz
 
     ph_autobuild "`pwd`" --prefix=/usr/local/graphicsmagick-${GM_VERSION} && {
-        ph_cd_tar xzf gmagick-${GM_PECL_VERSION} .tgz \
+        ph_cd_archive tar xzf gmagick-${GM_PECL_VERSION} .tgz \
             http://pecl.php.net/get/gmagick-${GM_PECL_VERSION}.tgz
         ${PHP_BIN_DIR}/phpize
 
@@ -438,7 +476,7 @@ if ph_ask_yesno "Install ImageMagick and associated PECL extension?" "n"; then
     read -p "Specify imagick PECL extension version [3.1.0RC2]: " IM_PECL_VERSION
     [ -z ${IM_PECL_VERSION} ] && IM_PECL_VERSION="3.1.0RC2"
 
-    ph_cd_tar xzf imagick-${IM_PECL_VERSION} .tgz \
+    ph_cd_archive tar xzf imagick-${IM_PECL_VERSION} .tgz \
         http://pecl.php.net/get/imagick-${IM_PECL_VERSION}.tgz
     ${PHP_BIN_DIR}/phpize
 

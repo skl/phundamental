@@ -105,7 +105,7 @@ function ph_install_packages {
             sudo -u ${PH_ORIGINAL_USER} brew tap homebrew/dupes
             sudo -u ${PH_ORIGINAL_USER} brew install ${PH_PACKAGES[@]} || { \
                 if ! ph_ask_yesno "[phundamental/package_manager] Do you wish to continue?"; then
-                    return 1
+                    exit 1
                 fi
             }
 
@@ -116,7 +116,7 @@ function ph_install_packages {
 
             $PH_PACKAGE_MANAGER $PH_PACKAGE_MANAGER_ARG ${PH_PACKAGES[@]} || { \
                 if ! ph_ask_yesno "[phundamental/package_manager] Do you wish to continue?"; then
-                    return 1
+                    exit 1
                 fi
             }
         fi

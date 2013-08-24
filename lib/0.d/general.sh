@@ -138,56 +138,58 @@ function ph_symlink() {
 
 
 ##
-# (Paranoid) tarball download, extract and cd into created directory
+# (Paranoid) archive download, extract and cd into created directory
 #
-# @param string     args for tar (e.g. xzf)
+# @param string     archive command (e.g. tar)
+# @param string     args for archive program (e.g. xzf)
 # @param string     filename (without extension)
 # @param string     file extension (e.g. tar.gz)
-# @param string     URI to download original tarball
+# @param string     URI to download original archive
 # @param string     Destination directory (default: /usr/local/src)
-# @return boolean   True if managed to cd into extracted tarball directory
+# @return boolean   True if managed to cd into extracted directory
 #
-function ph_cd_tar() {
-    local TAR_ARGS="$1"
-    local TAR_FILENAME="$2"
-    local TAR_EXTENSION="$3"
-    local URI="$4" # Ampersand (&) must be escaped (\&)
-    local DESTINATION_DIR=${5-"/usr/local/src"}
+function ph_cd_archive() {
+    local ARCHIVE_CMD="$1"
+    local CMD_ARGS="$2"
+    local ARCHIVE_FILENAME="$3"
+    local ARCHIVE_EXTENSION="$4"
+    local URI="$5" # Ampersand (&) must be escaped (\&)
+    local DESTINATION_DIR=${6-"/usr/local/src"}
 
     [ ! -d "${DESTINATION_DIR}" ] && mkdir -piv "${DESTINATION_DIR}"
 
     cd "${DESTINATION_DIR}"
 
-    if [ ! -d "${TAR_FILENAME}" ]; then
-        if [ ! -f "${TAR_FILENAME}${TAR_EXTENSION}" ]; then
-            wget -O "${TAR_FILENAME}${TAR_EXTENSION}" "${URI}"
+    if [ ! -d "${ARCHIVE_FILENAME}" ]; then
+        if [ ! -f "${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION}" ]; then
+            wget -O "${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION}" "${URI}"
 
             # Ensure file downloaded
-            if [ ! -f "${TAR_FILENAME}${TAR_EXTENSION}" ]; then
+            if [ ! -f "${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION}" ]; then
                 echo "${FUNCNAME}(): Download failed: ${URI}"
-                return 1
+                exit 1
             fi
         fi
 
         # Extract (hopefully)
-        if ! tar ${TAR_ARGS} "${TAR_FILENAME}${TAR_EXTENSION}"; then
-            echo "${FUNCNAME}(): tar ${TAR_ARGS} ${TAR_FILENAME}${TAR_EXTENSION} failed. Maybe bad download/URI."
-            return 1
+        if ! ${ARCHIVE_CMD} ${CMD_ARGS} "${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION}"; then
+            echo "${FUNCNAME}(): ${ARCHIVE_CMD} ${CMD_ARGS} ${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION} failed. Maybe bad download/URI."
+            exit 1
         fi
 
         # Cleanup
-        echo "Source code downloaded and extracted, deleting tarball..."
-        rm -v "${TAR_FILENAME}${TAR_EXTENSION}"
+        echo "${FUNCNAME}(): Source code downloaded and extracted, deleting archive..."
+        rm -v "${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION}"
 
         # Ensure expected directory was actually created
-        if [ ! -d "${TAR_FILENAME}" ]; then
-            echo "${FUNCNAME}(): ${TAR_FILENAME}${TAR_EXTENSION} did not extract to ${DESTINATION_DIR}/${TAR_FILENAME}"
-            return 1
+        if [ ! -d "${ARCHIVE_FILENAME}" ]; then
+            echo "${FUNCNAME}(): ${ARCHIVE_FILENAME}${ARCHIVE_EXTENSION} did not extract to ${DESTINATION_DIR}/${ARCHIVE_FILENAME}"
+            exit 1
         fi
     fi
 
     # Directory _definately_ exists now
-    cd "${TAR_FILENAME}" && return 0 || return 1
+    cd "${ARCHIVE_FILENAME}" && return 0 || return 1
 }
 
 
@@ -209,7 +211,7 @@ function ph_autobuild() {
 
     if [ ! -d "${BUILD_DIR}" ]; then
         echo "${FUNCNAME}(): Cannot compile in directory that does not exist: ${BUILD_DIR}"
-        return 1
+        exit 1
     fi
 
     echo "${FUNCNAME}(): Preparing to compile ${BUILD_DIR}"
@@ -218,7 +220,7 @@ function ph_autobuild() {
 
     if [ ! -x configure ]; then
         echo "${FUNCNAME}(): Cannot compile if ${BUILD_DIR}/configure is not an executable script."
-        return 1
+        exit 1
     fi
 
     echo -n 'make clean'
@@ -240,7 +242,7 @@ function ph_autobuild() {
         echo
         echo "See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
-        return 1
+        exit 1
     fi
 
     echo -n "make -j ${PH_NUM_THREADS}"
@@ -251,7 +253,7 @@ function ph_autobuild() {
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
         echo "${FUNCNAME}(): Failed to compile. See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
-        return 1
+        exit 1
     fi
 
     echo -n 'make install'
@@ -262,7 +264,7 @@ function ph_autobuild() {
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
         echo "${FUNCNAME}(): Failed to make install. See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
-        return 1
+        exit 1
     fi
 
     echo "${FUNCNAME}(): Successfully compiled ${BUILD_DIR}"
