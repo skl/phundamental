@@ -60,7 +60,7 @@ read -p "Specify php-fpm user [${SUGGESTED_USER}]: " PHP_USER
 read -p "Specify php-fpm group [${SUGGESTED_USER}]: " PHP_GROUP
 [ -z ${PHP_GROUP} ] && PHP_GROUP="${SUGGESTED_USER}"
 
-if ph_ask_yesno "Should I create the user and group for you?" "n"; then
+if ph_ask_yesno "Should I create the user and group for you?"; then
     ph_creategroup ${PHP_GROUP}
     ph_createuser ${PHP_USER}
     ph_assigngroup ${PHP_GROUP} ${PHP_USER}

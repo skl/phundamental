@@ -40,7 +40,7 @@ read -p "Specify nginx user [${SUGGESTED_USER}]: " NGINX_USER
 read -p "Specify nginx group [${SUGGESTED_USER}]: " NGINX_GROUP
 [ -z ${NGINX_GROUP} ] && NGINX_GROUP="${SUGGESTED_USER}"
 
-if ph_ask_yesno "Should I create the user and group for you?" "n"; then
+if ph_ask_yesno "Should I create the user and group for you?"; then
     ph_creategroup ${NGINX_GROUP}
     ph_createuser ${NGINX_USER}
     ph_assigngroup ${NGINX_GROUP} ${NGINX_USER}

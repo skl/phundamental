@@ -67,7 +67,7 @@ else
     read -p "Specify MariaDB group [${SUGGESTED_USER}]: " MARIADB_GROUP
     [ -z ${MARIADB_GROUP} ] && MARIADB_GROUP="${SUGGESTED_USER}"
 
-    if ph_ask_yesno "Should I create the user and group for you?" "n"; then
+    if ph_ask_yesno "Should I create the user and group for you?"; then
         ph_creategroup ${MARIADB_GROUP}
         ph_createuser ${MARIADB_USER}
         ph_assigngroup ${MARIADB_GROUP} ${MARIADB_USER}
