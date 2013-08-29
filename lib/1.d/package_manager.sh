@@ -98,12 +98,12 @@ function ph_install_packages {
     if [ ${#PH_PACKAGES[@]} -gt 0 ]; then
         # Homebrew doesn't like root
         if [ 'brew' == ${PH_PACKAGE_MANAGER} ]; then
-            if [ -z ${PH_ORIGINAL_USER} ]; then
-                read -p 'Homebrew requires your username please (not root): ' PH_ORIGINAL_USER
+            if [ -z ${SUDO_USER} ]; then
+                read -p 'Homebrew requires your username please (not root): ' SUDO_USER
             fi
-            sudo -u ${PH_ORIGINAL_USER} brew update
-            sudo -u ${PH_ORIGINAL_USER} brew tap homebrew/dupes
-            sudo -u ${PH_ORIGINAL_USER} brew install ${PH_PACKAGES[@]} || { \
+            sudo -u ${SUDO_USER} brew update
+            sudo -u ${SUDO_USER} brew tap homebrew/dupes
+            sudo -u ${SUDO_USER} brew install ${PH_PACKAGES[@]} || { \
                 if ! ph_ask_yesno "[phundamental/package_manager] Do you wish to continue?"; then
                     exit 1
                 fi
