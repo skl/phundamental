@@ -66,9 +66,7 @@ else
 
     ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
 
-    ph_symlink /etc/nodejs-${NODEJS_VERSION_STRING} /etc/nodejs $NODEJS_OVERWRITE_SYMLINKS
     ph_symlink ${NODEJS_PREFIX} /usr/local/nodejs $NODEJS_OVERWRITE_SYMLINKS
-    ph_symlink ${NODEJS_PREFIX}/logs /var/log/nodejs $NODEJS_OVERWRITE_SYMLINKS
 
     for i in `ls -1 ${NODEJS_PREFIX}/bin`; do
         ph_symlink ${NODEJS_PREFIX}/bin/$i /usr/local/bin/$i ${NODEJS_OVERWRITE_SYMLINKS}
