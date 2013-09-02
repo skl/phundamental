@@ -18,7 +18,11 @@ if ph_is_installed node ; then
     fi
 fi
 
-read -p "Specify node.js version (e.g. 0.10.9): " NODEJS_VERSION_STRING
+read -p "Specify node.js version [0.10.17]: " NODEJS_VERSION_STRING
+[ -z ${NODEJS_VERSION_STRING} ] && NODEJS_VERSION_STRING="0.10.17"
+
+read -p "Specify node.js installation directory [/usr/local/nodejs-${NODEJS_VERSION_STRING}]: " NODEJS_PREFIX
+[ -z ${NODEJS_PREFIX} ] && NODEJS_VERSION_STRING="/usr/local/nodejs-${NODEJS_VERSION_STRING}"
 
 if [ "${PH_OS}" == "windows" ]; then
     ph_mkdirs /usr/local/src
@@ -58,16 +62,17 @@ else
     ph_cd_archive tar xzf node-v${NODEJS_VERSION_STRING} .tar.gz \
         http://nodejs.org/dist/v${NODEJS_VERSION_STRING}/node-v${NODEJS_VERSION_STRING}.tar.gz
 
-    CONFIGURE_ARGS=("--prefix=/usr/local/nodejs-${NODEJS_VERSION_STRING}");
+    CONFIGURE_ARGS=("--prefix=${NODEJS_PREFIX}");
 
     ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
 
     ph_symlink /etc/nodejs-${NODEJS_VERSION_STRING} /etc/nodejs $NODEJS_OVERWRITE_SYMLINKS
-    ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING} /usr/local/nodejs $NODEJS_OVERWRITE_SYMLINKS
-    ph_symlink /usr/local/nodejs-${NODEJS_VERSION_STRING}/logs /var/log/nodejs $NODEJS_OVERWRITE_SYMLINKS
-    ph_symlink /usr/local/nodejs/bin/node /usr/local/bin/node $NODEJS_OVERWRITE_SYMLINKS
-    ph_symlink /usr/local/nodejs/bin/node-waf /usr/local/bin/node-waf $NODEJS_OVERWRITE_SYMLINKS
-    ph_symlink /usr/local/nodejs/bin/npm /usr/local/bin/npm $NODEJS_OVERWRITE_SYMLINKS
+    ph_symlink ${NODEJS_PREFIX} /usr/local/nodejs $NODEJS_OVERWRITE_SYMLINKS
+    ph_symlink ${NODEJS_PREFIX}/logs /var/log/nodejs $NODEJS_OVERWRITE_SYMLINKS
+
+    for i in `ls -1 ${NODEJS_PREFIX}/bin`; do
+        ph_symlink ${NODEJS_PREFIX}/bin/$i /usr/local/bin/$i ${NODEJS_OVERWRITE_SYMLINKS}
+    done
 fi
 
 echo -n "Deleting source files... "
