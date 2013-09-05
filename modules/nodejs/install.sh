@@ -18,8 +18,8 @@ if ph_is_installed node ; then
     fi
 fi
 
-read -p "Specify node.js version [0.10.17]: " NODEJS_VERSION_STRING
-[ -z ${NODEJS_VERSION_STRING} ] && NODEJS_VERSION_STRING="0.10.17"
+read -p "Specify node.js version [0.10.18]: " NODEJS_VERSION_STRING
+[ -z ${NODEJS_VERSION_STRING} ] && NODEJS_VERSION_STRING="0.10.18"
 
 read -p "Specify node.js installation directory [/usr/local/nodejs-${NODEJS_VERSION_STRING}]: " NODEJS_PREFIX
 [ -z ${NODEJS_PREFIX} ] && NODEJS_VERSION_STRING="/usr/local/nodejs-${NODEJS_VERSION_STRING}"
