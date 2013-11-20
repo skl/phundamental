@@ -35,7 +35,7 @@ if ph_is_installed php ; then
     fi
 fi
 
-read -p "Specify PHP version [5.5.3]: " PHP_VERSION_STRING
+read -p "Specify PHP version [5.5.6]: " PHP_VERSION_STRING
 [ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.6"
 
 read -p "Specify PHP installation directory [/usr/local/php-${PHP_VERSION_STRING}]: " PHP_PREFIX
