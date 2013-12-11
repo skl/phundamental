@@ -106,7 +106,7 @@ else
     cd ${MARIADB_PREFIX}
 
     # See issue #39
-    ph_search_and_replace "^parse_server_arguments " "#parse_server_arguments " support-files/mysql.server
+    ph_search_and_replace "^parse_server_arguments \`" "#parse_server_arguments \`" support-files/mysql.server
 
     cp support-files/my-medium.cnf /etc/my.cnf
 
