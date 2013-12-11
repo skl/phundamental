@@ -18,8 +18,8 @@ if ph_is_installed mysql ; then
     fi
 fi
 
-read -p "Specify MariaDB version [5.5.32]: " MARIADB_VERSION_STRING
-[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="5.5.32"
+read -p "Specify MariaDB version [5.5.34]: " MARIADB_VERSION_STRING
+[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="5.5.34"
 
 if [ "${PH_OS}" == "windows" ]; then
 
