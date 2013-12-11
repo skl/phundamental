@@ -108,9 +108,9 @@ if [ "${PH_OS}" == "windows" ]; then
 fi
 
 ph_symlink /etc/nginx-${NGINX_VERSION_STRING} /etc/nginx ${NGINX_OVERWRITE_SYMLINKS}
-ph_symlink /usr/local/nginx-${NGINX_VERSION_STRING} /usr/local/nginx ${NGINX_OVERWRITE_SYMLINKS}
-ph_symlink /usr/local/nginx-${NGINX_VERSION_STRING}/logs /var/log/nginx ${NGINX_OVERWRITE_SYMLINKS}
-ph_symlink /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx /usr/local/bin/nginx ${NGINX_OVERWRITE_SYMLINKS}
+ph_symlink ${NGINX_PREFIX} /usr/local/nginx ${NGINX_OVERWRITE_SYMLINKS}
+ph_symlink ${NGINX_PREFIX}/logs /var/log/nginx ${NGINX_OVERWRITE_SYMLINKS}
+ph_symlink ${NGINX_PREFIX}/sbin/nginx /usr/local/bin/nginx ${NGINX_OVERWRITE_SYMLINKS}
 ph_symlink /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled/localhost ${NGINX_OVERWRITE_SYMLINKS}
 ph_symlink /etc/nginx-${NGINX_VERSION_STRING}/sites-available/000-catchall /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled/000-catchall ${NGINX_OVERWRITE_SYMLINKS}
 
@@ -152,7 +152,7 @@ case "${PH_OS}" in \
 
 *)
     echo "nginx startup script not implemented for this OS... starting manually"
-    /usr/local/nginx-${NGINX_VERSION_STRING}/sbin/nginx
+    ${NGINX_PREFIX}/sbin/nginx
     ;;
 esac
 
