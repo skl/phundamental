@@ -18,8 +18,8 @@ if ph_is_installed nginx ; then
     fi
 fi
 
-read -p "Specify nginx version [1.4.2]: " NGINX_VERSION_STRING
-[ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.2"
+read -p "Specify nginx version [1.4.4]: " NGINX_VERSION_STRING
+[ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.4"
 
 read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_STRING}]: " NGINX_PREFIX
 [ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_STRING}"
