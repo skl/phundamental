@@ -98,3 +98,43 @@ You can update all submodules in future by executing:
 ## Other resources
 
 Expanding your Arch Linux Raspberry Pi root partition to fill the SD card: https://gist.github.com/4301393
+
+# Non-interactive Install Example
+
+```
+./install --module=mariadb \
+  --version=5.5.34 \
+  --prefix=/usr/local/mariadb-5.5 \
+  --user=mysql \
+  --group=mysql \
+  --overwrite-symlinks=yes
+
+./install --module=nginx \
+  --version=1.4.4 \
+  --prefix=/usr/local/nginx-1.4 \
+  --user=www-data \
+  --group=www-data \
+  --overwrite-symlinks=yes
+
+./install --module=nodejs \
+  --version=0.10.23 \
+  --prefix=/usr/local/nodejs-0.10 \
+  --overwrite-symlinks=yes
+
+./install --module=php \
+  --version=5.5.7 \
+  --prefix=/usr/local/php-5.5 \
+  --php-ini-dir=/etc/php-5.5 \
+  --user=www-data \
+  --group=www-data \
+  --delete-pearrc=yes \
+  --overwrite-symlinks=yes \
+  --with-zend-opcache \
+  --without-apcu \
+  --without-memcached \
+  --without-graphics-magick \
+  --without-image-magick \
+  --with-phpunit \
+  --with-phpdoc \
+  --with-composer
+```
