@@ -69,7 +69,7 @@ phundamental is based on modules. The current out-of-the-box modules are as foll
 * **mariadb** - An open-source drop-in replacement for MySQL
 * **nginx** - A fast and lightweight alternative to Apache
 * **nodejs** - Server-side JavaScript. Recent versions include `npm`
-* **php** - PHP with FPM if you choose to install v5.3.3+
+* **php** - PHP with FPM if you choose to install v5.3.3+ (or any version now listed in `modules/php/fpm-patch-versions.conf`)
 
 Each module is designed to allow for the installation of multiple concurrent versions. For example you could
 run both PHP versions 5.3.20 and 5.4.10 and have nginx use a different version of PHP per virtual host.
