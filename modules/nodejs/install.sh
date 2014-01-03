@@ -21,8 +21,15 @@ fi
 read -p "Specify node.js version [0.10.23]: " NODEJS_VERSION_STRING
 [ -z ${NODEJS_VERSION_STRING} ] && NODEJS_VERSION_STRING="0.10.23"
 
-read -p "Specify node.js installation directory [/usr/local/nodejs-${NODEJS_VERSION_STRING}]: " NODEJS_PREFIX
-[ -z ${NODEJS_PREFIX} ] && NODEJS_VERSION_STRING="/usr/local/nodejs-${NODEJS_VERSION_STRING}"
+NODEJS_VERSION_INTEGER=`echo ${NODEJS_VERSION_STRING} | tr -d '.' | cut -c1-3`
+NODEJS_VERSION_INTEGER_FULL=`echo ${NODEJS_VERSION_STRING} | tr -d '.'`
+
+NODEJS_VERSION_MAJOR=`echo ${NODEJS_VERSION_STRING} | cut -d. -f1`
+NODEJS_VERSION_MINOR=`echo ${NODEJS_VERSION_STRING} | cut -d. -f2`
+NODEJS_VERSION_RELEASE=`echo ${NODEJS_VERSION_STRING} | cut -d. -f3`
+
+read -p "Specify node.js installation directory [/usr/local/nodejs-${NODEJS_VERSION_MAJOR}.${NODEJS_VERSION_MINOR}]: " NODEJS_PREFIX
+[ -z ${NODEJS_PREFIX} ] && NODEJS_VERSION_STRING="/usr/local/nodejs-${NODEJS_VERSION_MAJOR}.${NODEJS_VERSION_MINOR}"
 
 if [ "${PH_OS}" == "windows" ]; then
     ph_mkdirs /usr/local/src

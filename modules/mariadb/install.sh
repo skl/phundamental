@@ -21,6 +21,13 @@ fi
 read -p "Specify MariaDB version [5.5.34]: " MARIADB_VERSION_STRING
 [ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="5.5.34"
 
+MARIADB_VERSION_INTEGER=`echo ${MARIADB_VERSION_STRING} | tr -d '.' | cut -c1-3`
+MARIADB_VERSION_INTEGER_FULL=`echo ${MARIADB_VERSION_STRING} | tr -d '.'`
+
+MARIADB_VERSION_MAJOR=`echo ${MARIADB_VERSION_STRING} | cut -d. -f1`
+MARIADB_VERSION_MINOR=`echo ${MARIADB_VERSION_STRING} | cut -d. -f2`
+MARIADB_VERSION_RELEASE=`echo ${MARIADB_VERSION_STRING} | cut -d. -f3`
+
 if [ "${PH_OS}" == "windows" ]; then
 
     ph_mkdirs /usr/local/src
@@ -48,8 +55,8 @@ if [ "${PH_OS}" == "windows" ]; then
 
 else
 
-    read -p "Specify installation directory [/usr/local/mariadb-${MARIADB_VERSION_STRING}]: " MARIADB_PREFIX
-    [ -z ${MARIADB_PREFIX} ] && MARIADB_PREFIX="/usr/local/mariadb-${MARIADB_VERSION_STRING}"
+    read -p "Specify installation directory [/usr/local/mariadb-${MARIADB_VERSION_MAJOR}.${MARIADB_VERSION_MINOR}]: " MARIADB_PREFIX
+    [ -z ${MARIADB_PREFIX} ] && MARIADB_PREFIX="/usr/local/mariadb-${MARIADB_VERSION_MAJOR}.${MARIADB_VERSION_MINOR}"
 
     case "${PH_OS}" in \
     "linux")

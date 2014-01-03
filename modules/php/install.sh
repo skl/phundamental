@@ -38,11 +38,21 @@ fi
 read -p "Specify PHP version [5.5.7]: " PHP_VERSION_STRING
 [ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.7"
 
-read -p "Specify PHP installation directory [/usr/local/php-${PHP_VERSION_STRING}]: " PHP_PREFIX
-[ -z ${PHP_PREFIX} ] && PHP_PREFIX="/usr/local/php-${PHP_VERSION_STRING}"
+# e.g. 531 (truncated to three characters in order to construct a valid port number for fpm)
+# So for PHP 5.4.7,  php-fpm will bind to 127.0.0.1:9547
+# .. for PHP 5.3.17, php-fpm will bind to 127.0.0.1:9531
+PHP_VERSION_INTEGER=`echo ${PHP_VERSION_STRING} | tr -d '.' | cut -c1-3`
+PHP_VERSION_INTEGER_FULL=`echo ${PHP_VERSION_STRING} | tr -d '.'`
 
-read -p "Specify php.ini installation directory [/etc/php-${PHP_VERSION_STRING}]: " PHP_INI_PATH
-[ -z ${PHP_INI_PATH} ] && PHP_INI_PATH="/etc/php-${PHP_VERSION_STRING}"
+PHP_VERSION_MAJOR=`echo ${PHP_VERSION_STRING} | cut -d. -f1`
+PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
+PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
+
+read -p "Specify PHP installation directory [/usr/local/php-${PHP_VERSION_MAJOR}.${PHP_VERSION_MINOR}]: " PHP_PREFIX
+[ -z ${PHP_PREFIX} ] && PHP_PREFIX="/usr/local/php-${PHP_VERSION_MAJOR}.${PHP_VERSION_MINOR}"
+
+read -p "Specify php.ini installation directory [/etc/php-${PHP_VERSION_MAJOR}.${PHP_VERSION_MINOR}]: " PHP_INI_PATH
+[ -z ${PHP_INI_PATH} ] && PHP_INI_PATH="/etc/php-${PHP_VERSION_MAJOR}.${PHP_VERSION_MINOR}"
 
 case "${PH_OS}" in \
 "linux")
@@ -153,16 +163,6 @@ if ph_ask_yesno "Overwrite existing symlinks in /usr/local?"; then
 else
     PHP_OVERWRITE_SYMLINKS=false
 fi
-
-# e.g. 531 (truncated to three characters in order to construct a valid port number for fpm)
-# So for PHP 5.4.7,  php-fpm will bind to 127.0.0.1:9547
-# .. for PHP 5.3.17, php-fpm will bind to 127.0.0.1:9531
-PHP_VERSION_INTEGER=`echo ${PHP_VERSION_STRING} | tr -d '.' | cut -c1-3`
-PHP_VERSION_INTEGER_FULL=`echo ${PHP_VERSION_STRING} | tr -d '.'`
-
-PHP_VERSION_MAJOR=`echo ${PHP_VERSION_STRING} | cut -d. -f1`
-PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
-PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
 
 if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -le 2 ]; then
     PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz

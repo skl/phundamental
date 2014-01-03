@@ -21,8 +21,15 @@ fi
 read -p "Specify nginx version [1.4.4]: " NGINX_VERSION_STRING
 [ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.4"
 
-read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_STRING}]: " NGINX_PREFIX
-[ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_STRING}"
+NGINX_VERSION_INTEGER=`echo ${NGINX_VERSION_STRING} | tr -d '.' | cut -c1-3`
+NGINX_VERSION_INTEGER_FULL=`echo ${NGINX_VERSION_STRING} | tr -d '.'`
+
+NGINX_VERSION_MAJOR=`echo ${NGINX_VERSION_STRING} | cut -d. -f1`
+NGINX_VERSION_MINOR=`echo ${NGINX_VERSION_STRING} | cut -d. -f2`
+NGINX_VERSION_RELEASE=`echo ${NGINX_VERSION_STRING} | cut -d. -f3`
+
+read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_PREFIX
+[ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}"
 
 case "${PH_OS}" in \
 "linux")
