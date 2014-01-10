@@ -14,7 +14,7 @@ function ph_num_cpus {
     ;;
 
     'mac')
-        PH_NUM_CPUS=`system_profiler | grep "Total Number of Cores" | awk '{print $5}'`
+        PH_NUM_CPUS=`sysctl -n hw.ncpu`
     ;;
 
     *)

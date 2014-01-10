@@ -16,8 +16,14 @@
 function ph_ram_check {
     case ${PH_OS} in \
     'linux' |\
-    'windows')
-        PH_RAM_MB=`expr $(cat /proc/meminfo | grep MemTotal | awk '{print $2}') / 1024`
+    'windows' |\
+    'mac')
+        if [ "mac" == "${PH_OS}" ]; then
+            PH_RAM_MB=`expr $(sysctl -n hw.memsize) / 1024 / 1024`
+        else
+            PH_RAM_MB=`expr $(cat /proc/meminfo | grep MemTotal | awk '{print $2}') / 1024`
+        fi
+
         PH_NUM_THREADS=`expr ${PH_RAM_MB} / 150`
 
         # Don't allow thread count to be greater than number of CPUs
@@ -28,10 +34,6 @@ function ph_ram_check {
         elif [ ${PH_NUM_THREADS} -eq 0 ]; then
             PH_NUM_THREADS=1
         fi
-    ;;
-
-    'mac')
-        PH_NUM_THREADS=${PH_NUM_CPUS}
     ;;
 
     *)
