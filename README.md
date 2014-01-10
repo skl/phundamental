@@ -60,7 +60,7 @@ There are two ways of doing this, as above:
 
 Alternatively:
 
-    sudo phundamental/modules/php/install.php
+    sudo phundamental/modules/php/install
 
 ## Modules
 
