@@ -302,8 +302,7 @@ if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
             fi
 
         else
-            echo "mysql_config binary not found: you need to setup MySQL first if installing PHP <= 5.2.x"
-            return 1
+            echo 'WARNING: mysql_config could not found, MySQL/MariaDB support not enabled!'
         fi
 
     # MySQL native driver for 5.3.x
