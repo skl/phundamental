@@ -234,10 +234,10 @@ function ph_autobuild() {
     # Configure silently and write to log file
     echo -n "./configure ${CONFIGURE_OPTIONS}"
     ./configure ${CONFIGURE_OPTIONS} 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
-    echo
 
-    # Check exit stature of ./configure
+    # Check exit status of ./configure
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        echo
         echo "${FUNCNAME}(): Failed when running:"
         echo "./configure ${CONFIGURE_OPTIONS}"
         echo
@@ -246,28 +246,31 @@ function ph_autobuild() {
         exit 1
     fi
 
+    echo
     echo -n "make -j ${PH_NUM_THREADS}"
     make -j ${PH_NUM_THREADS} 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
-    echo
 
     # Check exit status of make
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        echo
         echo "${FUNCNAME}(): Failed to compile. See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
         exit 1
     fi
 
+    echo
     echo -n 'make install'
     make install 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
-    echo
 
     # Check exit status of make install
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        echo
         echo "${FUNCNAME}(): Failed to make install. See ${configure_log} for full details or tail of it below:"
         tail "${configure_log}"
         exit 1
     fi
 
+    echo
     echo "${FUNCNAME}(): Successfully compiled ${BUILD_DIR}"
 
     return 0
