@@ -274,9 +274,10 @@ fi
 # PHP4 MySQL is enabled by default, so only deal with 5+
 if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
 
-    # MySQLi for 5.0.x, 5.1.x, 5.2.x
-    if [ ${PHP_VERSION_MINOR} -le 2 ]; then
-        if ph_is_installed mysql_config ; then
+    if ph_is_installed mysql_config ; then
+
+        # MySQLi for 5.0.x, 5.1.x, 5.2.x
+        if [ ${PHP_VERSION_MINOR} -le 2 ]; then
             USER_MYSQL_CONFIG=$(ls -l `which mysql_config` | awk '{print $NF}')
 
             if [ "${USER_MYSQL_CONFIG}" == "/usr/local/mysql/bin/mysql_config" ]; then
@@ -301,24 +302,24 @@ if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
                 echo 'WARNING: Unable to locate /usr/lib/libmysqlclient.*.dylib - you may have to symlink this yourself!'
             fi
 
+        # MySQL native driver for 5.3.x
+        elif [ ${PHP_VERSION_MINOR} -eq 3 ]; then
+            ph_install_packages libmysql
+
+            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+                "--with-mysql"
+                "--with-mysqli=mysqlnd"
+                "--with-pdo-mysql=mysqlnd")
+
+        # MySQL native driver 5.4+
         else
-            echo 'WARNING: mysql_config could not found, MySQL/MariaDB support not enabled!'
+            CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+                "--with-mysqli"
+                "--with-pdo-mysql=mysqlnd")
         fi
 
-    # MySQL native driver for 5.3.x
-    elif [ ${PHP_VERSION_MINOR} -eq 3 ]; then
-        ph_install_packages libmysql
-
-        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
-            "--with-mysql"
-            "--with-mysqli=mysqlnd"
-            "--with-pdo-mysql=mysqlnd")
-
-    # MySQL native driver 5.4+
     else
-        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
-            "--with-mysqli"
-            "--with-pdo-mysql=mysqlnd")
+        echo 'WARNING: mysql_config could not found, MySQL/MariaDB support not enabled!'
     fi
 fi
 
