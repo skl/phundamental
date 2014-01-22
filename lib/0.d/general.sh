@@ -225,7 +225,7 @@ function ph_autobuild() {
     fi
 
     echo -n 'make clean'
-    make clean | while read line; do echo -n .; done
+    make clean 2>&1 | while read line; do echo -n .; done
     echo
 
     # Ensure log file exists and is empty
