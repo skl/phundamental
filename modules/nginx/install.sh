@@ -44,6 +44,12 @@ function ph_module_install_nginx()
             shift
             ;;
 
+        ## Ignore legacy arguments
+        install|nginx)
+            NGINX_INTERACTIVE=true
+            break
+            ;;
+
         *)
             echo "Unknown option $arg"
             return 1
