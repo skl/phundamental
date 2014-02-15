@@ -29,7 +29,7 @@ NODEJS_VERSION_MINOR=`echo ${NODEJS_VERSION_STRING} | cut -d. -f2`
 NODEJS_VERSION_RELEASE=`echo ${NODEJS_VERSION_STRING} | cut -d. -f3`
 
 read -p "Specify node.js installation directory [/usr/local/nodejs-${NODEJS_VERSION_MAJOR}.${NODEJS_VERSION_MINOR}]: " NODEJS_PREFIX
-[ -z ${NODEJS_PREFIX} ] && NODEJS_VERSION_STRING="/usr/local/nodejs-${NODEJS_VERSION_MAJOR}.${NODEJS_VERSION_MINOR}"
+[ -z ${NODEJS_PREFIX} ] && NODEJS_PREFIX="/usr/local/nodejs-${NODEJS_VERSION_MAJOR}.${NODEJS_VERSION_MINOR}"
 
 if [ "${PH_OS}" == "windows" ]; then
     ph_mkdirs /usr/local/src
