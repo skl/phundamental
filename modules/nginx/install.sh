@@ -24,6 +24,11 @@ function ph_module_install_nginx()
             shift
             ;;
 
+        --config-path=*)
+            NGINX_CONFIG_PATH="${arg#*=}"
+            shift
+            ;;
+
         --user=*)
             NGINX_USER="${arg#*=}"
             shift
@@ -69,36 +74,41 @@ function ph_module_install_nginx()
         fi
 
         read -p "Specify nginx version [1.4.5]: " NGINX_VERSION_STRING
-        [ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.5"
     fi
+
+    # Default version
+    [ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.5"
 
     NGINX_VERSION_INTEGER=`echo ${NGINX_VERSION_STRING} | tr -d '.' | cut -c1-3`
     NGINX_VERSION_INTEGER_FULL=`echo ${NGINX_VERSION_STRING} | tr -d '.'`
-
     NGINX_VERSION_MAJOR=`echo ${NGINX_VERSION_STRING} | cut -d. -f1`
     NGINX_VERSION_MINOR=`echo ${NGINX_VERSION_STRING} | cut -d. -f2`
     NGINX_VERSION_RELEASE=`echo ${NGINX_VERSION_STRING} | cut -d. -f3`
 
+    case "${PH_OS}" in \
+    "linux")
+        SUGGESTED_USER="www-data"
+        ;;
+
+    "mac")
+        SUGGESTED_USER="_www"
+        ;;
+    esac
+
     if ${NGINX_INTERACTIVE}; then
         read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_PREFIX
-        [ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}"
-
-        case "${PH_OS}" in \
-        "linux")
-            SUGGESTED_USER="www-data"
-            ;;
-
-        "mac")
-            SUGGESTED_USER="_www"
-            ;;
-        esac
-
+        read -p "Specify nginx configuration directory [/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_CONFIG_PATH
         read -p "Specify nginx user [${SUGGESTED_USER}]: " NGINX_USER
-        [ -z ${NGINX_USER} ] && NGINX_USER="${SUGGESTED_USER}"
-
         read -p "Specify nginx group [${SUGGESTED_USER}]: " NGINX_GROUP
-        [ -z ${NGINX_GROUP} ] && NGINX_GROUP="${SUGGESTED_USER}"
     fi
+
+    # Default prefix and configuration path
+    [ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}"
+    [ -z ${NGINX_CONFIG_PATH} && NGINX_CONFIG_PATH="/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}" ]
+
+    # Default user and group
+    [ -z ${NGINX_USER} ] && NGINX_USER="${SUGGESTED_USER}"
+    [ -z ${NGINX_GROUP} ] && NGINX_GROUP="${SUGGESTED_USER}"
 
     if ${NGINX_INTERACTIVE}; then
         if ph_ask_yesno "Should I create the user and group for you?"; then
@@ -130,11 +140,11 @@ function ph_module_install_nginx()
 
     ph_mkdirs \
         /usr/local/src \
-        /etc/nginx-${NGINX_VERSION_STRING} \
+        ${NGINX_CONFIG_PATH} \
         /var/log/nginx-${NGINX_VERSION_STRING} \
-        /etc/nginx-${NGINX_VERSION_STRING}/global \
-        /etc/nginx-${NGINX_VERSION_STRING}/sites-available \
-        /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled \
+        ${NGINX_CONFIG_PATH}/global \
+        ${NGINX_CONFIG_PATH}/sites-available \
+        ${NGINX_CONFIG_PATH}/sites-enabled \
         /var/www/localhost/public
 
     ph_cd_archive tar xzf nginx-${NGINX_VERSION_STRING} .tar.gz \
@@ -144,7 +154,7 @@ function ph_module_install_nginx()
         "--pid-path=${NGINX_PREFIX}/logs/nginx.pid"
         "--error-log-path=${NGINX_PREFIX}/logs/error.log"
         "--http-log-path=${NGINX_PREFIX}/logs/access.log"
-        "--conf-path=/etc/nginx-${NGINX_VERSION_STRING}/nginx.conf"
+        "--conf-path=${NGINX_CONFIG_PATH}/nginx.conf"
         "--with-pcre"
         "--with-http_ssl_module"
         "--with-http_realip_module");
@@ -158,40 +168,33 @@ function ph_module_install_nginx()
 
     ph_autobuild "`pwd`" ${CONFIGURE_ARGS[@]} || return 1
 
-    ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.conf /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf\
+    ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.conf ${NGINX_CONFIG_PATH}/nginx.conf\
         "##NGINX_USER##" "${NGINX_USER}"
-    ph_search_and_replace "##NGINX_GROUP##" "${NGINX_GROUP}" /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
+    ph_search_and_replace "##NGINX_GROUP##" "${NGINX_GROUP}" ${NGINX_CONFIG_PATH}/nginx.conf
 
-    cp ${PH_INSTALL_DIR}/modules/nginx/restrictions.conf /etc/nginx-${NGINX_VERSION_STRING}/global/restrictions.conf
-    cp ${PH_INSTALL_DIR}/modules/nginx/localhost.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost
-    cp ${PH_INSTALL_DIR}/modules/nginx/000-catchall.conf /etc/nginx-${NGINX_VERSION_STRING}/sites-available/000-catchall
+    cp ${PH_INSTALL_DIR}/modules/nginx/restrictions.conf ${NGINX_CONFIG_PATH}/global/restrictions.conf
+    cp ${PH_INSTALL_DIR}/modules/nginx/localhost.conf ${NGINX_CONFIG_PATH}/sites-available/localhost
+    cp ${PH_INSTALL_DIR}/modules/nginx/000-catchall.conf ${NGINX_CONFIG_PATH}/sites-available/000-catchall
 
     ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/index.html /var/www/localhost/public/index.html\
         "##NGINX_VERSION_STRING##" "${NGINX_VERSION_STRING}"
 
     # Patch nginx config files for windows
     if [ "${PH_OS}" == "windows" ]; then
-        ph_search_and_replace "^user" "#user" /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
-        ph_search_and_replace "worker_connections  1024" "worker_connections  64" /etc/nginx-${NGINX_VERSION_STRING}/nginx.conf
+        ph_search_and_replace "^user" "#user" ${NGINX_CONFIG_PATH}/nginx.conf
+        ph_search_and_replace "worker_connections  1024" "worker_connections  64" ${NGINX_CONFIG_PATH}/nginx.conf
     fi
 
-    ph_symlink /etc/nginx-${NGINX_VERSION_STRING} /etc/nginx ${NGINX_OVERWRITE_SYMLINKS}
+    ph_symlink ${NGINX_CONFIG_PATH} /etc/nginx ${NGINX_OVERWRITE_SYMLINKS}
     ph_symlink ${NGINX_PREFIX} /usr/local/nginx ${NGINX_OVERWRITE_SYMLINKS}
     ph_symlink ${NGINX_PREFIX}/logs /var/log/nginx ${NGINX_OVERWRITE_SYMLINKS}
     ph_symlink ${NGINX_PREFIX}/sbin/nginx /usr/local/bin/nginx ${NGINX_OVERWRITE_SYMLINKS}
-    ph_symlink /etc/nginx-${NGINX_VERSION_STRING}/sites-available/localhost /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled/localhost ${NGINX_OVERWRITE_SYMLINKS}
-    ph_symlink /etc/nginx-${NGINX_VERSION_STRING}/sites-available/000-catchall /etc/nginx-${NGINX_VERSION_STRING}/sites-enabled/000-catchall ${NGINX_OVERWRITE_SYMLINKS}
+    ph_symlink ${NGINX_CONFIG_PATH}/sites-available/localhost ${NGINX_CONFIG_PATH}/sites-enabled/localhost ${NGINX_OVERWRITE_SYMLINKS}
+    ph_symlink ${NGINX_CONFIG_PATH}/sites-available/000-catchall ${NGINX_CONFIG_PATH}/sites-enabled/000-catchall ${NGINX_OVERWRITE_SYMLINKS}
 
     case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
-        "arch")
-            ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/rc.d/nginx-${NGINX_VERSION_STRING} \
-                "##NGINX_PREFIX##" "${NGINX_PREFIX}"
-
-            /etc/rc.d/nginx-${NGINX_VERSION_STRING} start
-            ;;
-
         "suse")
             ph_cp_inject ${PH_INSTALL_DIR}/modules/nginx/nginx.in /etc/init.d/nginx-${NGINX_VERSION_STRING} \
                 "##NGINX_PREFIX##" "${NGINX_PREFIX}"
