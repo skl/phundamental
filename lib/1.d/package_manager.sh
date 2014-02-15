@@ -2,8 +2,12 @@
 
 if ph_is_installed apt-cyg ; then
     PH_PACKAGE_MANAGER='apt-cyg'
-    PH_PACKAGE_MANAGER_ARG='install'
-    PH_PACKAGE_MANAGER_BUILDTOOLS='apt-cyg install autoconf automake bison cmake gcc gcc-g++ libtool m4 make'
+    if [ "${PH_ARCH}" == "64bit" ]; then
+        PH_PACKAGE_MANAGER_MIRROR='http://mirrors-uk.go-parts.com/cygwin/x86_64'
+    else
+        PH_PACKAGE_MANAGER_MIRROR='http://mirrors-uk.go-parts.com/cygwin/x86'
+    fi
+    PH_PACKAGE_MANAGER_ARG="--mirror ${PH_PACKAGE_MANAGER_MIRROR} install"
 
     # Fix required for cygwin when installing gcc
     PH_PACKAGE_MANAGER_POSTBUILD='for x in /etc/postinstall/{gcc.,gcc-[^tm]}* ; do . $x; done'
@@ -12,7 +16,6 @@ elif ph_is_installed apt-get ; then
     PH_PACKAGE_MANAGER='apt-get'
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_UPDATE='update'
-    PH_PACKAGE_MANAGER_BUILDTOOLS='apt-get install build-essential'
 
 elif ph_is_installed brew ; then
     PH_PACKAGE_MANAGER='brew'
@@ -22,34 +25,19 @@ elif ph_is_installed brew ; then
 elif ph_is_installed pacman ; then
     PH_PACKAGE_MANAGER='pacman'
     PH_PACKAGE_MANAGER_ARG='-Sy'
-    PH_PACKAGE_MANAGER_BUILDTOOLS='pacman -Sy base-devel'
 
 elif ph_is_installed yum ; then
     PH_PACKAGE_MANAGER='yum'
     PH_PACKAGE_MANAGER_ARG='install'
-    PH_PACKAGE_MANAGER_BUILDTOOLS='yum groupinstall "Development Tools" "Legacy Software Development"'
 
 elif ph_is_installed zypper ; then
     PH_PACKAGE_MANAGER='zypper'
     PH_PACKAGE_MANAGER_ARG='install'
-    PH_PACKAGE_MANAGER_BUILDTOOLS='zypper install rpmdevtools gcc gcc-c++ make'
 
 else
     echo 'Package manager not found!'
     exit 1
 fi
-
-
-##
-# Installs make, libtool, autoconf etc.
-#
-function ph_install_buildtools {
-    $PH_PACKAGE_MANAGER_BUILDTOOLS
-
-    if [ ! -z "${PH_PACKAGE_MANAGER_POSTBUILD}" ]; then
-        echo ${PH_PACKAGE_MANAGER_POSTBUILD} | /bin/bash
-    fi
-}
 
 
 ##
