@@ -98,28 +98,32 @@ function ph_module_install_nginx()
     if ${NGINX_INTERACTIVE}; then
         read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_PREFIX
         read -p "Specify nginx configuration directory [/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_CONFIG_PATH
-        read -p "Specify nginx user [${SUGGESTED_USER}]: " NGINX_USER
-        read -p "Specify nginx group [${SUGGESTED_USER}]: " NGINX_GROUP
+        if [ "${PH_OS}" != "windows" ]; then
+            read -p "Specify nginx user [${SUGGESTED_USER}]: " NGINX_USER
+            read -p "Specify nginx group [${SUGGESTED_USER}]: " NGINX_GROUP
+        fi
     fi
 
     # Default prefix and configuration path
     [ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}"
     [ -z ${NGINX_CONFIG_PATH} && NGINX_CONFIG_PATH="/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}" ]
 
-    # Default user and group
-    [ -z ${NGINX_USER} ] && NGINX_USER="${SUGGESTED_USER}"
-    [ -z ${NGINX_GROUP} ] && NGINX_GROUP="${SUGGESTED_USER}"
+    if [ "${PH_OS}" != "windows" ]; then
+        # Default user and group
+        [ -z "${NGINX_USER}" ] && NGINX_USER="${SUGGESTED_USER}"
+        [ -z "${NGINX_GROUP}" ] && NGINX_GROUP="${SUGGESTED_USER}"
 
-    if ${NGINX_INTERACTIVE}; then
-        if ph_ask_yesno "Should I create the user and group for you?"; then
+        if ${NGINX_INTERACTIVE}; then
+            if ph_ask_yesno "Should I create the user and group for you?"; then
+                ph_creategroup ${NGINX_GROUP}
+                ph_createuser ${NGINX_USER}
+                ph_assigngroup ${NGINX_GROUP} ${NGINX_USER}
+            fi
+        else
             ph_creategroup ${NGINX_GROUP}
             ph_createuser ${NGINX_USER}
             ph_assigngroup ${NGINX_GROUP} ${NGINX_USER}
         fi
-    else
-        ph_creategroup ${NGINX_GROUP}
-        ph_createuser ${NGINX_USER}
-        ph_assigngroup ${NGINX_GROUP} ${NGINX_USER}
     fi
 
     ph_install_packages\
