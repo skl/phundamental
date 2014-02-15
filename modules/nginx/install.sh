@@ -145,7 +145,6 @@ function ph_module_install_nginx()
     ph_mkdirs \
         /usr/local/src \
         ${NGINX_CONFIG_PATH} \
-        /var/log/nginx-${NGINX_VERSION_STRING} \
         ${NGINX_CONFIG_PATH}/global \
         ${NGINX_CONFIG_PATH}/sites-available \
         ${NGINX_CONFIG_PATH}/sites-enabled \

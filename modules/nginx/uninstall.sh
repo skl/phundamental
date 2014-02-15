@@ -32,6 +32,12 @@ for i in ${NGINX_DIRS}; do
     [ -d ${i} ] && rm -rvf ${i}
 done
 
+NGINX_SYMLINKS="/etc/nginx /usr/local/nginx /var/log/nginx /usr/local/bin/nginx"
+
+for i in ${NGINX_SYMLINKS}; do
+    [ -L ${i} ] && rm -i ${i}
+done
+
 case "${PH_OS}" in
     "linux")
         case "${PH_OS_FLAVOUR}" in
