@@ -17,7 +17,15 @@ Install [homebrew](http://mxcl.github.com/homebrew/).
 ### Windows
 
 1. Install [cygwin](http://www.cygwin.com/)
-1. Install the `git`, `subversion`, `ca-certificates`, `wget`, `tar`, `gawk`, `bzip2` packages using cygwin's `setup.exe`
+1. Install the following packages using Cygwin's `setup.exe`:
+    1. `bzip2`
+    1. `ca-certificates`
+    1. `gawk`
+    1. `gcc-g++`
+    1. `git`
+    1. `subversion`
+    1. `tar`
+    1. `wget`
 1. Install `apt-cyg` as below:
 
 ```
