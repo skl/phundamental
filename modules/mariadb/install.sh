@@ -23,7 +23,6 @@ read -p "Specify MariaDB version [5.5.35]: " MARIADB_VERSION_STRING
 
 MARIADB_VERSION_INTEGER=`echo ${MARIADB_VERSION_STRING} | tr -d '.' | cut -c1-3`
 MARIADB_VERSION_INTEGER_FULL=`echo ${MARIADB_VERSION_STRING} | tr -d '.'`
-
 MARIADB_VERSION_MAJOR=`echo ${MARIADB_VERSION_STRING} | cut -d. -f1`
 MARIADB_VERSION_MINOR=`echo ${MARIADB_VERSION_STRING} | cut -d. -f2`
 MARIADB_VERSION_RELEASE=`echo ${MARIADB_VERSION_STRING} | cut -d. -f3`
@@ -68,16 +67,18 @@ else
         ;;
     esac
 
-    read -p "Specify MariaDB user [${SUGGESTED_USER}]: " MARIADB_USER
-    [ -z ${MARIADB_USER} ] && MARIADB_USER="${SUGGESTED_USER}"
+    if [ "${PH_OS}" != "windows" ]; then
+        read -p "Specify MariaDB user [${SUGGESTED_USER}]: " MARIADB_USER
+        [ -z ${MARIADB_USER} ] && MARIADB_USER="${SUGGESTED_USER}"
 
-    read -p "Specify MariaDB group [${SUGGESTED_USER}]: " MARIADB_GROUP
-    [ -z ${MARIADB_GROUP} ] && MARIADB_GROUP="${SUGGESTED_USER}"
+        read -p "Specify MariaDB group [${SUGGESTED_USER}]: " MARIADB_GROUP
+        [ -z ${MARIADB_GROUP} ] && MARIADB_GROUP="${SUGGESTED_USER}"
 
-    if ph_ask_yesno "Should I create the user and group for you?"; then
-        ph_creategroup ${MARIADB_GROUP}
-        ph_createuser ${MARIADB_USER}
-        ph_assigngroup ${MARIADB_GROUP} ${MARIADB_USER}
+        if ph_ask_yesno "Should I create the user and group for you?"; then
+            ph_creategroup ${MARIADB_GROUP}
+            ph_createuser ${MARIADB_USER}
+            ph_assigngroup ${MARIADB_GROUP} ${MARIADB_USER}
+        fi
     fi
 
     ph_install_packages\
