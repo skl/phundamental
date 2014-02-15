@@ -23,9 +23,11 @@ PHP_DIRS="${PHP_PREFIX} ${PHP_INI_PATH}"
 PHP_SYMLINKS="/usr/local/php"
 
 # Remove bin links
-for i in `ls -1 ${PHP_PREFIX}/bin`; do
-    [ -L /usr/local/bin/$i ] && rm -i /usr/local/bin/$i
-done
+[ -d ${PHP_PREFIX}/bin ] && {
+    for i in `ls -1 ${PHP_PREFIX}/bin`; do
+        [ -L /usr/local/bin/$i ] && rm -i /usr/local/bin/$i
+    done
+}
 
 for i in ${PHP_SYMLINKS}; do
     [ -L ${i} ] && rm -i ${i}
