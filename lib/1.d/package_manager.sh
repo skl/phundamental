@@ -2,12 +2,7 @@
 
 if ph_is_installed apt-cyg ; then
     PH_PACKAGE_MANAGER='apt-cyg'
-    if [ "${PH_ARCH}" == "64bit" ]; then
-        PH_PACKAGE_MANAGER_MIRROR='http://mirrors-uk.go-parts.com/cygwin/x86_64'
-    else
-        PH_PACKAGE_MANAGER_MIRROR='http://mirrors-uk.go-parts.com/cygwin/x86'
-    fi
-    PH_PACKAGE_MANAGER_ARG="--mirror ${PH_PACKAGE_MANAGER_MIRROR} install"
+    PH_PACKAGE_MANAGER_ARG="install"
 
     # Fix required for cygwin when installing gcc
     PH_PACKAGE_MANAGER_POSTBUILD='for x in /etc/postinstall/{gcc.,gcc-[^tm]}* ; do . $x; done'
