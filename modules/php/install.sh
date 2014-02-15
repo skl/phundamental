@@ -43,7 +43,6 @@ read -p "Specify PHP version [5.5.9]: " PHP_VERSION_STRING
 # .. for PHP 5.3.17, php-fpm will bind to 127.0.0.1:9531
 PHP_VERSION_INTEGER=`echo ${PHP_VERSION_STRING} | tr -d '.' | cut -c1-3`
 PHP_VERSION_INTEGER_FULL=`echo ${PHP_VERSION_STRING} | tr -d '.'`
-
 PHP_VERSION_MAJOR=`echo ${PHP_VERSION_STRING} | cut -d. -f1`
 PHP_VERSION_MINOR=`echo ${PHP_VERSION_STRING} | cut -d. -f2`
 PHP_VERSION_RELEASE=`echo ${PHP_VERSION_STRING} | cut -d. -f3`
@@ -64,16 +63,18 @@ case "${PH_OS}" in \
     ;;
 esac
 
-read -p "Specify php-fpm user [${SUGGESTED_USER}]: " PHP_USER
-[ -z ${PHP_USER} ] && PHP_USER="${SUGGESTED_USER}"
+if [ "${PH_OS}" != "windows" ]; then
+    read -p "Specify php-fpm user [${SUGGESTED_USER}]: " PHP_USER
+    [ -z ${PHP_USER} ] && PHP_USER="${SUGGESTED_USER}"
 
-read -p "Specify php-fpm group [${SUGGESTED_USER}]: " PHP_GROUP
-[ -z ${PHP_GROUP} ] && PHP_GROUP="${SUGGESTED_USER}"
+    read -p "Specify php-fpm group [${SUGGESTED_USER}]: " PHP_GROUP
+    [ -z ${PHP_GROUP} ] && PHP_GROUP="${SUGGESTED_USER}"
 
-if ph_ask_yesno "Should I create the user and group for you?"; then
-    ph_creategroup ${PHP_GROUP}
-    ph_createuser ${PHP_USER}
-    ph_assigngroup ${PHP_GROUP} ${PHP_USER}
+    if ph_ask_yesno "Should I create the user and group for you?"; then
+        ph_creategroup ${PHP_GROUP}
+        ph_createuser ${PHP_USER}
+        ph_assigngroup ${PHP_GROUP} ${PHP_USER}
+    fi
 fi
 
 case "${PH_OS}" in \
