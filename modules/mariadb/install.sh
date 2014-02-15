@@ -132,15 +132,6 @@ else
     case "${PH_OS}" in \
     "linux")
         case "${PH_OS_FLAVOUR}" in \
-        "arch")
-            ph_symlink\
-            ${MARIADB_PREFIX}/support-files/mysql.server\
-                /etc/rc.d/mariadb-${MARIADB_VERSION_STRING}\
-                ${MARIADB_OVERWRITE_SYMLINKS}
-
-            /etc/rc.d/mariadb-${MARIADB_VERSION_STRING} start
-            ;;
-
         "suse")
             ph_symlink\
                 ${MARIADB_PREFIX}/support-files/mysql.server\

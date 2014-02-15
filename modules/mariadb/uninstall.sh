@@ -25,13 +25,6 @@ if $MARIADB_OVERWRITE_SYMLINKS ; then
     case "${PH_OS}" in \
         "linux")
             case "${PH_OS_FLAVOUR}" in \
-                "arch")
-                if [ -L "/etc/rc.d/mariadb-${MARIADB_VERSION_STRING}" ]; then
-                    /etc/rc.d/mariadb-${MARIADB_VERSION_STRING} stop
-                    rm /etc/rc.d/mariadb-${MARIADB_VERSION_STRING}
-                fi
-                ;;
-
                 "suse")
                 if [ -L "/etc/init.d/mariadb-${MARIADB_VERSION_STRING}" ]; then
                     chkconfig --level 3 mariadb-${MARIADB_VERSION_STRING} off
