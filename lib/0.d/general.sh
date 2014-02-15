@@ -59,9 +59,9 @@ function ph_search_and_replace() {
     local REPLACE=`echo $2 | sed 's#/#\\\/#g'`
     local TARGET=$3
 
-    [ ! -f ${TARGET} ] && echo "ph_search_and_replace() failed! ${TARGET} is not a file"
+    [ ! -f "${TARGET}" ] && echo "ph_search_and_replace() failed! ${TARGET} is not a file"
 
-    sed -ie "s/${SEARCH}/${REPLACE}/g" ${TARGET}
+    sed -ie "s/${SEARCH}/${REPLACE}/g" "${TARGET}"
 
     # OSX fix
     [ -f "${TARGET}e" ] && rm "${TARGET}e"
@@ -82,12 +82,12 @@ ph_cp_inject() {
     local SEARCH=$3
     local REPLACE=$4
 
-    if [ ! -f ${SOURCE} ]; then
+    if [ ! -f "${SOURCE}" ]; then
         echo "ph_cp_inject() failed! ${SOURCE} is not a file"
         return 1
     fi
 
-    cp -i ${SOURCE} ${TARGET} && ph_search_and_replace ${SEARCH} ${REPLACE} ${TARGET}
+    cp -i "${SOURCE}" "${TARGET}" && ph_search_and_replace "${SEARCH}" "${REPLACE}" "${TARGET}"
 }
 
 
