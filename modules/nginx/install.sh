@@ -106,7 +106,7 @@ function ph_module_install_nginx()
 
     # Default prefix and configuration path
     [ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}"
-    [ -z ${NGINX_CONFIG_PATH} && NGINX_CONFIG_PATH="/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}" ]
+    [ -z ${NGINX_CONFIG_PATH} ] && NGINX_CONFIG_PATH="/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}"
 
     if [ "${PH_OS}" != "windows" ]; then
         # Default user and group
