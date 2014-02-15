@@ -39,49 +39,48 @@ for i in ${NGINX_SYMLINKS}; do
 done
 
 case "${PH_OS}" in
-    "linux")
-        case "${PH_OS_FLAVOUR}" in
-            "debian")
-                PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
+"linux")
+    case "${PH_OS_FLAVOUR}" in
+    "debian")
+        PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
 
-                [ -f ${PH_INIT_SCRIPT} ] && {
-                    update-rc.d nginx-${NGINX_VERSION_STRING} remove
-                    ${PH_INIT_SCRIPT} stop
-                    rm ${PH_INIT_SCRIPT}
-                }
-            ;;
+        [ -f ${PH_INIT_SCRIPT} ] && {
+            update-rc.d nginx-${NGINX_VERSION_STRING} remove
+            ${PH_INIT_SCRIPT} stop
+            rm ${PH_INIT_SCRIPT}
+        }
+        ;;
 
-            "suse")
-                PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
+    "suse")
+        PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
 
-                [ -f ${PH_INIT_SCRIPT} ] && {
-                    chkconfig --set nginx-${NGINX_VERSION_STRING} off
-                    ${PH_INIT_SCRIPT} stop
-                    rm ${PH_INIT_SCRIPT}
-                }
-            ;;
-
-            *)
-                PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
-
-                [ -f ${PH_INIT_SCRIPT} ] && {
-                    ${PH_INIT_SCRIPT} stop
-                    rm ${PH_INIT_SCRIPT}
-                }
-            ;;
-        esac
-    ;;
-
-    "mac")
-        launchctl quit nginx
-        launchctl unload /Library/LaunchAgents/org.nginx.nginx.plist
-        rm /Library/LaunchAgents/org.nginx.nginx.plist
-    ;;
+        [ -f ${PH_INIT_SCRIPT} ] && {
+            chkconfig --set nginx-${NGINX_VERSION_STRING} off
+            ${PH_INIT_SCRIPT} stop
+            rm ${PH_INIT_SCRIPT}
+        }
+        ;;
 
     *)
-        echo "Init script removal not implemented!"
+        PH_INIT_SCRIPT=/etc/init.d/nginx-${NGINX_VERSION_STRING}
+
+        [ -f ${PH_INIT_SCRIPT} ] && {
+            ${PH_INIT_SCRIPT} stop
+            rm ${PH_INIT_SCRIPT}
+        }
+        ;;
+    esac
     ;;
 
+"mac")
+    launchctl quit nginx
+    launchctl unload /Library/LaunchAgents/org.nginx.nginx.plist
+    rm /Library/LaunchAgents/org.nginx.nginx.plist
+    ;;
+
+*)
+    echo "Init script removal not implemented!"
+    ;;
 esac
 
 echo ""
