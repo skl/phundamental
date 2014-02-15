@@ -22,6 +22,10 @@ NGINX_VERSION_RELEASE=`echo ${NGINX_VERSION_STRING} | cut -d. -f3`
 read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_PREFIX
 read -p "Specify nginx configuration directory [/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_CONFIG_PATH
 
+# Default prefix and configuration path
+[ -z ${NGINX_PREFIX} ] && NGINX_PREFIX="/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}"
+[ -z ${NGINX_CONFIG_PATH} ] && NGINX_CONFIG_PATH="/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}"
+
 NGINX_DIRS="${NGINX_PREFIX} ${NGINX_CONFIG_PATH}"
 
 for i in ${NGINX_DIRS}; do
