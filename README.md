@@ -33,6 +33,36 @@ svn --force export http://apt-cyg.googlecode.com/svn/trunk/ /bin/
 chmod +x /bin/apt-cyg
 ```
 
+There is currently an issue with apt-cyg preventing usage, you will need to apply the following fix to `/bin/apt-cyg`:
+
+#### 32 bit
+
+Line 68:
+
+```
+http://mirror.isoc.org.il/pub/cygwin/x86
+```
+
+Line 331:
+```
+install=`cat "release/$pkg/desc" | awk '/^install: / { print $2; exit }'|sed 's/\/x86//g'`
+```
+
+#### 64 bit
+
+Line 68:
+
+```
+http://mirror.isoc.org.il/pub/cygwin/x86_64
+```
+
+Line 331:
+```
+install=`cat "release/$pkg/desc" | awk '/^install: / { print $2; exit }'|sed 's/\/x86_64//g'`
+```
+
+Source: https://code.google.com/p/apt-cyg/issues/detail?id=34
+
 #### General
 
 It is recommended that you add `/usr/local/bin` to the beginning of your path. Add the following
