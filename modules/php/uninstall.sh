@@ -20,14 +20,14 @@ read -p "Specify php.ini installation directory [/etc/php-${PHP_VERSION_MAJOR}.$
 [ -z ${PHP_INI_PATH} ] && PHP_INI_PATH="/etc/php-${PHP_VERSION_MAJOR}.${PHP_VERSION_MINOR}"
 
 PHP_DIRS="${PHP_PREFIX} ${PHP_INI_PATH}"
-PHP_SYMLINKS="/usr/local/php "
+PHP_SYMLINKS="/usr/local/php"
 
 # Remove bin links
 for i in `ls -1 ${PHP_PREFIX}/bin`; do
     [ -L /usr/local/bin/$i ] && rm -i /usr/local/bin/$i
 done
 
-for i in ${NGINX_SYMLINKS}; do
+for i in ${PHP_SYMLINKS}; do
     [ -L ${i} ] && rm -i ${i}
 done
 
