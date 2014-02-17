@@ -26,7 +26,7 @@ Install [homebrew](http://mxcl.github.com/homebrew/).
     1. `subversion`
     1. `tar`
     1. `wget`
-1. Install [apt-cyg](https://github.com/rcmdnk/apt-cyg)
+1. Install [apt-cyg](https://code.google.com/p/apt-cyg/)
 
 #### General
 
