@@ -209,7 +209,6 @@ CONFIGURE_ARGS=("--prefix=${PHP_PREFIX}"
     "--with-curl"
     "--with-gd"
     "--with-jpeg-dir"
-    "--with-ldap"
     "--with-libxml-dir"
     "--with-xsl"
     "--with-mcrypt"
@@ -218,7 +217,12 @@ CONFIGURE_ARGS=("--prefix=${PHP_PREFIX}"
     "--with-regex=system"
     "--with-zlib");
 
-if [[ "${PH_OS}" == "mac" ]]; then
+if [ "${PH_OS}" != "windows" ]; then
+    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+        "--with-ldap")
+fi
+
+if [ "${PH_OS}" == "mac" ]; then
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
         "--with-gettext=`find /usr/local/Cellar/gettext -depth 1 | sort | tail -1`")
 else
