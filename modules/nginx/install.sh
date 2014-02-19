@@ -8,6 +8,10 @@ PH_NGINX_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PH_INSTALL_DIR="$( cd "${PH_NGINX_INSTALL_DIR}" && cd ../../ && pwd )"
 . ${PH_INSTALL_DIR}/bootstrap.sh
 
+# Defaults
+NGINX_SPDY=false
+NGINX_OVERWRITE_SYMLINKS=false
+
 function ph_module_install_nginx()
 {
     [ $# -gt 1 ] && NGINX_INTERACTIVE=false || NGINX_INTERACTIVE=true
@@ -39,13 +43,13 @@ function ph_module_install_nginx()
             shift
             ;;
 
-        --overwrite-symlinks=*)
-            NGINX_OVERWRITE_SYMLINKS="${arg#*=}"
-            if [[ "yes" == "${NGINX_OVERWRITE_SYMLINKS}" ]]; then
-                NGINX_OVERWRITE_SYMLINKS=true
-            else
-                NGINX_OVERWRITE_SYMLINKS=false
-            fi
+        --with-spdy)
+            NGINX_SPDY=true
+            shift
+            ;;
+
+        --overwrite-symlinks)
+            NGINX_OVERWRITE_SYMLINKS=true
             shift
             ;;
 
@@ -84,6 +88,19 @@ function ph_module_install_nginx()
     NGINX_VERSION_MAJOR=`echo ${NGINX_VERSION_STRING} | cut -d. -f1`
     NGINX_VERSION_MINOR=`echo ${NGINX_VERSION_STRING} | cut -d. -f2`
     NGINX_VERSION_RELEASE=`echo ${NGINX_VERSION_STRING} | cut -d. -f3`
+
+    # SPDY support available from nginx 1.4
+    if [ ${NGINX_VERSION_MAJOR} -eq 1 ] && [ ${NGINX_VERSION_MINOR} -ge 4 ]; then
+        if ${NGINX_INTERACTIVE}; then
+            if ph_ask_yesno "Enable SPDY support?"; then
+                NGINX_SPDY=true
+            else
+                NGINX_SPDY=false
+            fi
+        fi
+    else
+        NGINX_SPDY=false
+    fi
 
     case "${PH_OS}" in \
     "linux")
@@ -161,6 +178,11 @@ function ph_module_install_nginx()
         "--with-pcre"
         "--with-http_ssl_module"
         "--with-http_realip_module");
+
+    if ${NGINX_SPDY}; then
+        CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
+            "--with-http_spdy_module")
+    fi
 
     if [[ "${PH_PACKAGE_MANAGER}" == "brew" ]]; then
         # Add homebrew include directories
