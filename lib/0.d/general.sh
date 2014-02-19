@@ -228,16 +228,21 @@ function ph_autobuild() {
         exit 1
     fi
 
-    echo -n 'make clean'
-    make clean 2>&1 | while read line; do echo -n .; done
-    echo
+    echo -n 'make clean '
+    local odd=true
+    make clean 2>&1 | while read line; do
+        $odd && { odd=false; echo -en "\b."; } || { odd=true; echo -en "\b "; }
+    done
 
     # Ensure log file exists and is empty
     cat /dev/null > ${configure_log}
 
     # Configure silently and write to log file
-    echo -n "./configure ${CONFIGURE_OPTIONS}"
-    ./configure ${CONFIGURE_OPTIONS} 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
+    echo
+    echo -n "./configure ${CONFIGURE_OPTIONS} "
+    ./configure ${CONFIGURE_OPTIONS} 2>&1 | tee -a ${configure_log} | while read line; do
+        $odd && { odd=false; echo -en "\b."; } || { odd=true; echo -en "\b "; }
+    done
 
     # Check exit status of ./configure
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
@@ -251,8 +256,10 @@ function ph_autobuild() {
     fi
 
     echo
-    echo -n "make -j ${PH_NUM_THREADS}"
-    make -j ${PH_NUM_THREADS} 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
+    echo -n "make -j ${PH_NUM_THREADS} "
+    make -j ${PH_NUM_THREADS} 2>&1 | tee -a ${configure_log} | while read line; do
+        $odd && { odd=false; echo -en "\b."; } || { odd=true; echo -en "\b "; }
+    done
 
     # Check exit status of make
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
@@ -263,8 +270,10 @@ function ph_autobuild() {
     fi
 
     echo
-    echo -n 'make install'
-    make install 2>&1 | tee -a ${configure_log} | while read line; do echo -n .; done
+    echo -n 'make install '
+    make install 2>&1 | tee -a ${configure_log} | while read line; do
+        $odd && { odd=false; echo -en "\b."; } || { odd=true; echo -en "\b "; }
+    done
 
     # Check exit status of make install
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
