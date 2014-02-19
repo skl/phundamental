@@ -14,7 +14,7 @@ NGINX_OVERWRITE_SYMLINKS=false
 
 function ph_module_install_nginx()
 {
-    [ $# -gt 1 ] && NGINX_INTERACTIVE=false || NGINX_INTERACTIVE=true
+    [ $# -gt 1 ] && PH_INTERACTIVE=false || PH_INTERACTIVE=true
 
     for arg in "$@"; do
         case $arg in
@@ -55,7 +55,7 @@ function ph_module_install_nginx()
 
         ## Ignore legacy arguments
         install|nginx)
-            NGINX_INTERACTIVE=true
+            PH_INTERACTIVE=true
             break
             ;;
 
@@ -66,7 +66,7 @@ function ph_module_install_nginx()
         esac
     done
 
-    if ${NGINX_INTERACTIVE}; then
+    if ${PH_INTERACTIVE}; then
         if ph_is_installed nginx ; then
             echo "nginx is already installed!"
             ls -l `which nginx` | awk '{print $9 $10 $11}'
@@ -91,7 +91,7 @@ function ph_module_install_nginx()
 
     # SPDY support available from nginx 1.4
     if [ ${NGINX_VERSION_MAJOR} -eq 1 ] && [ ${NGINX_VERSION_MINOR} -ge 4 ]; then
-        if ${NGINX_INTERACTIVE}; then
+        if ${PH_INTERACTIVE}; then
             if ph_ask_yesno "Enable SPDY support?"; then
                 NGINX_SPDY=true
             else
@@ -112,7 +112,7 @@ function ph_module_install_nginx()
         ;;
     esac
 
-    if ${NGINX_INTERACTIVE}; then
+    if ${PH_INTERACTIVE}; then
         read -p "Specify installation directory [/usr/local/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_PREFIX
         read -p "Specify nginx configuration directory [/etc/nginx-${NGINX_VERSION_MAJOR}.${NGINX_VERSION_MINOR}]: " NGINX_CONFIG_PATH
         if [ "${PH_OS}" != "windows" ]; then
@@ -130,7 +130,7 @@ function ph_module_install_nginx()
         [ -z "${NGINX_USER}" ] && NGINX_USER="${SUGGESTED_USER}"
         [ -z "${NGINX_GROUP}" ] && NGINX_GROUP="${SUGGESTED_USER}"
 
-        if ${NGINX_INTERACTIVE}; then
+        if ${PH_INTERACTIVE}; then
             if ph_ask_yesno "Should I create the user and group for you?"; then
                 ph_creategroup ${NGINX_GROUP}
                 ph_createuser ${NGINX_USER}
@@ -151,7 +151,7 @@ function ph_module_install_nginx()
         wget\
         zlib
 
-    if ${NGINX_INTERACTIVE}; then
+    if ${PH_INTERACTIVE}; then
         if ph_ask_yesno "Overwrite existing symlinks in /usr/local?"; then
             NGINX_OVERWRITE_SYMLINKS=true
         else

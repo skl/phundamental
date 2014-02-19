@@ -87,7 +87,11 @@ ph_cp_inject() {
         return 1
     fi
 
-    cp -i "${SOURCE}" "${TARGET}" && ph_search_and_replace "${SEARCH}" "${REPLACE}" "${TARGET}"
+    if ${PH_INTERACTIVE}; then
+        local cp_flags='-i'
+    fi
+
+    cp ${cp_flags} "${SOURCE}" "${TARGET}" && ph_search_and_replace "${SEARCH}" "${REPLACE}" "${TARGET}"
 }
 
 

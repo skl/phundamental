@@ -35,3 +35,4 @@ if [ ${PH_OS} != "windows" ]; then
     fi
 fi
 
+PH_INTERACTIVE=true
