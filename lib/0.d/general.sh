@@ -231,7 +231,7 @@ function ph_autobuild() {
     echo -n 'make clean   '
     local odd=true
     make clean 2>&1 | while read line; do
-        $odd && { odd=false; echo -en "\b\b."; } || { odd=true; echo -en "\b ."; }
+        $odd && { odd=false; echo -en "\b\b. "; } || { odd=true; echo -en "\b\b ."; }
     done
 
     # Ensure log file exists and is empty
@@ -242,7 +242,7 @@ function ph_autobuild() {
     echo -n "./configure ${CONFIGURE_OPTIONS}   "
     odd=true
     ./configure ${CONFIGURE_OPTIONS} 2>&1 | tee -a ${configure_log} | while read line; do
-        $odd && { odd=false; echo -en "\b\b."; } || { odd=true; echo -en "\b ."; }
+        $odd && { odd=false; echo -en "\b\b. "; } || { odd=true; echo -en "\b\b ."; }
     done
 
     # Check exit status of ./configure
@@ -260,7 +260,7 @@ function ph_autobuild() {
     echo -n "make -j ${PH_NUM_THREADS}   "
     odd=true
     make -j ${PH_NUM_THREADS} 2>&1 | tee -a ${configure_log} | while read line; do
-        $odd && { odd=false; echo -en "\b\b."; } || { odd=true; echo -en "\b ."; }
+        $odd && { odd=false; echo -en "\b\b. "; } || { odd=true; echo -en "\b\b ."; }
     done
 
     # Check exit status of make
@@ -275,7 +275,7 @@ function ph_autobuild() {
     echo -n 'make install   '
     odd=true
     make install 2>&1 | tee -a ${configure_log} | while read line; do
-        $odd && { odd=false; echo -en "\b\b."; } || { odd=true; echo -en "\b ."; }
+        $odd && { odd=false; echo -en "\b\b. "; } || { odd=true; echo -en "\b\b ."; }
     done
 
     # Check exit status of make install
