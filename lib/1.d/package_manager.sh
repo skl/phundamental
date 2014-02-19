@@ -1,26 +1,26 @@
 #!/bin/bash
 
 if ph_is_installed apt-get; then
-    $PH_INTERACTIVE && PH_PACKAGE_MANAGER='apt-get -y' || PH_PACKAGE_MANAGER='apt-get'
-    PH_PACKAGE_MANAGER_ARG='install'
+    PH_PACKAGE_MANAGER='apt-get'
+    $PH_INTERACTIVE && PH_PACKAGE_MANAGER_ARG='install -y' || PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_UPDATE='update'
 elif ph_is_installed zypper; then
-    $PH_INTERACTIVE && PH_PACKAGE_MANAGER='zypper -n' || PH_PACKAGE_MANAGER='zypper'
-    PH_PACKAGE_MANAGER_ARG='install'
+    PH_PACKAGE_MANAGER='zypper'
+    $PH_INTERACTIVE && PH_PACKAGE_MANAGER_ARG='-n install' || PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_UPDATE='refresh'
 elif ph_is_installed brew; then
     PH_PACKAGE_MANAGER='brew'
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_UPDATE='update'
 elif ph_is_installed yum; then
-    $PH_INTERACTIVE && PH_PACKAGE_MANAGER='yum -y' || PH_PACKAGE_MANAGER='yum'
-    PH_PACKAGE_MANAGER_ARG='install'
+    PH_PACKAGE_MANAGER='yum'
+    $PH_INTERACTIVE && PH_PACKAGE_MANAGER_ARG='-y install' || PH_PACKAGE_MANAGER_ARG='install'
 elif ph_is_installed pacman; then
     PH_PACKAGE_MANAGER='pacman'
     PH_PACKAGE_MANAGER_ARG='-Sy'
 elif ph_is_installed apt-cyg; then
     PH_PACKAGE_MANAGER='apt-cyg'
-    PH_PACKAGE_MANAGER_ARG="install"
+    PH_PACKAGE_MANAGER_ARG='install'
     # Fix required for cygwin when installing gcc
     PH_PACKAGE_MANAGER_POSTBUILD='for x in /etc/postinstall/{gcc.,gcc-[^tm]}* ; do . $x; done'
 else
