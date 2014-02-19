@@ -166,15 +166,21 @@ else
 fi
 
 if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -le 2 ]; then
+    PHP_DOWNLOAD_ARG=xzf
+    PHP_DOWNLOAD_EXT=.tar.gz
     PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz
 elif [ ${PHP_VERSION_MAJOR} -eq 4 ]; then
+    PHP_DOWNLOAD_ARG=xzf
+    PHP_DOWNLOAD_EXT=.tar.gz
     PHP_DOWNLOAD_URI=http://museum.php.net/php4/php-${PHP_VERSION_STRING}.tar.gz
 else
-    PHP_DOWNLOAD_URI=http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.gz
+    PHP_DOWNLOAD_ARG=xjf
+    PHP_DOWNLOAD_EXT=.tar.bz2
+    PHP_DOWNLOAD_URI=http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.bz2
 fi
 
 # Retrieve source code from php.net
-ph_cd_archive tar xzf php-${PHP_VERSION_STRING} .tar.gz ${PHP_DOWNLOAD_URI}
+ph_cd_archive tar ${PHP_DOWNLOAD_ARG} php-${PHP_VERSION_STRING} ${PHP_DOWNLOAD_EXT} ${PHP_DOWNLOAD_URI}
 
 case "${PH_OS_FLAVOUR}" in \
 "debian")
