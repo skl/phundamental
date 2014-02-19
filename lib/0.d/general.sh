@@ -240,6 +240,7 @@ function ph_autobuild() {
     # Configure silently and write to log file
     echo
     echo -n "./configure ${CONFIGURE_OPTIONS}   "
+    odd=true
     ./configure ${CONFIGURE_OPTIONS} 2>&1 | tee -a ${configure_log} | while read line; do
         $odd && { odd=false; echo -en "\b\b."; } || { odd=true; echo -en "\b ."; }
     done
@@ -257,6 +258,7 @@ function ph_autobuild() {
 
     echo
     echo -n "make -j ${PH_NUM_THREADS}   "
+    odd=true
     make -j ${PH_NUM_THREADS} 2>&1 | tee -a ${configure_log} | while read line; do
         $odd && { odd=false; echo -en "\b\b."; } || { odd=true; echo -en "\b ."; }
     done
@@ -271,6 +273,7 @@ function ph_autobuild() {
 
     echo
     echo -n 'make install   '
+    odd=true
     make install 2>&1 | tee -a ${configure_log} | while read line; do
         $odd && { odd=false; echo -en "\b\b."; } || { odd=true; echo -en "\b ."; }
     done
