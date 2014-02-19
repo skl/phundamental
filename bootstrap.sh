@@ -1,4 +1,5 @@
 #!/bin/bash
+PH_INTERACTIVE=true
 
 # Include lib, return early if not required
 command -v ph_is_installed > /dev/null 2>&1 && return 0
@@ -34,5 +35,3 @@ if [ ${PH_OS} != "windows" ]; then
         exit 1
     fi
 fi
-
-PH_INTERACTIVE=true

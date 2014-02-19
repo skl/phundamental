@@ -1,11 +1,11 @@
 #!/bin/bash
 
 if ph_is_installed apt-get; then
-    PH_PACKAGE_MANAGER='apt-get'
+    $PH_INTERACTIVE && PH_PACKAGE_MANAGER='apt-get' || PH_PACKAGE_MANAGER='apt-get -y'
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_UPDATE='update'
 elif ph_is_installed zypper; then
-    PH_PACKAGE_MANAGER='zypper'
+    $PH_INTERACTIVE && PH_PACKAGE_MANAGER='zypper' || PH_PACKAGE_MANAGER='zypper -n'
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_UPDATE='refresh'
 elif ph_is_installed brew; then
@@ -13,7 +13,7 @@ elif ph_is_installed brew; then
     PH_PACKAGE_MANAGER_ARG='install'
     PH_PACKAGE_MANAGER_UPDATE='update'
 elif ph_is_installed yum; then
-    PH_PACKAGE_MANAGER='yum'
+    $PH_INTERACTIVE && PH_PACKAGE_MANAGER='yum' || PH_PACKAGE_MANAGER='yum -y'
     PH_PACKAGE_MANAGER_ARG='install'
 elif ph_is_installed pacman; then
     PH_PACKAGE_MANAGER='pacman'
