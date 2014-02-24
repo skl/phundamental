@@ -97,7 +97,3 @@ You can update all submodules in future by executing:
 ### Upcoming modules
 
 * postfix (MariaDB backend) + roundcube client
-
-## Other resources
-
-Expanding your Arch Linux Raspberry Pi root partition to fill the SD card: https://gist.github.com/4301393
