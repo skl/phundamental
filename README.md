@@ -49,21 +49,11 @@ Execute the top-level installer, it will ask you which modules to install:
 
     sudo phundamental/install
 
-### Install some modules
+### Install one or more modules
 
-Execute the top-level installer with parameters (one per module, order doesn't matter):
+Execute the top-level installer with one or more arguments (one per module, order doesn't matter):
 
     sudo phundamental/install nodejs php nginx
-
-### Install one module
-
-There are two ways of doing this, as above:
-
-    sudo phundamental/install php
-
-Alternatively:
-
-    sudo phundamental/modules/php/install
 
 ## Modules
 
