@@ -4,10 +4,10 @@ PH_NGINX_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PH_INSTALL_DIR="$( cd "${PH_NGINX_INSTALL_DIR}" && cd ../../ && pwd )"
 . ${PH_INSTALL_DIR}/bootstrap.sh
 
-read -p "Specify nginx version [1.4.5]: " NGINX_VERSION_STRING
+read -p "Specify nginx version [1.4.7]: " NGINX_VERSION_STRING
 
 # Default version
-[ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.5"
+[ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.7"
 
 NGINX_VERSION_INTEGER=`echo ${NGINX_VERSION_STRING} | tr -d '.' | cut -c1-3`
 NGINX_VERSION_INTEGER_FULL=`echo ${NGINX_VERSION_STRING} | tr -d '.'`

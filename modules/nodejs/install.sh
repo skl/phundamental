@@ -18,8 +18,8 @@ if ph_is_installed node ; then
     fi
 fi
 
-read -p "Specify node.js version [0.10.25]: " NODEJS_VERSION_STRING
-[ -z ${NODEJS_VERSION_STRING} ] && NODEJS_VERSION_STRING="0.10.25"
+read -p "Specify node.js version [0.10.26]: " NODEJS_VERSION_STRING
+[ -z ${NODEJS_VERSION_STRING} ] && NODEJS_VERSION_STRING="0.10.26"
 
 NODEJS_VERSION_INTEGER=`echo ${NODEJS_VERSION_STRING} | tr -d '.' | cut -c1-3`
 NODEJS_VERSION_INTEGER_FULL=`echo ${NODEJS_VERSION_STRING} | tr -d '.'`
