@@ -177,6 +177,7 @@ function ph_module_install_nginx()
         "--conf-path=${NGINX_CONFIG_PATH}/nginx.conf"
         "--with-pcre"
         "--with-http_ssl_module"
+        "--with-http_stub_status_module"
         "--with-http_realip_module");
 
     if ${NGINX_SPDY}; then
