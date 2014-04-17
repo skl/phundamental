@@ -570,7 +570,9 @@ case "${PH_OS}" in \
         /etc/init.d/php-${PHP_VERSION_STRING}-fpm start
         update-rc.d php-${PHP_VERSION_STRING}-fpm defaults
 
-        [ ph_is_installed nginx ] && nginx -s reload
+        if ph_is_installed nginx; then
+            nginx -s reload
+        fi
         ;;
     esac
     ;;
