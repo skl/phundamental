@@ -456,7 +456,7 @@ if ph_ask_yesno "Install memcached PECL extension?"; then
     }
 fi
 
-if ph_ask_yesno "Install xdebug PECL extension?"; then
+if ph_ask_yesno "Install xdebug PECL extension?" "n"; then
     ${PHP_BIN_DIR}/pecl install xdebug
 
     # Fix xdebug.so ini directive
