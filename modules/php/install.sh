@@ -480,8 +480,8 @@ if ph_ask_yesno "Install GraphicsMagick and associated PECL extension?" "n"; the
     read -p "Specify GraphicsMagick version [1.3.19]: " GM_VERSION
     [ -z ${GM_VERSION} ] && GM_VERSION="1.3.19"
 
-    read -p "Specify gmagick PECL extension version [1.1.7RC1]: " GM_PECL_VERSION
-    [ -z ${GM_PECL_VERSION} ] && GM_PECL_VERSION="1.1.7RC1"
+    read -p "Specify gmagick PECL extension version [1.1.7RC2]: " GM_PECL_VERSION
+    [ -z ${GM_PECL_VERSION} ] && GM_PECL_VERSION="1.1.7RC2"
 
     ph_cd_archive tar xzf GraphicsMagick-${GM_VERSION} .tar.gz \
         http://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/${GM_VERSION}/GraphicsMagick-${GM_VERSION}.tar.gz
