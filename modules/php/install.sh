@@ -286,8 +286,14 @@ fi
 # PHP4 MySQL is enabled by default, so only deal with 5+
 if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
 
-    if ph_is_installed mysql_config ; then
+    # Give the user a chance to install mysql_config
+    if ! ph_is_installed mysql_config ; then
+        if ph_ask_yesno 'mysql_config not found, install MySQL client development library?'; then
+            ph_install_packages libmysql
+        fi
+    fi
 
+    if ph_is_installed mysql_config ; then
         # MySQLi for 5.0.x, 5.1.x, 5.2.x
         if [ ${PHP_VERSION_MINOR} -le 2 ]; then
             USER_MYSQL_CONFIG=$(ls -l `which mysql_config` | awk '{print $NF}')
@@ -331,7 +337,7 @@ if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
         fi
 
     else
-        echo 'WARNING: mysql_config could not found, MySQL/MariaDB support not enabled!'
+        echo 'WARNING: mysql_config not found, MySQL/MariaDB support will not be enabled!'
     fi
 fi
 
