@@ -165,14 +165,27 @@ else
     PHP_OVERWRITE_SYMLINKS=false
 fi
 
-if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -le 4 ]; then
-    PHP_DOWNLOAD_ARG=xzf
-    PHP_DOWNLOAD_EXT=.tar.gz
-    PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz
-elif [ ${PHP_VERSION_MAJOR} -eq 4 ]; then
+# Different versions of PHP are archived at various URIs
+if [ ${PHP_VERSION_MAJOR} -eq 4 ]; then
     PHP_DOWNLOAD_ARG=xzf
     PHP_DOWNLOAD_EXT=.tar.gz
     PHP_DOWNLOAD_URI=http://museum.php.net/php4/php-${PHP_VERSION_STRING}.tar.gz
+elif [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -le 2 ]; then
+    PHP_DOWNLOAD_ARG=xzf
+    PHP_DOWNLOAD_EXT=.tar.gz
+    PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz
+elif [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 3 ] && [ ${PHP_VERSION_RELEASE} -le 26 ]; then
+    PHP_DOWNLOAD_ARG=xzf
+    PHP_DOWNLOAD_EXT=.tar.gz
+    PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz
+elif [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 4 ] && [ ${PHP_VERSION_RELEASE} -le 21 ]; then
+    PHP_DOWNLOAD_ARG=xzf
+    PHP_DOWNLOAD_EXT=.tar.gz
+    PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz
+elif [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 5 ] && [ ${PHP_VERSION_RELEASE} -le 4 ]; then
+    PHP_DOWNLOAD_ARG=xzf
+    PHP_DOWNLOAD_EXT=.tar.gz
+    PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz
 else
     ph_install_packages bzip2
     PHP_DOWNLOAD_ARG=xjf
