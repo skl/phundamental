@@ -77,11 +77,11 @@ function ph_module_install_nginx()
             fi
         fi
 
-        read -p "Specify nginx version [1.4.7]: " NGINX_VERSION_STRING
+        read -p "Specify nginx version [1.6.0]: " NGINX_VERSION_STRING
     fi
 
     # Default version
-    [ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.4.7"
+    [ -z ${NGINX_VERSION_STRING} ] && NGINX_VERSION_STRING="1.6.0"
 
     NGINX_VERSION_INTEGER=`echo ${NGINX_VERSION_STRING} | tr -d '.' | cut -c1-3`
     NGINX_VERSION_INTEGER_FULL=`echo ${NGINX_VERSION_STRING} | tr -d '.'`
