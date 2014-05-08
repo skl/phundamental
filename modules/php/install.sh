@@ -35,8 +35,8 @@ if ph_is_installed php ; then
     fi
 fi
 
-read -p "Specify PHP version [5.5.11]: " PHP_VERSION_STRING
-[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.11"
+read -p "Specify PHP version [5.5.12]: " PHP_VERSION_STRING
+[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.12"
 
 # e.g. 531 (truncated to three characters in order to construct a valid port number for fpm)
 # So for PHP 5.4.7,  php-fpm will bind to 127.0.0.1:9547
@@ -165,7 +165,7 @@ else
     PHP_OVERWRITE_SYMLINKS=false
 fi
 
-if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -le 2 ]; then
+if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -le 4 ]; then
     PHP_DOWNLOAD_ARG=xzf
     PHP_DOWNLOAD_EXT=.tar.gz
     PHP_DOWNLOAD_URI=http://museum.php.net/php5/php-${PHP_VERSION_STRING}.tar.gz
