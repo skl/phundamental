@@ -18,8 +18,8 @@ if ph_is_installed mysql ; then
     fi
 fi
 
-read -p "Specify MariaDB version [5.5.36]: " MARIADB_VERSION_STRING
-[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="5.5.36"
+read -p "Specify MariaDB version [10.0.11]: " MARIADB_VERSION_STRING
+[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="10.0.11"
 
 MARIADB_VERSION_INTEGER=`echo ${MARIADB_VERSION_STRING} | tr -d '.' | cut -c1-3`
 MARIADB_VERSION_INTEGER_FULL=`echo ${MARIADB_VERSION_STRING} | tr -d '.'`
@@ -98,7 +98,7 @@ else
     fi
 
     ph_cd_archive tar xzf mariadb-${MARIADB_VERSION_STRING} .tar.gz \
-        http://ftp.osuosl.org/pub/mariadb/mariadb-${MARIADB_VERSION_STRING}/kvm-tarbake-jaunty-x86/mariadb-${MARIADB_VERSION_STRING}.tar.gz
+        https://downloads.mariadb.org/f/mariadb-${MARIADB_VERSION_STRING}/source/mariadb-${MARIADB_VERSION_STRING}.tar.gz?serve
 
     [ -f CMakeCache.txt ] && rm CMakeCache.txt
     make clean
