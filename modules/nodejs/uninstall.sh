@@ -4,10 +4,10 @@ PH_NODEJS_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PH_INSTALL_DIR="$( cd "${PH_NODEJS_INSTALL_DIR}" && cd ../../ && pwd )"
 . ${PH_INSTALL_DIR}/bootstrap.sh
 
-read -p "Specify nodejs version [0.10.26]: " NODEJS_VERSION_STRING
+read -p "Specify nodejs version [0.10.28]: " NODEJS_VERSION_STRING
 
 # Default version
-[ -z ${NODEJS_VERSION_STRING} ] && NODEJS_VERSION_STRING="0.10.26"
+[ -z ${NODEJS_VERSION_STRING} ] && NODEJS_VERSION_STRING="0.10.28"
 
 NODEJS_VERSION_INTEGER=`echo ${NODEJS_VERSION_STRING} | tr -d '.' | cut -c1-3`
 NODEJS_VERSION_INTEGER_FULL=`echo ${NODEJS_VERSION_STRING} | tr -d '.'`

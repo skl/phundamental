@@ -4,8 +4,8 @@ PH_MARIADB_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PH_INSTALL_DIR="$( cd "${PH_MARIADB_INSTALL_DIR}" && cd ../../ && pwd )"
 . ${PH_INSTALL_DIR}/bootstrap.sh
 
-read -p "Specify MariaDB version [5.5.35]: " MARIADB_VERSION_STRING
-[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="5.5.35"
+read -p "Specify MariaDB version [10.0.11]: " MARIADB_VERSION_STRING
+[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="10.0.11"
 
 MARIADB_VERSION_INTEGER=`echo ${MARIADB_VERSION_STRING} | tr -d '.' | cut -c1-3`
 MARIADB_VERSION_INTEGER_FULL=`echo ${MARIADB_VERSION_STRING} | tr -d '.'`
