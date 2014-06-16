@@ -190,7 +190,7 @@ else
     ph_install_packages bzip2
     PHP_DOWNLOAD_ARG=xjf
     PHP_DOWNLOAD_EXT=.tar.bz2
-    PHP_DOWNLOAD_URI=http://www.php.net/get/php-${PHP_VERSION_STRING}.tar.bz2/from/this/mirror
+    PHP_DOWNLOAD_URI=http://www.php.net/distributions/php-${PHP_VERSION_STRING}.tar.bz2
 fi
 
 # Retrieve source code from php.net
