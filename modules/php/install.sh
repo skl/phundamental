@@ -35,8 +35,8 @@ if ph_is_installed php ; then
     fi
 fi
 
-read -p "Specify PHP version [5.5.13]: " PHP_VERSION_STRING
-[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.13"
+read -p "Specify PHP version [5.5.14]: " PHP_VERSION_STRING
+[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.14"
 
 # e.g. 531 (truncated to three characters in order to construct a valid port number for fpm)
 # So for PHP 5.4.7,  php-fpm will bind to 127.0.0.1:9547

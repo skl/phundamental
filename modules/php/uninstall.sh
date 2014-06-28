@@ -4,8 +4,8 @@ PH_PHP_INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PH_INSTALL_DIR="$( cd "${PH_PHP_INSTALL_DIR}" && cd ../../ && pwd )"
 . ${PH_INSTALL_DIR}/bootstrap.sh
 
-read -p "Specify PHP version [5.5.13]: " PHP_VERSION_STRING
-[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.13"
+read -p "Specify PHP version [5.5.14]: " PHP_VERSION_STRING
+[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.14"
 
 PHP_VERSION_INTEGER=`echo ${PHP_VERSION_STRING} | tr -d '.' | cut -c1-3`
 PHP_VERSION_INTEGER_FULL=`echo ${PHP_VERSION_STRING} | tr -d '.'`

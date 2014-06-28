@@ -18,8 +18,8 @@ if ph_is_installed mysql ; then
     fi
 fi
 
-read -p "Specify MariaDB version [10.0.11]: " MARIADB_VERSION_STRING
-[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="10.0.11"
+read -p "Specify MariaDB version [10.0.12]: " MARIADB_VERSION_STRING
+[ -z ${MARIADB_VERSION_STRING} ] && MARIADB_VERSION_STRING="10.0.12"
 
 MARIADB_VERSION_INTEGER=`echo ${MARIADB_VERSION_STRING} | tr -d '.' | cut -c1-3`
 MARIADB_VERSION_INTEGER_FULL=`echo ${MARIADB_VERSION_STRING} | tr -d '.'`
