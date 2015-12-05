@@ -35,11 +35,12 @@ if ph_is_installed php ; then
     fi
 fi
 
-read -p "Specify PHP version [5.5.14]: " PHP_VERSION_STRING
-[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="5.5.14"
+read -p "Specify PHP version [7.0.0]: " PHP_VERSION_STRING
+[ -z ${PHP_VERSION_STRING} ] && PHP_VERSION_STRING="7.0.0"
 
 # e.g. 531 (truncated to three characters in order to construct a valid port number for fpm)
-# So for PHP 5.4.7,  php-fpm will bind to 127.0.0.1:9547
+# So for PHP 7.0.0,  php-fpm will bind to 127.0.0.1:9700
+# .. for PHP 5.4.7,  php-fpm will bind to 127.0.0.1:9547
 # .. for PHP 5.3.17, php-fpm will bind to 127.0.0.1:9531
 PHP_VERSION_INTEGER=`echo ${PHP_VERSION_STRING} | tr -d '.' | cut -c1-3`
 PHP_VERSION_INTEGER_FULL=`echo ${PHP_VERSION_STRING} | tr -d '.'`
@@ -280,16 +281,10 @@ fi
     fi
 }
 
-# Enable FPM for 5.3 if 5.3.3+
-[ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 3 ] && [ ${PHP_VERSION_RELEASE} -ge 3 ] && {
-    PHP_FPM_CONF=${PH_INSTALL_DIR}/modules/php/php-fpm.conf
-
-    CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
-        "--enable-fpm")
-}
-
-# Always enable FPM for 5.4+
-[ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 4 ] && {
+# Always enable FPM for 5.3.3+
+([ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 3 ] && [ ${PHP_VERSION_RELEASE} -ge 3 ]) ||
+([ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 4 ]) ||
+([ ${PHP_VERSION_MAJOR} -ge 7 ]) && {
     PHP_FPM_CONF=${PH_INSTALL_DIR}/modules/php/php-fpm.conf
 
     CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
@@ -308,7 +303,7 @@ if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
 
     if ph_is_installed mysql_config ; then
         # MySQLi for 5.0.x, 5.1.x, 5.2.x
-        if [ ${PHP_VERSION_MINOR} -le 2 ]; then
+        if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -le 2 ]; then
             USER_MYSQL_CONFIG=$(ls -l `which mysql_config` | awk '{print $NF}')
 
             if [ "${USER_MYSQL_CONFIG}" == "/usr/local/mysql/bin/mysql_config" ]; then
@@ -334,7 +329,7 @@ if [ ${PHP_VERSION_MAJOR} -ge 5 ] ; then
             fi
 
         # MySQL native driver for 5.3.x
-        elif [ ${PHP_VERSION_MINOR} -eq 3 ]; then
+        elif [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -eq 3 ]; then
             ph_install_packages libmysql
 
             CONFIGURE_ARGS=(${CONFIGURE_ARGS[@]}
@@ -406,7 +401,7 @@ ${PHP_BIN_DIR}/pear config-set preferred_state beta
 ${PHP_BIN_DIR}/pear config-set auto_discover 1
 
 # Default to OPcache for 5.5+
-if [ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 5 ]; then
+if ([ ${PHP_VERSION_MAJOR} -eq 5 ] && [ ${PHP_VERSION_MINOR} -ge 5 ]) || ([ ${PHP_VERSION_MAJOR} -ge 7 ]); then
     if ph_ask_yesno "Install Zend OPcache PECL extension?"; then
         ${PHP_BIN_DIR}/pecl install zendopcache
 
@@ -533,12 +528,6 @@ if ph_ask_yesno "Install ImageMagick and associated PECL extension?" "n"; then
         rm -rf /usr/local/src/imagick-${IM_PECL_VERSION} \
             /usr/local/src/package.xml
     }
-fi
-
-if ph_ask_yesno "Install PHPUnit PEAR package?"; then
-    ${PHP_BIN_DIR}/pear channel-discover pear.phpunit.de
-    ${PHP_BIN_DIR}/pear install --alldeps phpunit/PHPUnit
-    ph_symlink ${PHP_BIN_DIR}/phpunit /usr/local/bin/phpunit ${PHP_OVERWRITE_SYMLINKS}
 fi
 
 if ph_ask_yesno "Install phpDocumentor PEAR package?"; then
